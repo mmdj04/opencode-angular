@@ -9,6 +9,7 @@ import {
   lucideSettings,
 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { hlmMuted } from '@spartan-ng/helm/typography';
@@ -21,6 +22,7 @@ import { SearchService } from './search.service';
     RouterLink,
     NgIcon,
     HlmButtonImports,
+    HlmFieldImports,
     HlmInputImports,
     HlmSeparatorImports,
   ],
@@ -37,19 +39,10 @@ import { SearchService } from './search.service';
         >
           Agentwork
         </a>
-        <div class="relative flex-1">
-          <div
-            class="border-input bg-background focus-within:ring-ring flex h-10 items-center rounded-full border px-4 shadow-sm focus-within:ring-1"
-          >
-            <ng-icon hlmIcon name="lucideSearch" class="text-muted-foreground mr-2 shrink-0" />
-            <input
-              hlmInput
-              class="h-full flex-1 border-0 bg-transparent text-sm shadow-none focus-visible:ring-0"
-              [(ngModel)]="query"
-              (keyup.enter)="search()"
-            />
-          </div>
-        </div>
+        <hlm-field orientation="horizontal" class="flex-1">
+          <ng-icon hlmIcon name="lucideSearch" class="text-muted-foreground" />
+          <input hlmInput type="search" [(ngModel)]="query" (keyup.enter)="search()" />
+        </hlm-field>
         <button hlmBtn variant="ghost" size="icon-sm" class="text-muted-foreground shrink-0">
           <ng-icon hlmIcon name="lucideSettings" />
         </button>
