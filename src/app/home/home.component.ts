@@ -17,6 +17,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
       </div>
       <hlm-card-footer class="gap-2">
         <button hlmBtn variant="outline" (click)="increment()">Increment</button>
+        <a hlmBtn variant="ghost" routerLink="/search">Pesquisa</a>
         <a hlmBtn routerLink="/settings">Configurações</a>
       </hlm-card-footer>
     </hlm-card>

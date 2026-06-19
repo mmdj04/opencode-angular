@@ -35,7 +35,7 @@ import { SettingsWebhooksComponent } from './settings-webhooks.component';
         <p class="${hlmMuted}">Gerencie as configurações do seu projeto</p>
       </div>
 
-      <hlm-card>
+      <hlm-card class="overflow-visible">
         <app-settings-general #general />
         <hlm-separator />
         <app-settings-api #api />
