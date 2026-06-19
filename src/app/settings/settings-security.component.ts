@@ -8,6 +8,7 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
+import { hlmMuted } from '@spartan-ng/helm/typography';
 
 @Component({
   selector: 'app-settings-security',
@@ -30,7 +31,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="two-factor">Autenticação em 2 fatores</label>
-          <p class="text-muted-foreground text-sm">Adicionar uma camada extra de segurança</p>
+          <p class="${hlmMuted}">Adicionar uma camada extra de segurança</p>
         </div>
         <hlm-switch id="two-factor" [checked]="twoFactor()" (checkedChange)="twoFactor.set($event)">
           <span hlmSwitchThumb></span>
@@ -42,7 +43,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="session-timeout">Timeout de sessão</label>
-          <p class="text-muted-foreground text-sm">Tempo de inatividade antes do logout</p>
+          <p class="${hlmMuted}">Tempo de inatividade antes do logout</p>
         </div>
         <hlm-input-group class="w-full sm:w-[280px]">
           <input
@@ -63,7 +64,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="key-rotation">Rotação automática de API Key</label>
-          <p class="text-muted-foreground text-sm">Rotacionar chaves a cada 90 dias</p>
+          <p class="${hlmMuted}">Rotacionar chaves a cada 90 dias</p>
         </div>
         <hlm-switch
           id="key-rotation"
@@ -79,7 +80,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div class="space-y-0.5 pt-2">
           <label hlmLabel for="ip-allowlist">Allowlist de IPs</label>
-          <p class="text-muted-foreground text-sm">Um IP por linha</p>
+          <p class="${hlmMuted}">Um IP por linha</p>
         </div>
         <textarea
           hlmTextarea
@@ -96,7 +97,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="security-webhook">Webhook de segurança</label>
-          <p class="text-muted-foreground text-sm">URL para notificações de segurança</p>
+          <p class="${hlmMuted}">URL para notificações de segurança</p>
         </div>
         <input
           hlmInput

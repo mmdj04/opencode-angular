@@ -8,6 +8,7 @@ import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
+import { hlmMuted, hlmSmall } from '@spartan-ng/helm/typography';
 
 @Component({
   selector: 'app-settings-webhooks',
@@ -30,7 +31,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="webhook-url">URL do webhook</label>
-          <p class="text-muted-foreground text-sm">Endpoint para receber notificações</p>
+          <p class="${hlmMuted}">Endpoint para receber notificações</p>
         </div>
         <input
           hlmInput
@@ -48,7 +49,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="webhook-secret">Segredo</label>
-          <p class="text-muted-foreground text-sm">Chave de assinatura HMAC</p>
+          <p class="${hlmMuted}">Chave de assinatura HMAC</p>
         </div>
         <input
           hlmInput
@@ -63,10 +64,8 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <hlm-separator />
 
       <div class="space-y-3">
-        <span class="text-sm font-medium">Eventos</span>
-        <p class="text-muted-foreground text-sm">
-          Selecione os eventos que devem acionar o webhook
-        </p>
+        <span class="${hlmSmall}">Eventos</span>
+        <p class="${hlmMuted}">Selecione os eventos que devem acionar o webhook</p>
         <div class="flex flex-col gap-3">
           @for (event of events; track event.id) {
             <div class="flex items-center gap-2">
@@ -88,7 +87,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="auto-retry">Retry automático</label>
-          <p class="text-muted-foreground text-sm">Tentar novamente em caso de falha</p>
+          <p class="${hlmMuted}">Tentar novamente em caso de falha</p>
         </div>
         <hlm-switch id="auto-retry" [checked]="autoRetry()" (checkedChange)="autoRetry.set($event)">
           <span hlmSwitchThumb></span>
@@ -100,7 +99,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="webhook-timeout">Timeout</label>
-          <p class="text-muted-foreground text-sm">Tempo limite de resposta</p>
+          <p class="${hlmMuted}">Tempo limite de resposta</p>
         </div>
         <hlm-input-group class="w-full sm:w-[280px]">
           <input

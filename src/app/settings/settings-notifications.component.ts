@@ -6,6 +6,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
+import { hlmMuted } from '@spartan-ng/helm/typography';
 
 @Component({
   selector: 'app-settings-notifications',
@@ -26,7 +27,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex items-center justify-between gap-4">
         <div class="space-y-0.5">
           <label hlmLabel for="email-notifications">Email</label>
-          <p class="text-muted-foreground text-sm">Receber notificações por email</p>
+          <p class="${hlmMuted}">Receber notificações por email</p>
         </div>
         <hlm-switch
           id="email-notifications"
@@ -42,7 +43,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex items-center justify-between gap-4">
         <div class="space-y-0.5">
           <label hlmLabel for="push-notifications">Push</label>
-          <p class="text-muted-foreground text-sm">Receber notificações push no navegador</p>
+          <p class="${hlmMuted}">Receber notificações push no navegador</p>
         </div>
         <hlm-switch
           id="push-notifications"
@@ -58,7 +59,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex items-center justify-between gap-4">
         <div class="space-y-0.5">
           <label hlmLabel for="security-alerts">Alertas de Segurança</label>
-          <p class="text-muted-foreground text-sm">Notificar sobre atividades suspeitas</p>
+          <p class="${hlmMuted}">Notificar sobre atividades suspeitas</p>
         </div>
         <hlm-switch
           id="security-alerts"
@@ -74,7 +75,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex items-center justify-between gap-4">
         <div class="space-y-0.5">
           <label hlmLabel for="marketing">Novidades</label>
-          <p class="text-muted-foreground text-sm">Receber atualizações sobre novos recursos</p>
+          <p class="${hlmMuted}">Receber atualizações sobre novos recursos</p>
         </div>
         <hlm-switch
           id="marketing"
@@ -90,7 +91,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex items-center justify-between gap-4">
         <div class="space-y-0.5">
           <label hlmLabel for="weekly-report">Relatório Semanal</label>
-          <p class="text-muted-foreground text-sm">Receber resumo semanal de atividades</p>
+          <p class="${hlmMuted}">Receber resumo semanal de atividades</p>
         </div>
         <hlm-switch
           id="weekly-report"

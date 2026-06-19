@@ -8,6 +8,7 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
+import { hlmMuted } from '@spartan-ng/helm/typography';
 
 @Component({
   selector: 'app-settings-api',
@@ -30,7 +31,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="api-endpoint">Endpoint</label>
-          <p class="text-muted-foreground text-sm">URL base da API</p>
+          <p class="${hlmMuted}">URL base da API</p>
         </div>
         <input
           hlmInput
@@ -46,7 +47,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="api-key">Chave API</label>
-          <p class="text-muted-foreground text-sm">Chave de acesso à API</p>
+          <p class="${hlmMuted}">Chave de acesso à API</p>
         </div>
         <div class="flex items-center gap-2">
           <input
@@ -65,7 +66,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="api-debug">Modo Debug</label>
-          <p class="text-muted-foreground text-sm">Habilitar logs detalhados da API</p>
+          <p class="${hlmMuted}">Habilitar logs detalhados da API</p>
         </div>
         <hlm-switch id="api-debug" [checked]="debugMode()" (checkedChange)="debugMode.set($event)">
           <span hlmSwitchThumb></span>
@@ -77,7 +78,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="api-rate">Rate Limit</label>
-          <p class="text-muted-foreground text-sm">Limite de requisições por minuto</p>
+          <p class="${hlmMuted}">Limite de requisições por minuto</p>
         </div>
         <input
           hlmInput

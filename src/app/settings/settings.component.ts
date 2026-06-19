@@ -3,6 +3,7 @@ import { toast } from '@spartan-ng/brain/sonner';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
+import { hlmH3, hlmMuted } from '@spartan-ng/helm/typography';
 import { SettingsAdvancedComponent } from './settings-advanced.component';
 import { SettingsApiComponent } from './settings-api.component';
 import { SettingsAppearanceComponent } from './settings-appearance.component';
@@ -30,8 +31,8 @@ import { SettingsWebhooksComponent } from './settings-webhooks.component';
   template: `
     <div class="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight">Configurações</h1>
-        <p class="text-muted-foreground">Gerencie as configurações do seu projeto</p>
+        <h1 class="${hlmH3}">Configurações</h1>
+        <p class="${hlmMuted}">Gerencie as configurações do seu projeto</p>
       </div>
 
       <hlm-card>

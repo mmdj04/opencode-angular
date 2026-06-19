@@ -8,6 +8,7 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
+import { hlmMuted } from '@spartan-ng/helm/typography';
 import { ThemeService } from '../core/services/theme.service';
 
 @Component({
@@ -31,7 +32,7 @@ import { ThemeService } from '../core/services/theme.service';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="dark-mode">Modo Escuro</label>
-          <p class="text-muted-foreground text-sm">Alternar entre tema claro e escuro</p>
+          <p class="${hlmMuted}">Alternar entre tema claro e escuro</p>
         </div>
         <hlm-switch
           id="dark-mode"
@@ -47,7 +48,7 @@ import { ThemeService } from '../core/services/theme.service';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="language">Idioma</label>
-          <p class="text-muted-foreground text-sm">Idioma da interface</p>
+          <p class="${hlmMuted}">Idioma da interface</p>
         </div>
         <button
           hlmBtn
@@ -79,7 +80,7 @@ import { ThemeService } from '../core/services/theme.service';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="font-size">Tamanho da Fonte</label>
-          <p class="text-muted-foreground text-sm">Tamanho base da fonte da interface</p>
+          <p class="${hlmMuted}">Tamanho base da fonte da interface</p>
         </div>
         <button
           hlmBtn
@@ -111,7 +112,7 @@ import { ThemeService } from '../core/services/theme.service';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="sidebar-collapsed">Sidebar Compacta</label>
-          <p class="text-muted-foreground text-sm">Iniciar com sidebar recolhida</p>
+          <p class="${hlmMuted}">Iniciar com sidebar recolhida</p>
         </div>
         <hlm-switch
           id="sidebar-collapsed"

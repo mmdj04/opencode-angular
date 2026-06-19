@@ -9,6 +9,7 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
+import { hlmMuted } from '@spartan-ng/helm/typography';
 
 @Component({
   selector: 'app-settings-general',
@@ -32,7 +33,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="project-name">Nome</label>
-          <p class="text-muted-foreground text-sm">Nome do projeto</p>
+          <p class="${hlmMuted}">Nome do projeto</p>
         </div>
         <input
           hlmInput
@@ -48,7 +49,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div class="space-y-0.5 pt-2">
           <label hlmLabel for="project-desc">Descrição</label>
-          <p class="text-muted-foreground text-sm">Descrição curta do projeto</p>
+          <p class="${hlmMuted}">Descrição curta do projeto</p>
         </div>
         <textarea
           hlmTextarea
@@ -65,7 +66,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="project-region">Região</label>
-          <p class="text-muted-foreground text-sm">Região de hospedagem do projeto</p>
+          <p class="${hlmMuted}">Região de hospedagem do projeto</p>
         </div>
         <button
           hlmBtn

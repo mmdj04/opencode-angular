@@ -9,6 +9,7 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
+import { hlmMuted, hlmSmall } from '@spartan-ng/helm/typography';
 
 @Component({
   selector: 'app-settings-team',
@@ -32,7 +33,7 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="team-name">Nome da equipe</label>
-          <p class="text-muted-foreground text-sm">Nome exibido na interface</p>
+          <p class="${hlmMuted}">Nome exibido na interface</p>
         </div>
         <input
           hlmInput
@@ -48,7 +49,7 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="member-limit">Limite de membros</label>
-          <p class="text-muted-foreground text-sm">Número máximo de membros</p>
+          <p class="${hlmMuted}">Número máximo de membros</p>
         </div>
         <input
           hlmInput
@@ -65,7 +66,7 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="default-role">Papel padrão</label>
-          <p class="text-muted-foreground text-sm">Papel atribuído a novos membros</p>
+          <p class="${hlmMuted}">Papel atribuído a novos membros</p>
         </div>
         <button
           hlmBtn
@@ -97,7 +98,7 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="invite-email">Convidar por email</label>
-          <p class="text-muted-foreground text-sm">Enviar convite para novo membro</p>
+          <p class="${hlmMuted}">Enviar convite para novo membro</p>
         </div>
         <div class="flex items-center gap-2">
           <input
@@ -116,7 +117,7 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
       <hlm-separator />
 
       <div class="space-y-3">
-        <span class="text-sm font-medium">Membros atuais</span>
+        <span class="${hlmSmall}">Membros atuais</span>
         @for (member of members(); track member.name) {
           <div class="flex items-center justify-between rounded-lg border p-3">
             <div class="flex items-center gap-3">

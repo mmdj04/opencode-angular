@@ -6,6 +6,7 @@ import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
+import { hlmMuted } from '@spartan-ng/helm/typography';
 
 @Component({
   selector: 'app-settings-advanced',
@@ -26,7 +27,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="debug-mode">Modo de depuração global</label>
-          <p class="text-muted-foreground text-sm">Habilitar logs detalhados em todo o sistema</p>
+          <p class="${hlmMuted}">Habilitar logs detalhados em todo o sistema</p>
         </div>
         <hlm-switch id="debug-mode" [checked]="debugMode()" (checkedChange)="debugMode.set($event)">
           <span hlmSwitchThumb></span>
@@ -38,7 +39,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="cache-ttl">Cache TTL</label>
-          <p class="text-muted-foreground text-sm">Tempo de vida do cache</p>
+          <p class="${hlmMuted}">Tempo de vida do cache</p>
         </div>
         <hlm-input-group class="w-full sm:w-[280px]">
           <input
@@ -59,7 +60,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="gzip">Compressão gzip</label>
-          <p class="text-muted-foreground text-sm">Comprimir respostas HTTP</p>
+          <p class="${hlmMuted}">Comprimir respostas HTTP</p>
         </div>
         <hlm-switch id="gzip" [checked]="gzipEnabled()" (checkedChange)="gzipEnabled.set($event)">
           <span hlmSwitchThumb></span>
@@ -71,7 +72,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="security-headers">Headers de segurança</label>
-          <p class="text-muted-foreground text-sm">Adicionar headers HTTP de segurança</p>
+          <p class="${hlmMuted}">Adicionar headers HTTP de segurança</p>
         </div>
         <hlm-switch
           id="security-headers"
@@ -87,7 +88,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
           <label hlmLabel for="audit-log">Log de auditoria</label>
-          <p class="text-muted-foreground text-sm">Registrar ações dos usuários</p>
+          <p class="${hlmMuted}">Registrar ações dos usuários</p>
         </div>
         <hlm-switch id="audit-log" [checked]="auditLog()" (checkedChange)="auditLog.set($event)">
           <span hlmSwitchThumb></span>
