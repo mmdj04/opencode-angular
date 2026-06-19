@@ -37,10 +37,7 @@ import { SearchService } from './search.service';
     <div class="bg-background flex min-h-screen flex-col">
       <!-- Header -->
       <header class="border-border flex items-center gap-4 border-b px-6 py-3">
-        <a
-          routerLink="/search"
-          class="text-foreground shrink-0 text-xl font-semibold hover:no-underline"
-        >
+        <a routerLink="/" class="text-foreground shrink-0 text-xl font-semibold hover:no-underline">
           Agentwork
         </a>
         <div hlmInputGroup class="flex-1">
