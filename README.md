@@ -1,59 +1,265 @@
-# OpencodeAngular
+# Agentwork
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.3.
+> Angular 22 + PrimeNG 21 + Tailwind CSS 4 — Starter profissional com SSR, signals-first e tooling completo.
 
-## Development server
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D22.0.0-green.svg)](https://nodejs.org/)
+[![Angular](https://img.shields.io/badge/Angular-22.0.3-red.svg)](https://angular.dev/)
 
-To start a local development server, run:
+## Tech Stack
 
-```bash
-ng serve
+| Tecnologia   | Versão | Propósito           |
+| ------------ | ------ | ------------------- |
+| Angular      | 22.0.3 | Framework SPA + SSR |
+| TypeScript   | 6.0.2  | Tipagem estática    |
+| PrimeNG      | 21.1.9 | UI Components       |
+| Tailwind CSS | 4.3.1  | Utility-first CSS   |
+| Vitest       | 4.0.8  | Testes unitários    |
+| Playwright   | 1.61.0 | E2E tests           |
+| ESLint       | 10.3.0 | Linting             |
+| Prettier     | 3.8.1  | Formatação          |
+| Husky        | 9.1.7  | Git hooks           |
+| Knip         | 6.17.1 | Dead code detection |
+
+## Arquitetura
+
+```mermaid
+flowchart TD
+    A[Angular 22 App] --> B[Standalone Components]
+    A --> C[SSR + Hydration]
+    A --> D[Zoneless Change Detection]
+
+    B --> E[app.routes.ts]
+    E -->|lazy loading| F[Feature Components]
+
+    G[Core Module] --> H[Interceptors]
+    G --> I[Services]
+    G --> J[Web Workers]
+
+    H --> K[Error Interceptor]
+    H --> L[Loading Interceptor]
+
+    M[Shared Module] --> N[PrimeNG Components]
+    M --> O[Tailwind Utilities]
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Fluxo da Aplicação
 
-## Code scaffolding
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant C as Component
+    participant S as Service
+    participant API as Backend API
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+    U->>C: Interaction
+    C->>C: Signal Update
+    C->>S: HTTP Request
+    S->>S: Loading Interceptor
+    S->>API: GET /api/data
+    API-->>S: Response
+    S->>S: Error Interceptor
+    S-->>C: Observable
+    C-->>U: Render View
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Estrutura do Projeto
 
-```bash
-ng generate --help
+```mermaid
+flowchart LR
+    subgraph src["src/"]
+        A[app/] --> B[core/]
+        A --> C[counter/]
+        A --> D[app.config.ts]
+        A --> E[app.routes.ts]
+
+        B --> F[interceptors/]
+        B --> G[services/]
+        B --> H[workers/]
+
+        I[environments/] --> J[environment.ts]
+        I --> K[environment.prod.ts]
+
+        L[styles.css]
+        M[main.ts]
+        N[main.server.ts]
+        O[server.ts]
+    end
 ```
 
-## Building
+## Pré-requisitos
 
-To build the project run:
+- Node.js >= 22.0.0
+- npm >= 11.17.0
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Instalação
 
 ```bash
-ng test
+# Clone o repositório
+git clone https://github.com/mmdj04/Agentwork.git
+cd Agentwork
+
+# Instale dependências
+npm install
+
+# Inicie o servidor dev
+npm start
 ```
 
-## Running end-to-end tests
+Acesse http://localhost:4200
 
-For end-to-end (e2e) testing, run:
+## Scripts Disponíveis
+
+| Script                   | Descrição                     |
+| ------------------------ | ----------------------------- |
+| `npm start`              | Servidor dev com hot reload   |
+| `npm run build`          | Build produção com SSR        |
+| `npm run test`           | Testes unitários com coverage |
+| `npm run test:coverage`  | Coverage HTML                 |
+| `npm run lint`           | ESLint                        |
+| `npm run lint:fix`       | ESLint com auto-fix           |
+| `npm run format`         | Prettier format               |
+| `npm run format:check`   | Prettier check                |
+| `npm run typecheck`      | Verificação TypeScript        |
+| `npm run knip`           | Dead code detection           |
+| `npm run e2e`            | Playwright E2E tests          |
+| `npm run security:check` | Auditoria de segurança        |
+| `npm run serve:ssr:*`    | SSR server                    |
+
+## Estrutura de Diretórios
+
+```
+opencode-angular/
+├── src/
+│   ├── app/
+│   │   ├── core/                    # Código compartilhado essencial
+│   │   │   ├── interceptors/        # HTTP interceptors
+│   │   │   ├── services/            # Serviços globais
+│   │   │   └── workers/             # Web workers
+│   │   ├── counter/                 # Exemplo signal-based
+│   │   ├── app.config.ts            # Configuração principal
+│   │   ├── app.config.server.ts     # Configuração SSR
+│   │   ├── app.routes.ts            # Rotas com lazy loading
+│   │   └── app.ts                   # Root component
+│   ├── environments/                # Environment configs
+│   ├── styles.css                   # Global styles
+│   ├── main.ts                      # Bootstrap browser
+│   ├── main.server.ts               # Bootstrap server
+│   └── server.ts                    # Express SSR server
+├── e2e/                             # Playwright tests
+├── public/                          # Static assets
+├── angular.json                     # Angular config
+├── tsconfig.json                    # TypeScript config
+├── eslint.config.js                 # ESLint config
+├── prettier.config.js               # Prettier config
+├── commitlint.config.js             # Commitlint config
+├── knip.json                        # Knip config
+├── playwright.config.ts             # Playwright config
+├── postcss.config.json              # PostCSS config
+├── Dockerfile                       # Docker multi-stage
+├── .editorconfig                    # Editor config
+├── .gitattributes                   # Git attributes
+├── .gitignore                       # Git ignore
+├── .npmrc                           # npm config
+├── .prettierignore                  # Prettier ignore
+├── .env.example                     # Environment template
+├── LICENSE                          # MIT License
+├── README.md                        # Este arquivo
+├── CONTRIBUTING.md                  # Guia de contribuição
+├── CODE_OF_CONDUCT.md               # Código de conduta
+├── CHANGELOG.md                     # Histórico de versões
+└── SECURITY.md                      # Política de segurança
+```
+
+## Configuração
+
+### TypeScript (`tsconfig.json`)
+
+- `strict: true` — Modo estrito
+- `verbatimModuleSyntax` — Imports explícitos
+- `declaration` + `declarationMap` — Types para libraries
+- Path aliases: `@app/*`, `@env/*`, `@shared/*`, `@core/*`
+
+### ESLint (`eslint.config.js`)
+
+- Angular ESLint recommended
+- TypeScript strict rules
+- Padding-line rules para consistência
+- `no-console` (warn, allow warn/error)
+
+### Prettier (`prettier.config.js`)
+
+- `printWidth: 100`
+- `singleQuote: true`
+- `trailingComma: 'all'`
+- Angular HTML parser para templates
+
+### Git Hooks (Husky)
+
+- **pre-commit**: lint-staged (Prettier)
+- **commit-msg**: commitlint (Conventional Commits)
+
+## Convenções de Commit
+
+| Tipo       | Descrição           | Exemplo                       |
+| ---------- | ------------------- | ----------------------------- |
+| `feat`     | Nova funcionalidade | `feat(auth): add login`       |
+| `fix`      | Correção de bug     | `fix(api): handle null`       |
+| `docs`     | Documentação        | `docs: update README`         |
+| `style`    | Formatação          | `style: format code`          |
+| `refactor` | Refatoração         | `refactor(service): simplify` |
+| `test`     | Testes              | `test: add unit tests`        |
+| `chore`    | Manutenção          | `chore: update deps`          |
+| `ci`       | CI/CD               | `ci: add workflow`            |
+| `perf`     | Performance         | `perf: optimize render`       |
+| `build`    | Build               | `build: update config`        |
+
+## Docker
 
 ```bash
-ng e2e
+# Build
+docker build -t agentwork .
+
+# Run
+docker run -p 4000:4000 agentwork
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Path Aliases
 
-## Additional Resources
+```typescript
+// Em vez de:
+import { UserService } from '../../../core/services/user.service';
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+// Use:
+import { UserService } from '@core/services/user.service';
+```
+
+| Alias       | Caminho              |
+| ----------- | -------------------- |
+| `@app/*`    | `src/app/*`          |
+| `@env/*`    | `src/environments/*` |
+| `@shared/*` | `src/app/shared/*`   |
+| `@core/*`   | `src/app/core/*`     |
+
+## Features
+
+- [x] Angular 22 com SSR
+- [x] Zoneless change detection (signals-first)
+- [x] Lazy loading de rotas
+- [x] Web workers para cálculos pesados
+- [x] PrimeNG com tema Aura
+- [x] Tailwind CSS 4 com primeui plugin
+- [x] Traduções pt-BR
+- [x] HTTP interceptors (error + loading)
+- [x] Coverage thresholds
+- [x] Dead code detection (Knip)
+- [x] Docker multi-stage build
+- [x] Environment configs com file replacements
+
+## Contribuição
+
+Veja [CONTRIBUTING.md](CONTRIBUTING.md) para detalhes.
+
+## Licença
+
+Este projeto está licenciado sob a MIT License — veja o arquivo [LICENSE](LICENSE) para detalhes.

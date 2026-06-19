@@ -1,43 +1,50 @@
-# Security Policy
+# Política de Segurança
 
-## Supported Versions
+## Versões Suportadas
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 22.x    | :white_check_mark: |
-| < 22    | :x:                |
+| Versão | Suportado |
+| ------ | --------- |
+| 22.x   | ✅        |
+| < 22   | ❌        |
 
-## Reporting a Vulnerability
+## Reportar Vulnerabilidades
 
-If you discover a security vulnerability within this project, please send an email to the project maintainer. All security vulnerabilities will be promptly addressed.
+**Por favor, NÃO reporte vulnerabilidades através de issues públicas.**
 
-**Please do not report security vulnerabilities through public GitHub issues.**
+Em vez disso, envie um email para o mantenedor do projeto com:
 
-Instead, please report them via email to the maintainer.
+- Descrição do vulnerability
+- Passos para reproduzir
+- Impacto potencial
+- Sugestão de fix (se disponível)
 
-You should receive a response within 48 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
+## Resposta
 
-Please include the following information in your report:
+- **Confirmação**: Até 48 horas
+- **Status do fix**: Até 7 dias
+- **Publicação**: Após o fix estar disponível
 
-- Type of issue (e.g. buffer overflow, SQL injection, cross-site scripting, etc.)
-- Full paths of source file(s) related to the manifestation of the issue
-- The location of the affected source code (tag/branch/commit or direct URL)
-- Any special configuration required to reproduce the issue
-- Step-by-step instructions to reproduce the issue
-- Proof-of-concept or exploit code (if possible)
-- Impact of the issue, including how an attacker might exploit the issue
+## Práticas de Segurança
 
-## Preferred Languages
+Este projeto segue estas práticas:
 
-We prefer all communications to be in Portuguese or English.
+- Dependências auditadas via `npm audit`
+- TypeScript strict mode (`strict: true`)
+- `verbatimModuleSyntax` para imports seguros
+- Nenhum segredo no repositório
+- Environment variables para configuração sensível
+- HTTPS em produção
+- CSP headers recomendados para deploy
+- Husky hooks para prevenir commits acidentais
+- lint-staged para validação pré-commit
+- Knip para detectar código morto e dependências não usadas
 
-## Security Best Practices
+## Checklist de Deploy
 
-This project follows these security practices:
-
-- All dependencies are audited regularly via `npm audit`
-- Strict TypeScript configuration (`strict: true`)
-- No secrets or credentials are committed to the repository
-- Environment variables are used for sensitive configuration
-- HTTPS is enforced in production builds
-- Content Security Policy headers are recommended for deployment
+- [ ] Variáveis de ambiente configuradas
+- [ ] HTTPS habilitado
+- [ ] CSP headers configurados
+- [ ] Rate limiting ativo
+- [ ] CORS configurado corretamente
+- [ ] Logs de auditoria habilitados
+- [ ] `npm run security:check` sem vulnerabilidades críticas
