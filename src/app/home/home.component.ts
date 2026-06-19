@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-home',

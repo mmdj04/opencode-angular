@@ -8,6 +8,7 @@ module.exports = {
   arrowParens: 'always',
   htmlWhitespaceSensitivity: 'css',
   endOfLine: 'lf',
+  plugins: ['prettier-plugin-organize-imports'],
   overrides: [
     {
       files: '*.html',
