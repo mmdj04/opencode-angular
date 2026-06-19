@@ -28,7 +28,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
         <p hlmCardDescription>Configurações de API e endpoints</p>
       </hlm-card-header>
       <div hlmCardContent class="space-y-6">
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="api-endpoint">Endpoint</label>
             <p class="text-muted-foreground text-sm">URL base da API</p>
@@ -36,7 +36,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
           <input
             hlmInput
             id="api-endpoint"
-            class="w-[280px]"
+            class="w-full sm:w-[280px]"
             [value]="endpoint()"
             (input)="endpoint.set(toValue($event))"
           />
@@ -44,7 +44,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 
         <hlm-separator />
 
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="api-key">Chave API</label>
             <p class="text-muted-foreground text-sm">Chave de acesso à API</p>
@@ -53,7 +53,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
             <input
               hlmInput
               id="api-key"
-              class="w-[280px] font-mono text-sm"
+              class="w-full font-mono text-sm sm:w-[280px]"
               [value]="apiKey()"
               readonly
             />
@@ -63,7 +63,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 
         <hlm-separator />
 
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="api-debug">Modo Debug</label>
             <p class="text-muted-foreground text-sm">Habilitar logs detalhados da API</p>
@@ -79,7 +79,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 
         <hlm-separator />
 
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="api-rate">Rate Limit</label>
             <p class="text-muted-foreground text-sm">Limite de requisições por minuto</p>
@@ -88,18 +88,18 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
             hlmInput
             id="api-rate"
             type="number"
-            class="w-[280px]"
+            class="w-full sm:w-[280px]"
             [value]="rateLimit()"
             (input)="rateLimit.set(toNumberValue($event))"
           />
         </div>
       </div>
-      <div hlm-card-footer class="justify-end gap-2">
+      <hlm-card-footer class="justify-end gap-2 pt-(--card-spacing)">
         @if (hasChanges()) {
           <button hlmBtn variant="outline" (click)="reset()">Cancelar</button>
         }
         <button hlmBtn [disabled]="!hasChanges()" (click)="save()">Salvar</button>
-      </div>
+      </hlm-card-footer>
     </hlm-card>
   `,
 })

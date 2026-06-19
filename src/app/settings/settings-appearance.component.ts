@@ -27,7 +27,7 @@ import { ThemeService } from '../core/services/theme.service';
         <p hlmCardDescription>Personalize a aparência do projeto</p>
       </hlm-card-header>
       <div hlmCardContent class="space-y-6">
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="dark-mode">Modo Escuro</label>
             <p class="text-muted-foreground text-sm">Alternar entre tema claro e escuro</p>
@@ -43,7 +43,7 @@ import { ThemeService } from '../core/services/theme.service';
 
         <hlm-separator />
 
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="language">Idioma</label>
             <p class="text-muted-foreground text-sm">Idioma da interface</p>
@@ -51,7 +51,7 @@ import { ThemeService } from '../core/services/theme.service';
           <select
             hlmSelect
             id="language"
-            class="w-[280px]"
+            class="w-full sm:w-[280px]"
             [value]="language()"
             (change)="language.set(toSelectValue($event))"
           >
@@ -63,7 +63,7 @@ import { ThemeService } from '../core/services/theme.service';
 
         <hlm-separator />
 
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="font-size">Tamanho da Fonte</label>
             <p class="text-muted-foreground text-sm">Tamanho base da fonte da interface</p>
@@ -71,7 +71,7 @@ import { ThemeService } from '../core/services/theme.service';
           <select
             hlmSelect
             id="font-size"
-            class="w-[280px]"
+            class="w-full sm:w-[280px]"
             [value]="fontSize()"
             (change)="fontSize.set(toSelectValue($event))"
           >
@@ -83,7 +83,7 @@ import { ThemeService } from '../core/services/theme.service';
 
         <hlm-separator />
 
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="sidebar-collapsed">Sidebar Compacta</label>
             <p class="text-muted-foreground text-sm">Iniciar com sidebar recolhida</p>
@@ -97,12 +97,12 @@ import { ThemeService } from '../core/services/theme.service';
           </hlm-switch>
         </div>
       </div>
-      <div hlm-card-footer class="justify-end gap-2">
+      <hlm-card-footer class="justify-end gap-2 pt-(--card-spacing)">
         @if (hasChanges()) {
           <button hlmBtn variant="outline" (click)="reset()">Cancelar</button>
         }
         <button hlmBtn [disabled]="!hasChanges()" (click)="save()">Salvar</button>
-      </div>
+      </hlm-card-footer>
     </hlm-card>
   `,
 })

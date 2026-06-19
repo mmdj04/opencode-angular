@@ -102,12 +102,12 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
           </hlm-switch>
         </div>
       </div>
-      <div hlm-card-footer class="justify-end gap-2">
+      <hlm-card-footer class="justify-end gap-2 pt-(--card-spacing)">
         @if (hasChanges()) {
           <button hlmBtn variant="outline" (click)="reset()">Cancelar</button>
         }
         <button hlmBtn [disabled]="!hasChanges()" (click)="save()">Salvar</button>
-      </div>
+      </hlm-card-footer>
     </hlm-card>
   `,
 })

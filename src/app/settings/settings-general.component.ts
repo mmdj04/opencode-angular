@@ -28,7 +28,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
         <p hlmCardDescription>Configurações gerais do projeto</p>
       </hlm-card-header>
       <div hlmCardContent class="space-y-6">
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="project-name">Nome</label>
             <p class="text-muted-foreground text-sm">Nome do projeto</p>
@@ -36,7 +36,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
           <input
             hlmInput
             id="project-name"
-            class="w-[280px]"
+            class="w-full sm:w-[280px]"
             [value]="name()"
             (input)="name.set(toValue($event))"
           />
@@ -44,7 +44,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
 
         <hlm-separator />
 
-        <div class="flex items-start justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div class="space-y-0.5 pt-2">
             <label hlmLabel for="project-desc">Descrição</label>
             <p class="text-muted-foreground text-sm">Descrição curta do projeto</p>
@@ -52,7 +52,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
           <textarea
             hlmTextarea
             id="project-desc"
-            class="w-[280px] resize-none"
+            class="w-full resize-none sm:w-[280px]"
             rows="3"
             [value]="description()"
             (input)="description.set(toValue($event))"
@@ -61,7 +61,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
 
         <hlm-separator />
 
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div class="space-y-0.5">
             <label hlmLabel for="project-region">Região</label>
             <p class="text-muted-foreground text-sm">Região de hospedagem do projeto</p>
@@ -69,7 +69,7 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
           <select
             hlmSelect
             id="project-region"
-            class="w-[280px]"
+            class="w-full sm:w-[280px]"
             [value]="region()"
             (change)="region.set(toSelectValue($event))"
           >
@@ -80,12 +80,12 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
           </select>
         </div>
       </div>
-      <div hlm-card-footer class="justify-end gap-2">
+      <hlm-card-footer class="justify-end gap-2 pt-(--card-spacing)">
         @if (hasChanges()) {
           <button hlmBtn variant="outline" (click)="reset()">Cancelar</button>
         }
         <button hlmBtn [disabled]="!hasChanges()" (click)="save()">Salvar</button>
-      </div>
+      </hlm-card-footer>
     </hlm-card>
   `,
 })

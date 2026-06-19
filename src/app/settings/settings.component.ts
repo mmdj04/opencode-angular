@@ -15,7 +15,7 @@ import { SettingsNotificationsComponent } from './settings-notifications.compone
     SettingsNotificationsComponent,
   ],
   template: `
-    <div class="mx-auto max-w-3xl space-y-8 py-8">
+    <div class="mx-auto max-w-3xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       <div>
         <h1 class="text-2xl font-bold tracking-tight">Configurações</h1>
         <p class="text-muted-foreground">Gerencie as configurações do seu projeto</p>
