@@ -44,7 +44,7 @@ import { hlmMuted } from '@spartan-ng/helm/typography';
         />
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div class="space-y-0.5 pt-2">
@@ -61,7 +61,7 @@ import { hlmMuted } from '@spartan-ng/helm/typography';
         ></textarea>
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">

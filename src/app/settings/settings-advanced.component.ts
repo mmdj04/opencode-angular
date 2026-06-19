@@ -34,7 +34,7 @@ import { hlmMuted } from '@spartan-ng/helm/typography';
         </hlm-switch>
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
@@ -55,7 +55,7 @@ import { hlmMuted } from '@spartan-ng/helm/typography';
         </hlm-input-group>
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
@@ -67,7 +67,7 @@ import { hlmMuted } from '@spartan-ng/helm/typography';
         </hlm-switch>
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
@@ -83,7 +83,7 @@ import { hlmMuted } from '@spartan-ng/helm/typography';
         </hlm-switch>
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">

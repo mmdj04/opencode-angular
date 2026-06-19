@@ -44,7 +44,7 @@ import { hlmMuted, hlmSmall } from '@spartan-ng/helm/typography';
         />
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
@@ -61,7 +61,7 @@ import { hlmMuted, hlmSmall } from '@spartan-ng/helm/typography';
         />
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
@@ -93,7 +93,7 @@ import { hlmMuted, hlmSmall } from '@spartan-ng/helm/typography';
         </ng-template>
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div class="space-y-0.5">
@@ -114,7 +114,7 @@ import { hlmMuted, hlmSmall } from '@spartan-ng/helm/typography';
         </div>
       </div>
 
-      <hlm-separator />
+      <hlm-separator class="-mx-(--card-spacing)" />
 
       <div class="space-y-3">
         <span class="${hlmSmall}">Membros atuais</span>
