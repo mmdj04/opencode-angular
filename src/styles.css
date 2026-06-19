@@ -4,7 +4,7 @@
 @plugin "tailwindcss-primeui";
 
 @theme {
-  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-sans: 'Inter';
   --color-primary: var(--p-primary-color);
   --color-primary-hover: var(--p-primary-hover-color);
   --color-primary-active: var(--p-primary-active-color);

@@ -1,21 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ButtonModule, CardModule, ToastModule, ProgressSpinnerModule],
-  templateUrl: './app.html',
-  styleUrl: './app.scss',
+  imports: [RouterOutlet, ToastModule],
+  providers: [MessageService],
+  template: '<p-toast /><router-outlet />',
 })
-export class App {
-  protected readonly title = signal('opencode-angular');
-  protected count = signal(0);
-
-  increment(): void {
-    this.count.update((c) => c + 1);
-  }
-}
+export class App {}

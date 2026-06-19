@@ -23,7 +23,14 @@
     "security:check": "npm audit --audit-level=high",
     "knip": "knip",
     "knip:fix": "knip --fix",
+    "knip:watch": "knip --watch",
+    "knip:production": "knip --production --strict --cache",
     "e2e": "npx playwright test",
+    "e2e:ui": "npx playwright test --ui",
+    "e2e:debug": "npx playwright test --debug",
+    "e2e:headed": "npx playwright test --headed",
+    "e2e:report": "npx playwright show-report",
+    "test:update": "ng test --watch=false --update-snapshots",
     "serve:ssr:opencode-angular": "node dist/opencode-angular/server/server.mjs",
     "prepare": "husky"
   },
@@ -77,6 +84,11 @@
     "*.css",
     "*.scss"
   ],
+  "overrides": {
+    "vite": {
+      "esbuild": "^0.28.0"
+    }
+  },
   "lint-staged": {
     "*.{ts,html}": [
       "prettier --write"

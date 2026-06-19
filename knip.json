@@ -1,13 +1,8 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": [],
   "project": ["src/**/*.ts", "e2e/**/*.ts"],
-  "ignore": [
-    "src/environments/environment.ts",
-    "src/app/core/services/worker.service.ts",
-    "src/app/core/workers/compute.worker.ts",
-    "src/app/counter/counter.component.ts"
-  ],
+  "ignore": ["src/environments/environment.ts"],
   "ignoreDependencies": [
     "primeicons",
     "tailwindcss-primeui",
@@ -15,8 +10,10 @@
     "@primeng/mcp",
     "@commitlint/types"
   ],
-  "ignoreExportsUsedInFile": {
-    "interface": true,
-    "type": true
+  "angular": true,
+  "eslint": true,
+  "prettier": true,
+  "typescript": {
+    "config": ["tsconfig*.json"]
   }
 }

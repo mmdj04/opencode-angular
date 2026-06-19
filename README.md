@@ -1,4 +1,4 @@
-# Agentwork
+# opencode-angular
 
 > Angular 22 + PrimeNG 21 + Tailwind CSS 4 — Starter profissional com SSR, signals-first e tooling completo.
 
@@ -218,31 +218,39 @@ docker run -p 4000:4000 agentwork
 
 ## Path Aliases
 
-```typescript
-// Em vez de:
-import { UserService } from '../../../core/services/user.service';
+Path aliases foram removidos do `tsconfig.json` para manter consistência — todos os imports usam caminhos relativos.
 
-// Use:
-import { UserService } from '@core/services/user.service';
+## Convenções de Estilo (CSS)
+
+O projeto usa duas abordagens para estilos de componentes:
+
+### 1. Arquivo SCSS externo (recomendado para componentes complexos)
+
+```typescript
+@Component({
+  styleUrl: './app.scss',
+})
 ```
 
-| Alias       | Caminho              |
-| ----------- | -------------------- |
-| `@app/*`    | `src/app/*`          |
-| `@env/*`    | `src/environments/*` |
-| `@shared/*` | `src/app/shared/*`   |
-| `@core/*`   | `src/app/core/*`     |
+### 2. Tailwind utilities inline (recomendado para componentes simples)
+
+```typescript
+@Component({
+  template: `<div class="flex gap-4 p-4">...</div>`,
+})
+```
+
+**Convenção:** Usar SCSS para componentes com estilos complexos e Tailwind utilities para estilos simples e utilitários.
 
 ## Features
 
 - [x] Angular 22 com SSR
 - [x] Zoneless change detection (signals-first)
 - [x] Lazy loading de rotas
-- [x] Web workers para cálculos pesados
 - [x] PrimeNG com tema Aura
 - [x] Tailwind CSS 4 com primeui plugin
 - [x] Traduções pt-BR
-- [x] HTTP interceptors (error + loading)
+- [x] HTTP interceptors (error + loading com ref-counting)
 - [x] Coverage thresholds
 - [x] Dead code detection (Knip)
 - [x] Docker multi-stage build
