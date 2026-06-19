@@ -66,25 +66,17 @@ sequenceDiagram
 ## Estrutura do Projeto
 
 ```mermaid
-flowchart LR
-    subgraph src["src/"]
-        A[app/] --> B[core/]
-        A --> C[counter/]
-        A --> D[app.config.ts]
-        A --> E[app.routes.ts]
-
-        B --> F[interceptors/]
-        B --> G[services/]
-        B --> H[workers/]
-
-        I[environments/] --> J[environment.ts]
-        I --> K[environment.prod.ts]
-
-        L[styles.css]
-        M[main.ts]
-        N[main.server.ts]
-        O[server.ts]
-    end
+flowchart TD
+    A[Angular 22 App] --> B[src/app]
+    B --> C[core]
+    B --> D[counter]
+    B --> E[app.config.ts]
+    B --> F[app.routes.ts]
+    C --> G[interceptors]
+    C --> H[services]
+    C --> I[workers]
+    J[environments] --> K[environment.ts]
+    J --> L[environment.prod.ts]
 ```
 
 ## Pré-requisitos
