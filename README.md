@@ -1,6 +1,6 @@
 # opencode-angular
 
-> Angular 22 + PrimeNG 21 + Tailwind CSS 4 — Starter profissional com SSR, signals-first e tooling completo.
+> Angular 22 + Spartan UI + Tailwind CSS 4 — Starter profissional com SSR, signals-first e tooling completo.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22.0.0-green.svg)](https://nodejs.org/)
@@ -12,7 +12,7 @@
 | ------------ | ------ | ------------------- |
 | Angular      | 22.0.3 | Framework SPA + SSR |
 | TypeScript   | 6.0.2  | Tipagem estática    |
-| PrimeNG      | 21.1.9 | UI Components       |
+| Spartan UI   | latest | UI Components       |
 | Tailwind CSS | 4.3.1  | Utility-first CSS   |
 | Vitest       | 4.0.8  | Testes unitários    |
 | Playwright   | 1.61.0 | E2E tests           |
@@ -39,7 +39,7 @@ flowchart TD
     H --> K[Error Interceptor]
     H --> L[Loading Interceptor]
 
-    M[Shared Module] --> N[PrimeNG Components]
+    M[Shared Module] --> N[Spartan UI Components]
     M --> O[Tailwind Utilities]
 ```
 
@@ -247,14 +247,18 @@ O projeto usa duas abordagens para estilos de componentes:
 - [x] Angular 22 com SSR
 - [x] Zoneless change detection (signals-first)
 - [x] Lazy loading de rotas
-- [x] PrimeNG com tema Aura
-- [x] Tailwind CSS 4 com primeui plugin
-- [x] Traduções pt-BR
+- [x] Spartan UI com 15+ helm components instalados
+- [x] Tailwind CSS 4 com preset Spartan UI
+- [x] Dark mode com ThemeService e persistência
 - [x] HTTP interceptors (error + loading com ref-counting)
 - [x] Coverage thresholds
 - [x] Dead code detection (Knip)
 - [x] Docker multi-stage build
 - [x] Environment configs com file replacements
+- [x] MCP server para documentação Spartan UI
+- [x] Skill para AI assistants
+- [x] Prettier com tailwind class sorting
+- [x] VSCode autocomplete para classes Tailwind
 
 ## Contribuição
 

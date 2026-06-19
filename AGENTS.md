@@ -3,11 +3,11 @@
 ## Stack
 
 - Angular 22 with SSR (Express), zoneless change detection (`provideZonelessChangeDetection()`)
-- PrimeNG 21.1.9 (Aura theme, pt-BR translations, cssLayer, inputVariant 'filled', ripple)
-- Tailwind CSS 4.3.1 with `tailwindcss-primeui` plugin
+- Spartan UI with helm components (Button, Card, Input, Dialog, Sonner, etc.)
+- Tailwind CSS 4.3.1 with Spartan UI preset
 - Vitest 4 for unit tests, Playwright 1.61 for E2E
 - TypeScript 6.0.2 with strict mode and `verbatimModuleSyntax`
-- ESLint 10 + angular-eslint (flat config), Prettier 3.8
+- ESLint 10 + angular-eslint (flat config), Prettier 3.8 with tailwind class sorting
 - Husky 9 + lint-staged + commitlint (conventional commits)
 - Knip 6 for dead code detection
 
@@ -34,15 +34,23 @@
 - Functional interceptors with `provideHttpClient(withInterceptors([...]))`
 - Lazy-loaded routes via `loadComponent` (not `loadChildren`)
 - `provideRouter()` with `withComponentInputBinding()` for route params as inputs
-- `provideAnimationsAsync()` for PrimeNG animations
-- `providePrimeNG()` with `theme.options` for PrimeNG config (not top-level)
+- `provideSpartanHlm()` for Spartan UI configuration
 
-### PrimeNG
+### Spartan UI
 
-- Import PrimeNG modules individually (no barrel `PrimeNG` imports)
-- Use `MessageService` for toast notifications via `@primeeng/api`
-- Translations in `src/app/i18n/pt-br.ts` — correct accented characters
-- cssLayer enabled — custom CSS goes in `@layer utilities` or `@layer components`
+- Components are in `src/app/ui/` directory (installed via CLI)
+- Import helm components using `*Imports` const (e.g., `HlmButtonImports`, `HlmCardImports`)
+- Use `toast()` from `@spartan-ng/brain/sonner` for notifications
+- Components use `hlm` prefix for styled components (e.g., `hlmBtn`, `hlmInput`)
+- CSS variables define theme colors (light/dark mode)
+- Available components: button, card, input, field, label, badge, dialog, separator, spinner, skeleton, alert, tabs, tooltip, dropdown-menu, sonner
+
+### Dark Mode
+
+- ThemeService available at `src/app/core/services/theme.service.ts`
+- Toggle with `themeService.toggle()`
+- Persists to localStorage
+- Respects system preference
 
 ### Testing
 
@@ -55,11 +63,12 @@
 
 ### Styling
 
-- Tailwind CSS 4 with `@theme` tokens mapped to PrimeNG CSS variables
+- Tailwind CSS 4 with Spartan UI preset (`@spartan-ng/brain/hlm-tailwind-preset.css`)
 - Inter v4.1 variable font installed locally in `public/fonts/inter/`
 - `font-display: swap` for font loading
 - `--font-family-sans: 'Inter'` (no fallbacks per design choice)
 - Custom styles in `src/styles.css` using `@layer` directives
+- Use semantic colors (`bg-primary`, `text-foreground`) not raw values (`bg-blue-500`)
 
 ## File Structure
 
@@ -67,10 +76,10 @@
 src/
   app/
     core/
-      services/          — Singleton services (LoadingService, etc.)
+      services/          — Singleton services (LoadingService, ThemeService)
       interceptors/      — HTTP interceptors (error, loading)
     home/                — Home feature component
-    i18n/                — Translation files (pt-br.ts)
+    ui/                  — Spartan UI helm components (installed via CLI)
     app.config.ts        — Application providers
     app.routes.ts        — Route definitions
     app.ts               — Root component
@@ -82,19 +91,23 @@ public/fonts/inter/      — Inter font files (woff2)
 
 ## Commands
 
-| Command                 | Purpose                    |
-| ----------------------- | -------------------------- |
-| `npm run typecheck`     | TypeScript type check      |
-| `npm run test`          | Unit tests via `ng test`   |
-| `npm run test:coverage` | Tests with coverage report |
-| `npm run lint`          | ESLint check               |
-| `npm run lint:fix`      | ESLint auto-fix            |
-| `npm run format:check`  | Prettier check             |
-| `npm run format`        | Prettier format            |
-| `npx knip`              | Dead code detection        |
-| `npm run e2e`           | Playwright E2E tests       |
-| `npm run build`         | Production build           |
-| `npm run start`         | Dev server on port 4200    |
+| Command                  | Purpose                    |
+| ------------------------ | -------------------------- |
+| `npm run typecheck`      | TypeScript type check      |
+| `npm run test`           | Unit tests via `ng test`   |
+| `npm run test:coverage`  | Tests with coverage report |
+| `npm run lint`           | ESLint check               |
+| `npm run lint:fix`       | ESLint auto-fix            |
+| `npm run format:check`   | Prettier check             |
+| `npm run format`         | Prettier format            |
+| `npx knip`               | Dead code detection        |
+| `npm run e2e`            | Playwright E2E tests       |
+| `npm run build`          | Production build           |
+| `npm run start`          | Dev server on port 4200    |
+| `npm run ui:add`         | Add Spartan UI component   |
+| `npm run ui:theme`       | Configure theme            |
+| `npm run ui:healthcheck` | Check installation health  |
+| `npm run ui:info`        | Show project info          |
 
 ## Security
 
@@ -102,10 +115,9 @@ public/fonts/inter/      — Inter font files (woff2)
 - Use `.env` files for secrets — never commit them
 - `.env.example` documents required variables without real values
 - Validate all user input on the server side
-- Use `--legacy-peer-deps` for npm installs (PrimeNG 21 peer dep mismatch with Angular 22)
 
 ## MCP Tools Available
 
 - **angular-cli**: Angular best practices, code examples, documentation search, zoneless migration, devserver control, code modernization
-- **primeng**: PrimeNG component documentation, props, events, theming, code examples
-- **context7**: Up-to-date library docs — add "use context7" to prompts for current Angular/PrimeNG/RxJS/Tailwind docs
+- **spartan-ui**: Spartan UI component documentation, APIs, examples, accessibility info
+- **context7**: Up-to-date library docs — add "use context7" to prompts for current Angular/Spartan UI/RxJS/Tailwind docs

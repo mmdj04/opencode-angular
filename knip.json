@@ -4,12 +4,14 @@
   "project": ["src/**/*.ts", "e2e/**/*.ts"],
   "ignore": ["src/environments/environment.ts"],
   "ignoreDependencies": [
-    "primeicons",
-    "tailwindcss-primeui",
     "@angular-eslint/builder",
-    "@primeng/mcp",
-    "@commitlint/types"
+    "@commitlint/types",
+    "@spartan-ng/cli",
+    "embla-carousel",
+    "embla-carousel-angular",
+    "ngx-scrollbar"
   ],
+  "ignoreExports": ["provideBrnButtonConfig", "buttonVariants", "provideHlmCardConfig"],
   "angular": true,
   "eslint": true,
   "prettier": true,

@@ -8,7 +8,8 @@ module.exports = {
   arrowParens: 'always',
   htmlWhitespaceSensitivity: 'css',
   endOfLine: 'lf',
-  plugins: ['prettier-plugin-organize-imports'],
+  plugins: ['prettier-plugin-organize-imports', 'prettier-plugin-tailwindcss'],
+  tailwindFunctions: ['hlm', 'cva', 'classes'],
   overrides: [
     {
       files: '*.html',

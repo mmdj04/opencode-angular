@@ -49,5 +49,7 @@
     "typescript": "html"
   },
 
-  "vitest.showInlineConsoleLog": true
+  "vitest.showInlineConsoleLog": true,
+
+  "tailwindCSS.classFunctions": ["hlm", "cva", "classes"]
 }
