@@ -86,7 +86,13 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "coverage": true,
-            "coverageExclude": ["src/main*.ts", "src/server.ts"]
+            "coverageExclude": ["src/main*.ts", "src/server.ts"],
+            "coverageThresholds": {
+              "statements": 60,
+              "branches": 60,
+              "functions": 20,
+              "lines": 60
+            }
           }
         },
         "lint": {

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [],
+  "project": ["src/**/*.ts", "e2e/**/*.ts"],
+  "ignore": ["src/environments/environment.ts"],
+  "ignoreDependencies": [
+    "primeicons",
+    "tailwindcss-primeui",
+    "@angular-eslint/builder",
+    "@primeng/mcp"
+  ],
+  "ignoreExportsUsedInFile": {
+    "interface": true,
+    "type": true
+  }
+}

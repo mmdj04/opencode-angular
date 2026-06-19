@@ -1,8 +1,8 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { ToastModule } from 'primeng/toast';
+import {Component, signal} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {ButtonModule} from 'primeng/button';
+import {CardModule} from 'primeng/card';
+import {ToastModule} from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
