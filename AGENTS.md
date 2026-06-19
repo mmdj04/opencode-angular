@@ -37,19 +37,21 @@
 
 ### Spartan UI
 
-- Components are in `src/app/ui/` directory (installed via CLI)
+- Components are in `src/app/ui/` directory (58 helm components installed via CLI)
 - Import helm components using `*Imports` const (e.g., `HlmButtonImports`, `HlmCardImports`)
 - Use `toast()` from `@spartan-ng/brain/sonner` for notifications
 - Components use `hlm` prefix for styled components (e.g., `hlmBtn`, `hlmInput`)
-- CSS variables define theme colors (light/dark mode)
-- Available components: button, card, input, field, label, badge, dialog, separator, spinner, skeleton, alert, tabs, tooltip, dropdown-menu, sonner
+- Use `hlmInputGroup` + `hlmInputGroupAddon` + `hlmInputGroupInput` for icons inside inputs
+- Use `hlmTabs` + `hlmTabsList` + `hlmTabsTrigger` for tab navigation
+- Use `hlmButtonGroup` to group buttons with continuous border-radius
+- Available categories: layout, forms, navigation, feedback, display
 
 ### Dark Mode
 
-- ThemeService available at `src/app/core/services/theme.service.ts`
-- Toggle with `themeService.toggle()`
-- Persists to localStorage
-- Respects system preference
+- Dark theme is forced (`color-scheme: dark` on `:root`, `<html class="dark">` in index.html)
+- Custom palette: `#121212` (background), `#171717` (card), `#1f1f1f` (sub-card)
+- Soft white text: `#e0e0e0` (foreground), `#9e9e9e` (muted)
+- ThemeService available at `src/app/core/services/theme.service.ts` (for future toggle)
 
 ### Testing
 
@@ -77,15 +79,16 @@ src/
     core/
       services/          — Singleton services (LoadingService, ThemeService)
       interceptors/      — HTTP interceptors (error, loading)
-    home/                — Home feature component
-    ui/                  — Spartan UI helm components (installed via CLI)
+    search/              — Agentwork search (homepage + results + service)
+    not-found/           — 404 page
+    ui/                  — 58 Spartan UI helm components (installed via CLI)
     app.config.ts        — Application providers
     app.routes.ts        — Route definitions
     app.ts               — Root component
-  styles.css             — Global styles + Tailwind layers
+  styles.css             — Global styles + dark theme
   index.html             — Entry HTML with font preload
 e2e/                     — Playwright E2E tests
-public/fonts/inter/      — Inter font files (woff2)
+public/                  — Static assets
 ```
 
 ## Commands

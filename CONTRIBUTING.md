@@ -20,7 +20,7 @@ Este projeto adere ao [Código de Conduta](CODE_OF_CONDUCT.md). Ao contribuir, v
 
 ### Reportar Bugs
 
-1. Verifique se o bug já foi reportado em [Issues](https://github.com/mmdj04/Agentwork/issues)
+1. Verifique se o bug já foi reportado em [Issues](https://github.com/mmdj04/opencode-angular/issues)
 2. Se não existir, abra uma nova issue com:
    - Título descritivo
    - Passos para reproduzir
@@ -58,8 +58,8 @@ Este projeto adere ao [Código de Conduta](CODE_OF_CONDUCT.md). Ao contribuir, v
 
 ```bash
 # Fork e clone
-git clone https://github.com/SEU_USUARIO/Agentwork.git
-cd Agentwork
+git clone https://github.com/SEU_USUARIO/opencode-angular.git
+cd opencode-angular
 
 # Instale dependências
 npm install

@@ -9,7 +9,7 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 ### Added
 
 - Angular 22.0.3 com SSR e esbuild
-- Spartan UI com helm components completos (Button, Card, Input, Field, Label, Badge, Dialog, Separator, Spinner, Skeleton, Alert, Tabs, Tooltip, Dropdown Menu, Sonner)
+- Spartan UI com 58 helm components completos
 - Tailwind CSS 4.3.1 com preset Spartan UI
 - TypeScript 6.0.2 com strict mode e verbatimModuleSyntax
 - Vitest 4.0.8 com code coverage (v8)
@@ -22,32 +22,34 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 - Lazy loading de rotas com loadComponent
 - HTTP interceptors (error + loading)
 - CSS layers (theme, base, components, utilities)
-- Environment configs com fileReplacements
 - Docker multi-stage build com Alpine
-- .editorconfig, .gitattributes, .npmrc, .prettierignore
 - CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md
 - Coverage thresholds (statements: 60%, branches: 60%, lines: 60%)
-- Bundle size check
 - Security audit script
-- components.json para CLI do Spartan UI
 - Skill do Spartan UI para AI assistants
 - MCP server do Spartan UI para documentação
-- ThemeService para dark mode com persistência
+- Agentwork search homepage com barra de busca Spartan UI
+- Página de resultados de busca com tabs, paginação e mock data
+- SearchService com 12 resultados mockados
+- Dark theme forçado com paleta customizada (#121212, #171717, #1f1f1f)
+- hlmInputGroup + hlmInputGroupAddon para ícones dentro de inputs
+- hlmTabs + hlmTabsList variant="line" para navegação por abas
+- hlmButtonGroup para agrupamento de botões de paginação
 - Scripts úteis: ui:add, ui:theme, ui:healthcheck, ui:info
-- Configuração VSCode para autocomplete de classes Tailwind
 
 ### Changed
 
 - Migrado de PrimeNG para Spartan UI
 - Removido dependências: primeng, primeicons, @primeuix/themes, @primeng/mcp, tailwindcss-primeui
-- Atualizado error interceptor para usar toast() do Spartan UI Sonner
-- Atualizado HomeComponent para usar Card e Button do Spartan UI
-- Removido traduções PrimeNG (i18n/pt-br.ts)
-- Atualizado documentação (AGENTS.md, README.md)
+- Página inicial agora é o Agentwork search (era Counter demo)
+- Removido página de Settings (era Supabase Studio style)
+- Atualizado documentação (AGENTS.md, README.md, CONTRIBUTING.md, CHANGELOG.md)
 
 ### Removed
 
 - Removido PrimeNG e todas as dependências relacionadas
+- Removido HomeComponent (Counter demo)
+- Removido SettingsComponent e 8 sub-componentes
 - Removido arquivo i18n/pt-br.ts
 - Removido skill primeng-integration
 
