@@ -9,9 +9,11 @@ import {
   lucideSettings,
 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmButtonGroupImports } from '@spartan-ng/helm/button-group';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
+import { HlmTabsImports } from '@spartan-ng/helm/tabs';
 import { hlmMuted } from '@spartan-ng/helm/typography';
 import { SearchService } from './search.service';
 
@@ -21,10 +23,12 @@ import { SearchService } from './search.service';
     FormsModule,
     RouterLink,
     NgIcon,
+    HlmButtonGroupImports,
     HlmButtonImports,
     HlmInputGroupImports,
     HlmInputImports,
     HlmSeparatorImports,
+    HlmTabsImports,
   ],
   providers: [
     provideIcons({ lucideSearch, lucideChevronLeft, lucideChevronRight, lucideSettings }),
@@ -51,22 +55,17 @@ import { SearchService } from './search.service';
       </header>
 
       <!-- Tabs -->
-      <nav class="border-border flex gap-1 border-b px-6">
-        @for (tab of tabs; track tab.id) {
-          <button
-            hlmBtn
-            [variant]="activeTab() === tab.id ? 'ghost' : 'ghost'"
-            class="relative rounded-none px-4 py-2 text-[13px]"
-            [class]="
-              activeTab() === tab.id
-                ? 'border-primary text-foreground border-b-2'
-                : 'text-muted-foreground hover:text-foreground'
-            "
-            (click)="activeTab.set(tab.id)"
-          >
-            {{ tab.label }}
-          </button>
-        }
+      <nav
+        hlmTabs
+        [tab]="activeTab()"
+        class="border-border border-b px-6"
+        (tabActivated)="activeTab.set($event)"
+      >
+        <div hlmTabsList variant="line">
+          @for (tab of tabs; track tab.id) {
+            <button hlmTabsTrigger [hlmTabsTrigger]="tab.id">{{ tab.label }}</button>
+          }
+        </div>
       </nav>
 
       <!-- Results info -->
@@ -106,17 +105,19 @@ import { SearchService } from './search.service';
             <ng-icon hlmIcon name="lucideChevronLeft" class="mr-1" />
             Anterior
           </button>
-          @for (p of pages(); track p) {
-            <button
-              hlmBtn
-              [variant]="p === page() ? 'default' : 'outline'"
-              size="sm"
-              class="min-w-[32px]"
-              (click)="goToPage(p)"
-            >
-              {{ p }}
-            </button>
-          }
+          <div hlmButtonGroup>
+            @for (p of pages(); track p) {
+              <button
+                hlmBtn
+                [variant]="p === page() ? 'default' : 'outline'"
+                size="sm"
+                class="min-w-[32px]"
+                (click)="goToPage(p)"
+              >
+                {{ p }}
+              </button>
+            }
+          </div>
           <button
             hlmBtn
             variant="outline"
