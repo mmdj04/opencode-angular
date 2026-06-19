@@ -3,7 +3,7 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "schematicCollections": ["angular-eslint"]
+    "schematicCollections": ["angular-eslint"],
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -11,8 +11,8 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
-        }
+          "style": "scss",
+        },
       },
       "root": "",
       "sourceRoot": "src",
@@ -27,18 +27,18 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
-              }
+                "input": "public",
+              },
             ],
             "styles": ["src/styles.css", "primeicons/primeicons.css"],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": []
+              "allowedHosts": [],
             },
             "ssr": {
-              "entry": "src/server.ts"
-            }
+              "entry": "src/server.ts",
+            },
           },
           "configurations": {
             "production": {
@@ -46,41 +46,49 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError": "1MB",
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
+                  "maximumError": "8kB",
+                },
               ],
               "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true,
+                },
+                "fonts": true,
+              },
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
+                  "with": "src/environments/environment.prod.ts",
+                },
+              ],
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
-            }
+              "sourceMap": true,
+            },
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "production",
         },
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "opencode-angular:build:production"
+              "buildTarget": "opencode-angular:build:production",
             },
             "development": {
-              "buildTarget": "opencode-angular:build:development"
-            }
+              "buildTarget": "opencode-angular:build:development",
+            },
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
         },
         "test": {
           "builder": "@angular/build:unit-test",
@@ -91,17 +99,17 @@
               "statements": 60,
               "branches": 60,
               "functions": 20,
-              "lines": 60
-            }
-          }
+              "lines": 60,
+            },
+          },
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
-          }
-        }
-      }
-    }
-  }
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"],
+          },
+        },
+      },
+    },
+  },
 }

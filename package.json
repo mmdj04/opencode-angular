@@ -20,6 +20,7 @@
     "format": "prettier --write \"src/**/*.{ts,html,css,scss,json,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,css,scss,json,md}\"",
     "typecheck": "tsc --noEmit",
+    "security:check": "npm audit --audit-level=high",
     "knip": "knip",
     "knip:fix": "knip --fix",
     "e2e": "npx playwright test",
@@ -51,6 +52,7 @@
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
     "@eslint/js": "^10.0.1",
+    "@eslint/json": "^2.0.0",
     "@playwright/test": "^1.61.0",
     "@primeng/mcp": "^21.1.9",
     "@tailwindcss/postcss": "^4.3.1",
@@ -71,9 +73,12 @@
     "typescript-eslint": "8.60.1",
     "vitest": "^4.0.8"
   },
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
   "lint-staged": {
     "*.{ts,html}": [
-      "eslint --fix",
       "prettier --write"
     ],
     "*.{css,scss,json,md}": [

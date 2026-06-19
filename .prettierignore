@@ -1,4 +1,6 @@
 dist/
-node_modules/
 .angular/
+node_modules/
 coverage/
+package-lock.json
+*.component.spec.html

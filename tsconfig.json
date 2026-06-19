@@ -18,25 +18,28 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
+    "verbatimModuleSyntax": true,
+    "declaration": true,
+    "declarationMap": true,
     "paths": {
       "@app/*": ["./src/app/*"],
       "@env/*": ["./src/environments/*"],
       "@shared/*": ["./src/app/shared/*"],
-      "@core/*": ["./src/app/core/*"]
-    }
+      "@core/*": ["./src/app/core/*"],
+    },
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true
+    "strictInputAccessModifiers": true,
   },
   "files": [],
   "references": [
     {
-      "path": "./tsconfig.app.json"
+      "path": "./tsconfig.app.json",
     },
     {
-      "path": "./tsconfig.spec.json"
-    }
-  ]
+      "path": "./tsconfig.spec.json",
+    },
+  ],
 }

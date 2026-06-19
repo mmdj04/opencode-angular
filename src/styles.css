@@ -1,2 +1,32 @@
-@import 'tailwindcss';
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss' layer(theme);
 @plugin "tailwindcss-primeui";
+
+@theme {
+  --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-primary: var(--p-primary-color);
+  --color-primary-hover: var(--p-primary-hover-color);
+  --color-primary-active: var(--p-primary-active-color);
+  --color-primary-contrast: var(--p-primary-contrast-color);
+  --color-surface-0: var(--p-surface-0);
+  --color-surface-50: var(--p-surface-50);
+  --color-surface-100: var(--p-surface-100);
+  --color-surface-200: var(--p-surface-200);
+  --color-surface-300: var(--p-surface-300);
+  --color-surface-400: var(--p-surface-400);
+  --color-surface-500: var(--p-surface-500);
+  --color-surface-600: var(--p-surface-600);
+  --color-surface-700: var(--p-surface-700);
+  --color-surface-800: var(--p-surface-800);
+  --color-surface-900: var(--p-surface-900);
+  --color-surface-950: var(--p-surface-950);
+  --color-text-color: var(--p-text-color);
+  --color-text-secondary: var(--p-text-secondary-color);
+  --color-border: var(--p-border-color);
+  --color-content-background: var(--p-content-background);
+  --color-inline-message-info-background: var(--p-inline-message-info-background);
+  --color-inline-message-success-background: var(--p-inline-message-success-background);
+  --color-inline-message-warn-background: var(--p-inline-message-warn-background);
+  --color-inline-message-error-background: var(--p-inline-message-error-background);
+}
