@@ -4,12 +4,12 @@ import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCamera, lucideMic, lucideSearch } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmFieldImports } from '@spartan-ng/helm/field';
 import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 
 @Component({
   selector: 'app-search',
-  imports: [FormsModule, NgIcon, HlmButtonImports, HlmFieldImports, HlmInputImports],
+  imports: [FormsModule, NgIcon, HlmButtonImports, HlmInputGroupImports, HlmInputImports],
   providers: [provideIcons({ lucideSearch, lucideMic, lucideCamera })],
   template: `
     <div class="bg-background flex min-h-screen flex-col">
@@ -20,22 +20,24 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
         </h1>
 
         <!-- Search bar -->
-        <hlm-field orientation="horizontal" class="w-full max-w-[584px] px-4">
-          <ng-icon hlmIcon name="lucideSearch" class="text-muted-foreground" />
+        <div hlmInputGroup class="w-full max-w-[584px] px-4">
+          <hlm-input-group-addon align="inline-start">
+            <ng-icon hlmIcon name="lucideSearch" class="text-muted-foreground" />
+          </hlm-input-group-addon>
           <input
-            hlmInput
+            hlmInputGroupInput
             type="search"
             placeholder="Pesquisar no Agentwork ou digitar uma URL"
             [(ngModel)]="query"
             (keyup.enter)="search()"
           />
-          <button hlmBtn variant="ghost" size="icon-sm" title="Pesquisa por voz">
+          <button hlmInputGroupButton size="icon-sm" title="Pesquisa por voz">
             <ng-icon hlmIcon name="lucideMic" />
           </button>
-          <button hlmBtn variant="ghost" size="icon-sm" title="Pesquisa por imagem">
+          <button hlmInputGroupButton size="icon-sm" title="Pesquisa por imagem">
             <ng-icon hlmIcon name="lucideCamera" />
           </button>
-        </hlm-field>
+        </div>
 
         <!-- Buttons -->
         <div class="flex gap-3">
@@ -66,7 +68,6 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
           <div class="flex flex-wrap gap-x-6 gap-y-1">
             <a href="#" class="hover:underline">Privacidade</a>
             <a href="#" class="hover:underline">Termos</a>
-            <a href="/settings" class="hover:underline">Configurações</a>
           </div>
         </div>
       </footer>
