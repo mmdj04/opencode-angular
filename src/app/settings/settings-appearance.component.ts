@@ -23,113 +23,105 @@ import { ThemeService } from '../core/services/theme.service';
   ],
   providers: [provideIcons({ lucideCheck })],
   template: `
-    <hlm-card>
-      <hlm-card-header>
-        <h3 hlmCardTitle>Aparência</h3>
-        <p hlmCardDescription>Personalize a aparência do projeto</p>
-      </hlm-card-header>
-      <div hlmCardContent class="space-y-6">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div class="space-y-0.5">
-            <label hlmLabel for="dark-mode">Modo Escuro</label>
-            <p class="text-muted-foreground text-sm">Alternar entre tema claro e escuro</p>
-          </div>
-          <hlm-switch
-            id="dark-mode"
-            [checked]="themeService.isDark()"
-            (checkedChange)="toggleTheme()"
-          >
-            <span hlmSwitchThumb></span>
-          </hlm-switch>
+    <hlm-card-header>
+      <h3 hlmCardTitle>Aparência</h3>
+      <p hlmCardDescription>Personalize a aparência do projeto</p>
+    </hlm-card-header>
+    <div hlmCardContent class="space-y-6">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="space-y-0.5">
+          <label hlmLabel for="dark-mode">Modo Escuro</label>
+          <p class="text-muted-foreground text-sm">Alternar entre tema claro e escuro</p>
         </div>
-
-        <hlm-separator />
-
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div class="space-y-0.5">
-            <label hlmLabel for="language">Idioma</label>
-            <p class="text-muted-foreground text-sm">Idioma da interface</p>
-          </div>
-          <button
-            hlmBtn
-            variant="outline"
-            id="language"
-            class="w-full justify-between sm:w-[280px]"
-            [hlmDropdownMenuTrigger]="languageMenu"
-          >
-            {{ getLanguageLabel(language()) }}
-          </button>
-          <ng-template #languageMenu>
-            <hlm-dropdown-menu class="w-56">
-              @for (option of languageOptions; track option.value) {
-                <button hlmDropdownMenuItem (click)="language.set(option.value)">
-                  @if (language() === option.value) {
-                    <ng-icon name="lucideCheck" class="text-muted-foreground" />
-                  } @else {
-                    <span class="w-4"></span>
-                  }
-                  {{ option.label }}
-                </button>
-              }
-            </hlm-dropdown-menu>
-          </ng-template>
-        </div>
-
-        <hlm-separator />
-
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div class="space-y-0.5">
-            <label hlmLabel for="font-size">Tamanho da Fonte</label>
-            <p class="text-muted-foreground text-sm">Tamanho base da fonte da interface</p>
-          </div>
-          <button
-            hlmBtn
-            variant="outline"
-            id="font-size"
-            class="w-full justify-between sm:w-[280px]"
-            [hlmDropdownMenuTrigger]="fontSizeMenu"
-          >
-            {{ getFontSizeLabel(fontSize()) }}
-          </button>
-          <ng-template #fontSizeMenu>
-            <hlm-dropdown-menu class="w-56">
-              @for (option of fontSizeOptions; track option.value) {
-                <button hlmDropdownMenuItem (click)="fontSize.set(option.value)">
-                  @if (fontSize() === option.value) {
-                    <ng-icon name="lucideCheck" class="text-muted-foreground" />
-                  } @else {
-                    <span class="w-4"></span>
-                  }
-                  {{ option.label }}
-                </button>
-              }
-            </hlm-dropdown-menu>
-          </ng-template>
-        </div>
-
-        <hlm-separator />
-
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div class="space-y-0.5">
-            <label hlmLabel for="sidebar-collapsed">Sidebar Compacta</label>
-            <p class="text-muted-foreground text-sm">Iniciar com sidebar recolhida</p>
-          </div>
-          <hlm-switch
-            id="sidebar-collapsed"
-            [checked]="sidebarCollapsed()"
-            (checkedChange)="sidebarCollapsed.set($event)"
-          >
-            <span hlmSwitchThumb></span>
-          </hlm-switch>
-        </div>
+        <hlm-switch
+          id="dark-mode"
+          [checked]="themeService.isDark()"
+          (checkedChange)="toggleTheme()"
+        >
+          <span hlmSwitchThumb></span>
+        </hlm-switch>
       </div>
-      <hlm-card-footer class="justify-end gap-2 pt-(--card-spacing)">
-        @if (hasChanges()) {
-          <button hlmBtn variant="outline" (click)="reset()">Cancelar</button>
-        }
-        <button hlmBtn [disabled]="!hasChanges()" (click)="save()">Salvar</button>
-      </hlm-card-footer>
-    </hlm-card>
+
+      <hlm-separator />
+
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="space-y-0.5">
+          <label hlmLabel for="language">Idioma</label>
+          <p class="text-muted-foreground text-sm">Idioma da interface</p>
+        </div>
+        <button
+          hlmBtn
+          variant="outline"
+          id="language"
+          class="w-full justify-between sm:w-[280px]"
+          [hlmDropdownMenuTrigger]="languageMenu"
+        >
+          {{ getLanguageLabel(language()) }}
+        </button>
+        <ng-template #languageMenu>
+          <hlm-dropdown-menu class="w-56">
+            @for (option of languageOptions; track option.value) {
+              <button hlmDropdownMenuItem (click)="language.set(option.value)">
+                @if (language() === option.value) {
+                  <ng-icon name="lucideCheck" class="text-muted-foreground" />
+                } @else {
+                  <span class="w-4"></span>
+                }
+                {{ option.label }}
+              </button>
+            }
+          </hlm-dropdown-menu>
+        </ng-template>
+      </div>
+
+      <hlm-separator />
+
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="space-y-0.5">
+          <label hlmLabel for="font-size">Tamanho da Fonte</label>
+          <p class="text-muted-foreground text-sm">Tamanho base da fonte da interface</p>
+        </div>
+        <button
+          hlmBtn
+          variant="outline"
+          id="font-size"
+          class="w-full justify-between sm:w-[280px]"
+          [hlmDropdownMenuTrigger]="fontSizeMenu"
+        >
+          {{ getFontSizeLabel(fontSize()) }}
+        </button>
+        <ng-template #fontSizeMenu>
+          <hlm-dropdown-menu class="w-56">
+            @for (option of fontSizeOptions; track option.value) {
+              <button hlmDropdownMenuItem (click)="fontSize.set(option.value)">
+                @if (fontSize() === option.value) {
+                  <ng-icon name="lucideCheck" class="text-muted-foreground" />
+                } @else {
+                  <span class="w-4"></span>
+                }
+                {{ option.label }}
+              </button>
+            }
+          </hlm-dropdown-menu>
+        </ng-template>
+      </div>
+
+      <hlm-separator />
+
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="space-y-0.5">
+          <label hlmLabel for="sidebar-collapsed">Sidebar Compacta</label>
+          <p class="text-muted-foreground text-sm">Iniciar com sidebar recolhida</p>
+        </div>
+        <hlm-switch
+          id="sidebar-collapsed"
+          [checked]="sidebarCollapsed()"
+          (checkedChange)="sidebarCollapsed.set($event)"
+        >
+          <span hlmSwitchThumb></span>
+        </hlm-switch>
+      </div>
+    </div>
   `,
 })
 export class SettingsAppearanceComponent {

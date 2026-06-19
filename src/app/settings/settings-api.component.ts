@@ -22,85 +22,73 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
     HlmSwitchImports,
   ],
   template: `
-    <hlm-card>
-      <hlm-card-header>
-        <h3 hlmCardTitle>API</h3>
-        <p hlmCardDescription>Configurações de API e endpoints</p>
-      </hlm-card-header>
-      <div hlmCardContent class="space-y-6">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div class="space-y-0.5">
-            <label hlmLabel for="api-endpoint">Endpoint</label>
-            <p class="text-muted-foreground text-sm">URL base da API</p>
-          </div>
+    <hlm-card-header>
+      <h3 hlmCardTitle>API</h3>
+      <p hlmCardDescription>Configurações de API e endpoints</p>
+    </hlm-card-header>
+    <div hlmCardContent class="space-y-6">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="space-y-0.5">
+          <label hlmLabel for="api-endpoint">Endpoint</label>
+          <p class="text-muted-foreground text-sm">URL base da API</p>
+        </div>
+        <input
+          hlmInput
+          id="api-endpoint"
+          class="w-full sm:w-[280px]"
+          [value]="endpoint()"
+          (input)="endpoint.set(toValue($event))"
+        />
+      </div>
+
+      <hlm-separator />
+
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="space-y-0.5">
+          <label hlmLabel for="api-key">Chave API</label>
+          <p class="text-muted-foreground text-sm">Chave de acesso à API</p>
+        </div>
+        <div class="flex items-center gap-2">
           <input
             hlmInput
-            id="api-endpoint"
-            class="w-full sm:w-[280px]"
-            [value]="endpoint()"
-            (input)="endpoint.set(toValue($event))"
+            id="api-key"
+            class="w-full font-mono text-sm sm:w-[280px]"
+            [value]="apiKey()"
+            readonly
           />
-        </div>
-
-        <hlm-separator />
-
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div class="space-y-0.5">
-            <label hlmLabel for="api-key">Chave API</label>
-            <p class="text-muted-foreground text-sm">Chave de acesso à API</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <input
-              hlmInput
-              id="api-key"
-              class="w-full font-mono text-sm sm:w-[280px]"
-              [value]="apiKey()"
-              readonly
-            />
-            <hlm-badge variant="secondary">Ativo</hlm-badge>
-          </div>
-        </div>
-
-        <hlm-separator />
-
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div class="space-y-0.5">
-            <label hlmLabel for="api-debug">Modo Debug</label>
-            <p class="text-muted-foreground text-sm">Habilitar logs detalhados da API</p>
-          </div>
-          <hlm-switch
-            id="api-debug"
-            [checked]="debugMode()"
-            (checkedChange)="debugMode.set($event)"
-          >
-            <span hlmSwitchThumb></span>
-          </hlm-switch>
-        </div>
-
-        <hlm-separator />
-
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div class="space-y-0.5">
-            <label hlmLabel for="api-rate">Rate Limit</label>
-            <p class="text-muted-foreground text-sm">Limite de requisições por minuto</p>
-          </div>
-          <input
-            hlmInput
-            id="api-rate"
-            type="number"
-            class="w-full sm:w-[280px]"
-            [value]="rateLimit()"
-            (input)="rateLimit.set(toNumberValue($event))"
-          />
+          <hlm-badge variant="secondary">Ativo</hlm-badge>
         </div>
       </div>
-      <hlm-card-footer class="justify-end gap-2 pt-(--card-spacing)">
-        @if (hasChanges()) {
-          <button hlmBtn variant="outline" (click)="reset()">Cancelar</button>
-        }
-        <button hlmBtn [disabled]="!hasChanges()" (click)="save()">Salvar</button>
-      </hlm-card-footer>
-    </hlm-card>
+
+      <hlm-separator />
+
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="space-y-0.5">
+          <label hlmLabel for="api-debug">Modo Debug</label>
+          <p class="text-muted-foreground text-sm">Habilitar logs detalhados da API</p>
+        </div>
+        <hlm-switch id="api-debug" [checked]="debugMode()" (checkedChange)="debugMode.set($event)">
+          <span hlmSwitchThumb></span>
+        </hlm-switch>
+      </div>
+
+      <hlm-separator />
+
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div class="space-y-0.5">
+          <label hlmLabel for="api-rate">Rate Limit</label>
+          <p class="text-muted-foreground text-sm">Limite de requisições por minuto</p>
+        </div>
+        <input
+          hlmInput
+          id="api-rate"
+          type="number"
+          class="w-full sm:w-[280px]"
+          [value]="rateLimit()"
+          (input)="rateLimit.set(toNumberValue($event))"
+        />
+      </div>
+    </div>
   `,
 })
 export class SettingsApiComponent {
