@@ -17,8 +17,6 @@
     "target": "ES2022",
     "module": "preserve",
     "verbatimModuleSyntax": true,
-    "declaration": true,
-    "declarationMap": true,
     "paths": {
       "@spartan-ng/helm/button": ["./src/app/ui/button/src/index.ts"],
       "@spartan-ng/helm/utils": ["./src/app/ui/utils/src/index.ts"],

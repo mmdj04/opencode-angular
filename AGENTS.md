@@ -34,7 +34,6 @@
 - Functional interceptors with `provideHttpClient(withInterceptors([...]))`
 - Lazy-loaded routes via `loadComponent` (not `loadChildren`)
 - `provideRouter()` with `withComponentInputBinding()` for route params as inputs
-- `provideSpartanHlm()` for Spartan UI configuration
 
 ### Spartan UI
 
