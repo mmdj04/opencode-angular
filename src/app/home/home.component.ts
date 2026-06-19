@@ -1,21 +1,23 @@
 import { Component, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 
 @Component({
   selector: 'app-home',
-  imports: [HlmCardImports, HlmButtonImports],
+  imports: [RouterLink, HlmCardImports, HlmButtonImports],
   template: `
     <hlm-card class="w-[400px]">
       <hlm-card-header>
         <h3 hlmCardTitle>Spartan UI + Angular 22</h3>
       </hlm-card-header>
-      <div hlmCardContent>
-        <p class="greeting">Hello, {{ title() }}!</p>
+      <div hlmCardContent class="space-y-4">
+        <p>Hello, {{ title() }}!</p>
         <p>Count: {{ count() }}</p>
       </div>
-      <hlm-card-footer>
+      <hlm-card-footer class="gap-2">
         <button hlmBtn variant="outline" (click)="increment()">Increment</button>
+        <a hlmBtn routerLink="/settings">Configurações</a>
       </hlm-card-footer>
     </hlm-card>
   `,
@@ -25,9 +27,6 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
       padding: 2rem;
       max-width: 800px;
       margin: 0 auto;
-    }
-    .greeting {
-      margin-bottom: 1rem;
     }
   `,
 })
