@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck } from '@ng-icons/lucide';
 import { toast } from '@spartan-ng/brain/sonner';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
-import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 import { ThemeService } from '../core/services/theme.service';
@@ -12,14 +13,15 @@ import { ThemeService } from '../core/services/theme.service';
 @Component({
   selector: 'app-settings-appearance',
   imports: [
-    FormsModule,
+    NgIcon,
     HlmButtonImports,
     HlmCardImports,
+    HlmDropdownMenuImports,
     HlmLabelImports,
-    HlmSelectImports,
     HlmSeparatorImports,
     HlmSwitchImports,
   ],
+  providers: [provideIcons({ lucideCheck })],
   template: `
     <hlm-card>
       <hlm-card-header>
@@ -48,17 +50,29 @@ import { ThemeService } from '../core/services/theme.service';
             <label hlmLabel for="language">Idioma</label>
             <p class="text-muted-foreground text-sm">Idioma da interface</p>
           </div>
-          <select
-            hlmSelect
+          <button
+            hlmBtn
+            variant="outline"
             id="language"
-            class="w-full sm:w-[280px]"
-            [value]="language()"
-            (change)="language.set(toSelectValue($event))"
+            class="w-full justify-between sm:w-[280px]"
+            [hlmDropdownMenuTrigger]="languageMenu"
           >
-            <option value="pt-BR">Português (Brasil)</option>
-            <option value="en">English</option>
-            <option value="es">Español</option>
-          </select>
+            {{ getLanguageLabel(language()) }}
+          </button>
+          <ng-template #languageMenu>
+            <hlm-dropdown-menu class="w-56">
+              @for (option of languageOptions; track option.value) {
+                <button hlmDropdownMenuItem (click)="language.set(option.value)">
+                  @if (language() === option.value) {
+                    <ng-icon name="lucideCheck" class="text-muted-foreground" />
+                  } @else {
+                    <span class="w-4"></span>
+                  }
+                  {{ option.label }}
+                </button>
+              }
+            </hlm-dropdown-menu>
+          </ng-template>
         </div>
 
         <hlm-separator />
@@ -68,17 +82,29 @@ import { ThemeService } from '../core/services/theme.service';
             <label hlmLabel for="font-size">Tamanho da Fonte</label>
             <p class="text-muted-foreground text-sm">Tamanho base da fonte da interface</p>
           </div>
-          <select
-            hlmSelect
+          <button
+            hlmBtn
+            variant="outline"
             id="font-size"
-            class="w-full sm:w-[280px]"
-            [value]="fontSize()"
-            (change)="fontSize.set(toSelectValue($event))"
+            class="w-full justify-between sm:w-[280px]"
+            [hlmDropdownMenuTrigger]="fontSizeMenu"
           >
-            <option value="small">Pequeno</option>
-            <option value="medium">Médio</option>
-            <option value="large">Grande</option>
-          </select>
+            {{ getFontSizeLabel(fontSize()) }}
+          </button>
+          <ng-template #fontSizeMenu>
+            <hlm-dropdown-menu class="w-56">
+              @for (option of fontSizeOptions; track option.value) {
+                <button hlmDropdownMenuItem (click)="fontSize.set(option.value)">
+                  @if (fontSize() === option.value) {
+                    <ng-icon name="lucideCheck" class="text-muted-foreground" />
+                  } @else {
+                    <span class="w-4"></span>
+                  }
+                  {{ option.label }}
+                </button>
+              }
+            </hlm-dropdown-menu>
+          </ng-template>
         </div>
 
         <hlm-separator />
@@ -113,6 +139,18 @@ export class SettingsAppearanceComponent {
   readonly fontSize = signal('medium');
   readonly sidebarCollapsed = signal(false);
 
+  readonly languageOptions = [
+    { value: 'pt-BR', label: 'Português (Brasil)' },
+    { value: 'en', label: 'English' },
+    { value: 'es', label: 'Español' },
+  ];
+
+  readonly fontSizeOptions = [
+    { value: 'small', label: 'Pequeno' },
+    { value: 'medium', label: 'Médio' },
+    { value: 'large', label: 'Grande' },
+  ];
+
   private readonly initialLanguage = this.language();
   private readonly initialFontSize = this.fontSize();
   private readonly initialSidebarCollapsed = this.sidebarCollapsed();
@@ -139,7 +177,11 @@ export class SettingsAppearanceComponent {
     this.themeService.toggle();
   }
 
-  protected toSelectValue(event: Event): string {
-    return (event.target as HTMLSelectElement).value;
+  getLanguageLabel(value: string): string {
+    return this.languageOptions.find((o) => o.value === value)?.label ?? value;
+  }
+
+  getFontSizeLabel(value: string): string {
+    return this.fontSizeOptions.find((o) => o.value === value)?.label ?? value;
   }
 }

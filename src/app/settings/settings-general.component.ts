@@ -1,26 +1,28 @@
 import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck } from '@ng-icons/lucide';
 import { toast } from '@spartan-ng/brain/sonner';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
-import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
 
 @Component({
   selector: 'app-settings-general',
   imports: [
-    FormsModule,
+    NgIcon,
     HlmButtonImports,
     HlmCardImports,
+    HlmDropdownMenuImports,
     HlmInputImports,
     HlmLabelImports,
-    HlmSelectImports,
     HlmSeparatorImports,
     HlmTextareaImports,
   ],
+  providers: [provideIcons({ lucideCheck })],
   template: `
     <hlm-card>
       <hlm-card-header>
@@ -66,18 +68,29 @@ import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
             <label hlmLabel for="project-region">Região</label>
             <p class="text-muted-foreground text-sm">Região de hospedagem do projeto</p>
           </div>
-          <select
-            hlmSelect
+          <button
+            hlmBtn
+            variant="outline"
             id="project-region"
-            class="w-full sm:w-[280px]"
-            [value]="region()"
-            (change)="region.set(toSelectValue($event))"
+            class="w-full justify-between sm:w-[280px]"
+            [hlmDropdownMenuTrigger]="regionMenu"
           >
-            <option value="us-east-1">US East (Virginia)</option>
-            <option value="us-west-2">US West (Oregon)</option>
-            <option value="eu-west-1">EU West (Irlanda)</option>
-            <option value="sa-east-1">South America (São Paulo)</option>
-          </select>
+            {{ getRegionLabel(region()) }}
+          </button>
+          <ng-template #regionMenu>
+            <hlm-dropdown-menu class="w-56">
+              @for (option of regionOptions; track option.value) {
+                <button hlmDropdownMenuItem (click)="region.set(option.value)">
+                  @if (region() === option.value) {
+                    <ng-icon name="lucideCheck" class="text-muted-foreground" />
+                  } @else {
+                    <span class="w-4"></span>
+                  }
+                  {{ option.label }}
+                </button>
+              }
+            </hlm-dropdown-menu>
+          </ng-template>
         </div>
       </div>
       <hlm-card-footer class="justify-end gap-2 pt-(--card-spacing)">
@@ -93,6 +106,13 @@ export class SettingsGeneralComponent {
   readonly name = signal('opencode-angular');
   readonly description = signal('Projeto Angular com Spartan UI e Tailwind CSS');
   readonly region = signal('sa-east-1');
+
+  readonly regionOptions = [
+    { value: 'us-east-1', label: 'US East (Virginia)' },
+    { value: 'us-west-2', label: 'US West (Oregon)' },
+    { value: 'eu-west-1', label: 'EU West (Irlanda)' },
+    { value: 'sa-east-1', label: 'South America (São Paulo)' },
+  ];
 
   private readonly initialName = this.name();
   private readonly initialDescription = this.description();
@@ -116,11 +136,11 @@ export class SettingsGeneralComponent {
     toast.success('Configurações salvas com sucesso!');
   }
 
-  protected toValue(event: Event): string {
-    return (event.target as HTMLInputElement).value;
+  getRegionLabel(value: string): string {
+    return this.regionOptions.find((o) => o.value === value)?.label ?? value;
   }
 
-  protected toSelectValue(event: Event): string {
-    return (event.target as HTMLSelectElement).value;
+  protected toValue(event: Event): string {
+    return (event.target as HTMLInputElement).value;
   }
 }
