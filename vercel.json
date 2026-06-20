@@ -1,0 +1,19 @@
+{
+  "buildCommand": "ng build",
+  "outputDirectory": "dist/opencode-angular",
+  "framework": null,
+  "installCommand": "npm install",
+  "regions": ["gru1"],
+  "functions": {
+    "api/index.mjs": {
+      "runtime": "@vercel/node@3",
+      "includeFiles": ["dist/opencode-angular/**"]
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/index.mjs"
+    }
+  ]
+}
