@@ -11,7 +11,7 @@
     "embla-carousel-angular",
     "ngx-scrollbar"
   ],
-  "ignoreExports": ["provideBrnButtonConfig", "buttonVariants", "provideHlmCardConfig"],
+  "ignoreMembers": ["provideBrnButtonConfig", "buttonVariants", "provideHlmCardConfig"],
   "angular": true,
   "eslint": true,
   "prettier": true,

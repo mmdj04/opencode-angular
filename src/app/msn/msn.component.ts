@@ -8,6 +8,7 @@ import {
   lucideSettings,
   lucideSparkles,
 } from '@ng-icons/lucide';
+import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
@@ -21,6 +22,7 @@ import { MsnService } from './msn.service';
   imports: [
     RouterLink,
     NgIcon,
+    HlmAvatarImports,
     HlmBadgeImports,
     HlmButtonImports,
     HlmCardImports,
@@ -40,9 +42,7 @@ import { MsnService } from './msn.service';
   template: `
     <div class="bg-background min-h-screen">
       <!-- Header -->
-      <header
-        class="border-border sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md dark:bg-[#1a1a1a]/80"
-      >
+      <header class="border-border bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
         <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <div class="flex items-center gap-8">
             <a routerLink="/" class="flex items-center gap-1">
@@ -85,9 +85,9 @@ import { MsnService } from './msn.service';
               rel="noopener noreferrer"
               class="flex flex-col items-center gap-2"
             >
-              <div class="bg-muted flex size-12 items-center justify-center rounded-full">
-                <span class="text-foreground text-sm font-bold">{{ link.name[0] }}</span>
-              </div>
+              <hlm-avatar size="lg">
+                <span hlmAvatarFallback class="text-sm font-bold">{{ link.name[0] }}</span>
+              </hlm-avatar>
               <span class="text-muted-foreground text-[11px]">{{ link.name }}</span>
             </a>
           }
@@ -192,7 +192,9 @@ import { MsnService } from './msn.service';
       <!-- Footer -->
       <footer class="border-border mt-8 border-t">
         <div class="mx-auto max-w-6xl px-6 py-6">
-          <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-[#9e9e9e]">
+          <div
+            class="text-muted-foreground flex flex-wrap items-center justify-center gap-4 text-xs"
+          >
             <span>© 2026 Microsoft</span>
             <a href="#" class="hover:underline">Privacy</a>
             <a href="#" class="hover:underline">Terms</a>

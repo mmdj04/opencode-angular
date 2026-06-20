@@ -10,11 +10,11 @@ import {
 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmButtonGroupImports } from '@spartan-ng/helm/button-group';
+import { HlmEmptyImports } from '@spartan-ng/helm/empty';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
-import { hlmMuted } from '@spartan-ng/helm/typography';
 import { SearchService } from './search.service';
 
 @Component({
@@ -25,6 +25,7 @@ import { SearchService } from './search.service';
     NgIcon,
     HlmButtonGroupImports,
     HlmButtonImports,
+    HlmEmptyImports,
     HlmInputGroupImports,
     HlmInputImports,
     HlmSeparatorImports,
@@ -85,12 +86,18 @@ import { SearchService } from './search.service';
             >
               {{ result.title }}
             </a>
-            <p class="${hlmMuted} mt-1 text-[13px] leading-relaxed">{{ result.snippet }}</p>
+            <p class="text-muted-foreground mt-1 text-sm text-[13px] leading-relaxed">
+              {{ result.snippet }}
+            </p>
           </article>
         } @empty {
-          <div class="py-12 text-center">
-            <p class="text-muted-foreground">Nenhum resultado encontrado para "{{ query() }}"</p>
-            <p class="text-muted-foreground mt-2 text-sm">Tente usar outros termos de busca.</p>
+          <div hlmEmpty>
+            <div hlmEmptyContent>
+              <p hlmEmptyTitle>Nenhum resultado encontrado</p>
+              <p hlmEmptyDescription>
+                Nenhum resultado encontrado para "{{ query() }}". Tente usar outros termos de busca.
+              </p>
+            </div>
           </div>
         }
       </main>

@@ -2,10 +2,11 @@ import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCheck, lucideGithub, lucideMail } from '@ng-icons/lucide';
+import { lucideCheck, lucideCircle, lucideEye, lucideEyeOff, lucideGithub } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 
@@ -18,10 +19,11 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
     HlmButtonImports,
     HlmCardImports,
     HlmInputImports,
+    HlmInputGroupImports,
     HlmLabelImports,
     HlmSeparatorImports,
   ],
-  providers: [provideIcons({ lucideGithub, lucideMail, lucideCheck })],
+  providers: [provideIcons({ lucideGithub, lucideCheck, lucideCircle, lucideEye, lucideEyeOff })],
   template: `
     <div class="bg-background flex min-h-screen items-center justify-center p-4">
       <div class="w-full max-w-[400px]">
@@ -72,15 +74,24 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 
               <div class="mb-4 space-y-2">
                 <label hlmLabel for="password">Password</label>
-                <input
-                  hlmInput
-                  id="password"
-                  [type]="showPassword() ? 'text' : 'password'"
-                  placeholder="••••••••"
-                  [(ngModel)]="password"
-                  name="password"
-                  class="w-full"
-                />
+                <div hlmInputGroup>
+                  <input
+                    hlmInputGroupInput
+                    id="password"
+                    [type]="showPassword() ? 'text' : 'password'"
+                    placeholder="••••••••"
+                    [(ngModel)]="password"
+                    name="password"
+                  />
+                  <button
+                    hlmInputGroupButton
+                    size="icon-sm"
+                    type="button"
+                    (click)="showPassword.set(!showPassword())"
+                  >
+                    <ng-icon hlmIcon [name]="showPassword() ? 'lucideEyeOff' : 'lucideEye'" />
+                  </button>
+                </div>
 
                 <!-- Password Requirements -->
                 <div class="mt-3 space-y-1.5">
@@ -88,7 +99,7 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
                     <div class="flex items-center gap-2 text-xs">
                       <ng-icon
                         hlmIcon
-                        [name]="req.met() ? 'lucideCheck' : 'lucideCheck'"
+                        [name]="req.met() ? 'lucideCheck' : 'lucideCircle'"
                         class="size-3"
                         [class]="req.met() ? 'text-green-500' : 'text-muted-foreground/40'"
                       />

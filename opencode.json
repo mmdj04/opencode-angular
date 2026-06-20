@@ -19,6 +19,6 @@
   },
   "instructions": ["AGENTS.md"],
   "skills": {
-    "paths": [".opencode/skills", ".agents/skills"]
+    "paths": [".opencode/skills"]
   }
 }

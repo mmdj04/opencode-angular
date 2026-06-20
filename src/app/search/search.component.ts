@@ -6,10 +6,18 @@ import { lucideCamera, lucideMic, lucideSearch } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
+import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 
 @Component({
   selector: 'app-search',
-  imports: [FormsModule, NgIcon, HlmButtonImports, HlmInputGroupImports, HlmInputImports],
+  imports: [
+    FormsModule,
+    NgIcon,
+    HlmButtonImports,
+    HlmInputGroupImports,
+    HlmInputImports,
+    HlmSeparatorImports,
+  ],
   providers: [provideIcons({ lucideSearch, lucideMic, lucideCamera })],
   template: `
     <div class="bg-background flex min-h-screen flex-col">
@@ -48,17 +56,18 @@ import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
         <!-- Language -->
         <p class="text-muted-foreground text-[13px]">
           Agentwork disponível em:
-          <a href="#" class="ml-1 text-blue-600 hover:underline">English</a>
-          <a href="#" class="ml-1 text-blue-600 hover:underline">Español</a>
-          <a href="#" class="ml-1 text-blue-600 hover:underline">Français</a>
-          <a href="#" class="ml-1 text-blue-600 hover:underline">日本語</a>
-          <a href="#" class="ml-1 text-blue-600 hover:underline">Português (Brasil)</a>
+          <button hlmBtn variant="link" class="ml-1 text-[13px]">English</button>
+          <button hlmBtn variant="link" class="ml-1 text-[13px]">Español</button>
+          <button hlmBtn variant="link" class="ml-1 text-[13px]">Français</button>
+          <button hlmBtn variant="link" class="ml-1 text-[13px]">日本語</button>
+          <button hlmBtn variant="link" class="ml-1 text-[13px]">Português (Brasil)</button>
         </p>
       </main>
 
       <!-- Footer -->
       <footer class="bg-secondary text-muted-foreground mt-auto text-[13px]">
-        <div class="border-border border-b px-8 py-3">Brasil</div>
+        <div hlmSeparator></div>
+        <div class="px-8 py-3">Brasil</div>
         <div class="flex flex-col gap-3 px-8 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div class="flex flex-wrap gap-x-6 gap-y-1">
             <a href="#" class="hover:underline">Sobre</a>

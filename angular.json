@@ -94,12 +94,12 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "coverage": true,
-            "coverageExclude": ["src/main*.ts", "src/server.ts"],
+            "coverageExclude": ["src/main*.ts", "src/server.ts", "src/app/ui/**"],
             "coverageThresholds": {
-              "statements": 60,
-              "branches": 60,
-              "functions": 60,
-              "lines": 60,
+              "statements": 97,
+              "branches": 85,
+              "functions": 68,
+              "lines": 99,
             },
           },
         },

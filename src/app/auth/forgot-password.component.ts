@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideMail } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 
@@ -12,12 +15,15 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
   imports: [
     FormsModule,
     RouterLink,
+    NgIcon,
     HlmButtonImports,
     HlmCardImports,
     HlmInputImports,
+    HlmInputGroupImports,
     HlmLabelImports,
     HlmSeparatorImports,
   ],
+  providers: [provideIcons({ lucideMail })],
   template: `
     <div class="bg-background flex min-h-screen items-center justify-center p-4">
       <div class="w-full max-w-[400px]">
@@ -39,26 +45,24 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
             <form (ngSubmit)="onSubmit()">
               <div class="mb-6 space-y-2">
                 <label hlmLabel for="email">Email</label>
-                <input
-                  hlmInput
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  [(ngModel)]="email"
-                  name="email"
-                  class="w-full"
-                />
+                <div hlmInputGroup>
+                  <hlm-input-group-addon>
+                    <ng-icon hlmIcon name="lucideMail" class="text-muted-foreground" />
+                  </hlm-input-group-addon>
+                  <input
+                    hlmInputGroupInput
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    [(ngModel)]="email"
+                    name="email"
+                  />
+                </div>
               </div>
 
               <div hlmSeparator class="mb-6"></div>
 
-              <button
-                hlmBtn
-                type="submit"
-                class="w-full bg-green-500 text-white hover:bg-green-600"
-              >
-                Send reset code
-              </button>
+              <button hlmBtn type="submit" class="w-full">Send reset code</button>
             </form>
 
             <!-- Footer -->
@@ -68,6 +72,12 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
             </p>
           </div>
         </hlm-card>
+
+        <!-- Sign Up Link -->
+        <p class="text-muted-foreground mt-6 text-center text-sm">
+          Don't have an account?
+          <a routerLink="/sign-up" class="text-primary hover:underline">Sign up</a>
+        </p>
       </div>
     </div>
   `,

@@ -2,11 +2,18 @@ import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideGithub, lucideLock, lucideMail, lucideShield } from '@ng-icons/lucide';
+import {
+  lucideEye,
+  lucideEyeOff,
+  lucideGithub,
+  lucideLock,
+  lucideMail,
+  lucideShield,
+} from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
-import { HlmCheckboxImports } from '@spartan-ng/helm/checkbox';
 import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 
@@ -18,12 +25,14 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
     NgIcon,
     HlmButtonImports,
     HlmCardImports,
-    HlmCheckboxImports,
     HlmInputImports,
+    HlmInputGroupImports,
     HlmLabelImports,
     HlmSeparatorImports,
   ],
-  providers: [provideIcons({ lucideGithub, lucideMail, lucideLock, lucideShield })],
+  providers: [
+    provideIcons({ lucideGithub, lucideMail, lucideLock, lucideShield, lucideEye, lucideEyeOff }),
+  ],
   template: `
     <div class="bg-background flex min-h-screen items-center justify-center p-4">
       <div class="w-full max-w-[400px]">
@@ -83,15 +92,24 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
                     Forgot password?
                   </a>
                 </div>
-                <input
-                  hlmInput
-                  id="password"
-                  [type]="showPassword() ? 'text' : 'password'"
-                  placeholder="••••••••"
-                  [(ngModel)]="password"
-                  name="password"
-                  class="w-full"
-                />
+                <div hlmInputGroup>
+                  <input
+                    hlmInputGroupInput
+                    id="password"
+                    [type]="showPassword() ? 'text' : 'password'"
+                    placeholder="••••••••"
+                    [(ngModel)]="password"
+                    name="password"
+                  />
+                  <button
+                    hlmInputGroupButton
+                    size="icon-sm"
+                    type="button"
+                    (click)="showPassword.set(!showPassword())"
+                  >
+                    <ng-icon hlmIcon [name]="showPassword() ? 'lucideEyeOff' : 'lucideEye'" />
+                  </button>
+                </div>
               </div>
 
               <button hlmBtn type="submit" class="w-full">Sign in</button>
