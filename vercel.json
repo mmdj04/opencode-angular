@@ -1,13 +1,9 @@
 {
-  "buildCommand": "ng build",
-  "outputDirectory": "dist/opencode-angular",
-  "framework": null,
-  "installCommand": "npm install",
-  "regions": ["gru1"],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api/index.mjs"
+  "version": 2,
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
+  "functions": {
+    "api/index.mjs": {
+      "includeFiles": "dist/opencode-angular/**"
     }
-  ]
+  }
 }
