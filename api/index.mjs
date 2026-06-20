@@ -1,6 +1,6 @@
 import { reqHandler } from '../dist/opencode-angular/server/server.mjs';
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   return reqHandler(req, res);
 }
 
