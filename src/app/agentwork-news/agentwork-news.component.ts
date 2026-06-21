@@ -1,6 +1,4 @@
-import { Component, inject, signal, Inject, PLATFORM_ID } from '@angular/core';
-import type { AfterViewInit } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, inject, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSettings } from '@ng-icons/lucide';
@@ -9,7 +7,41 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
 import { AgentworkNewsService } from './agentwork-news.service';
-import { BannerService } from '../core/services/banner.service';
+import { MermaidDiagramComponent } from './mermaid-diagram.component';
+
+const CATEGORY_BANNERS: Record<string, string> = {
+  research: `graph TD
+    A[Hipótese] --> B[Revisão de Literatura]
+    B --> C[Metodologia]
+    C --> D[Experimento]
+    D --> E[Análise de Dados]
+    E --> F[Publicação]`,
+  docs: `graph LR
+    A[Planejamento] --> B[Escrita]
+    B --> C[Revisão Técnica]
+    C --> D[Publicação]
+    D --> E[Feedback]
+    E --> F[Atualização]`,
+  'deep-tech': `graph TD
+    A[Teoria Quântica] --> B[Simulação]
+    B --> C[Protótipo]
+    C --> D[Experimento]
+    D --> E[Descoberta]
+    E --> F[Aplicação Prática]`,
+  'ai-labs': `graph TD
+    A[Problema] --> B[Coleta de Dados]
+    B --> C[Treinamento]
+    C --> D[Avaliação]
+    D --> E[Deploy]
+    E --> F[Monitoramento]`,
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  research: 'Pesquisa',
+  docs: 'Documentação',
+  'deep-tech': 'Deep Tech',
+  'ai-labs': 'AI Labs',
+};
 
 @Component({
   selector: 'app-agentwork-news',
@@ -20,6 +52,7 @@ import { BannerService } from '../core/services/banner.service';
     HlmButtonImports,
     HlmCardImports,
     HlmTabsImports,
+    MermaidDiagramComponent,
   ],
   providers: [
     provideIcons({
@@ -56,23 +89,30 @@ import { BannerService } from '../core/services/banner.service';
           </div>
         </nav>
 
+        <!-- Category Banner -->
+        <div class="py-6">
+          @if (activeTab(); as tab) {
+            <div class="mb-6 overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-4">
+              <div class="mb-3 flex items-center gap-3">
+                <hlm-badge variant="secondary">{{ getCategoryLabel(tab) }}</hlm-badge>
+              </div>
+              <app-mermaid-diagram
+                [code]="getCategoryBanner(tab)"
+                [caption]="getCategoryCaption(tab)"
+              />
+            </div>
+          }
+        </div>
+
         <!-- News Feed -->
         <div class="py-6">
-          @if (news.articles().length > 0) {
+          @if (filteredArticles().length > 0) {
             <!-- Featured Article -->
-            @if (featuredArticle(); as article) {
+            @if (filteredArticles()[0]; as article) {
               <div class="mb-6">
                 <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
                   <hlm-card class="overflow-hidden transition-shadow hover:shadow-md">
                     <div class="flex flex-col md:flex-row">
-                      <div class="flex h-[280px] w-full items-center justify-center md:w-1/2">
-                        <svg
-                          class="banner-svg h-full w-full"
-                          [attr.data-category]="article.category"
-                          [attr.data-seed]="article.title"
-                          [attr.data-tags]="article.tags.join(',')"
-                        ></svg>
-                      </div>
                       <div class="flex flex-1 flex-col justify-center p-6">
                         <hlm-badge variant="secondary" class="mb-2 w-fit">Featured</hlm-badge>
                         <h2 class="text-foreground mb-2 text-xl leading-snug font-semibold">
@@ -95,17 +135,9 @@ import { BannerService } from '../core/services/banner.service';
 
             <!-- Article Grid -->
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              @for (article of filteredArticles(); track article.id) {
+              @for (article of filteredArticles().slice(1); track article.id) {
                 <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
                   <hlm-card class="cursor-pointer transition-shadow hover:shadow-md">
-                    <div class="flex h-[160px] items-center justify-center">
-                      <svg
-                        class="banner-svg h-full w-full"
-                        [attr.data-category]="article.category"
-                        [attr.data-seed]="article.title"
-                        [attr.data-tags]="article.tags.join(',')"
-                      ></svg>
-                    </div>
                     <div class="p-4">
                       <h3
                         class="text-foreground mb-1 line-clamp-2 text-sm leading-snug font-semibold"
@@ -129,11 +161,11 @@ import { BannerService } from '../core/services/banner.service';
             <!-- Empty State -->
             <div class="py-16 text-center">
               <p class="text-muted-foreground mb-4 text-lg">
-                No articles yet. Configure your AI agent to generate tech news.
+                Nenhum artigo ainda. Configure seu agente IA para gerar notícias.
               </p>
               <a hlmBtn routerLink="/settings">
                 <ng-icon hlmIcon name="lucideSettings" class="mr-2" />
-                Go to Settings
+                Ir para Configurações
               </a>
             </div>
           }
@@ -157,45 +189,29 @@ import { BannerService } from '../core/services/banner.service';
     </div>
   `,
 })
-export class AgentworkNewsComponent implements AfterViewInit {
+export class AgentworkNewsComponent {
   protected readonly news = inject(AgentworkNewsService);
-  private readonly bannerService = inject(BannerService);
-  protected readonly activeTab = signal('discover');
-  private readonly isBrowser: boolean;
+  protected readonly activeTab = signal('research');
 
-  protected readonly featuredArticle = signal(this.news.articles()[0]);
-  protected readonly filteredArticles = signal(this.news.articles().slice(1));
+  protected readonly filteredArticles = computed(() =>
+    this.news.getArticlesByCategory(this.activeTab()),
+  );
 
-  constructor(@Inject(PLATFORM_ID) platformId: object) {
-    this.isBrowser = isPlatformBrowser(platformId);
-    this.news.init().then(() => {
-      this.featuredArticle.set(this.news.articles()[0]);
-      this.filteredArticles.set(this.news.articles().slice(1));
-      if (this.isBrowser) {
-        setTimeout(() => this.renderBanners(), 0);
-      }
-    });
+  getCategoryBanner(category: string): string {
+    return CATEGORY_BANNERS[category] ?? CATEGORY_BANNERS['research']!;
   }
 
-  ngAfterViewInit(): void {
-    if (this.isBrowser) {
-      this.renderBanners();
-    }
+  getCategoryLabel(category: string): string {
+    return CATEGORY_LABELS[category] ?? category;
   }
 
-  private renderBanners(): void {
-    const svgs = document.querySelectorAll('.banner-svg');
-    svgs.forEach((svg) => {
-      const el = svg as SVGSVGElement;
-      const category = el.getAttribute('data-category') ?? 'tech';
-      const seed = el.getAttribute('data-seed') ?? '';
-      const tagsStr = el.getAttribute('data-tags') ?? '';
-      const tags = tagsStr ? tagsStr.split(',') : [];
-      const rect = el.parentElement?.getBoundingClientRect();
-      const w = rect?.width ?? 400;
-      const h = rect?.height ?? 200;
-      el.innerHTML = '';
-      this.bannerService.generate(el, { width: w, height: h, category, seed, tags });
-    });
+  getCategoryCaption(category: string): string {
+    const captions: Record<string, string> = {
+      research: 'Fluxo de pesquisa científica',
+      docs: 'Pipeline de documentação técnica',
+      'deep-tech': 'Ciclo de desenvolvimento em tecnologia de ponta',
+      'ai-labs': 'Pipeline de desenvolvimento de IA',
+    };
+    return captions[category] ?? '';
   }
 }

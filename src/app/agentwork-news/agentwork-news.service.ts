@@ -23,8 +23,10 @@ export class AgentworkNewsService {
   private readonly supabase = inject(SupabaseService);
 
   readonly tabs: NewsTab[] = [
-    { id: 'discover', label: 'Discover' },
-    { id: 'news', label: 'News' },
+    { id: 'research', label: 'Pesquisa' },
+    { id: 'docs', label: 'Documentação' },
+    { id: 'deep-tech', label: 'Deep Tech' },
+    { id: 'ai-labs', label: 'AI Labs' },
   ];
 
   readonly articles = signal<NewsArticle[]>([]);
@@ -64,10 +66,6 @@ export class AgentworkNewsService {
   }
 
   getArticlesByCategory(category: string): NewsArticle[] {
-    if (category === 'discover') {
-      return this.articles();
-    }
-
     return this.articles().filter((a) => a.category === category);
   }
 

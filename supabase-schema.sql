@@ -1,5 +1,14 @@
 -- Run this SQL in your Supabase Dashboard > SQL Editor
 
+-- Update category constraint for 4 categories:
+-- research (Pesquisa), docs (Documentação), deep-tech (Deep Tech), ai-labs (AI Labs)
+ALTER TABLE news_articles DROP CONSTRAINT IF EXISTS news_articles_category_check;
+ALTER TABLE news_articles ADD CONSTRAINT news_articles_category_check
+  CHECK (category IN ('research', 'docs', 'deep-tech', 'ai-labs'));
+
+-- Ensure diagrams column exists
+ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS diagrams JSONB DEFAULT '[]';
+
 CREATE TABLE IF NOT EXISTS news_articles (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   slug TEXT UNIQUE NOT NULL,

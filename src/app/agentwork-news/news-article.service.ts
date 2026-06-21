@@ -36,6 +36,7 @@ export interface NewsArticleDetail {
 
 export interface RelatedArticle {
   id: string;
+  slug: string;
   title: string;
   snippet: string;
   source: string;
@@ -83,6 +84,7 @@ export class NewsArticleService {
       .slice(0, 4)
       .map((a) => ({
         id: a.id ?? '',
+        slug: a.slug,
         title: a.title,
         snippet: a.snippet,
         source: a.source,
