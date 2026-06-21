@@ -1,4 +1,5 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { toast } from '@spartan-ng/brain/sonner';
 import { GeminiService } from '../core/services/gemini.service';
@@ -9,18 +10,23 @@ export class SettingsService {
   private readonly gemini = inject(GeminiService);
   private readonly supabase = inject(SupabaseService);
   private readonly router = inject(Router);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly agentName = signal('');
   readonly apiKey = signal('');
   readonly isGenerating = signal(false);
 
   constructor() {
-    this.load();
+    if (this.isBrowser) {
+      this.load();
+    }
   }
 
   async save(): Promise<void> {
-    localStorage.setItem('agentwork_agent_name', this.agentName());
-    localStorage.setItem('agentwork_api_key', this.apiKey());
+    if (this.isBrowser) {
+      localStorage.setItem('agentwork_agent_name', this.agentName());
+      localStorage.setItem('agentwork_api_key', this.apiKey());
+    }
 
     if (!this.agentName() || !this.apiKey()) {
       toast.error('Please fill in both Agent Name and API Key');
@@ -60,6 +66,7 @@ export class SettingsService {
   }
 
   private load(): void {
+    if (!this.isBrowser) return;
     this.agentName.set(localStorage.getItem('agentwork_agent_name') ?? '');
     this.apiKey.set(localStorage.getItem('agentwork_api_key') ?? '');
   }
