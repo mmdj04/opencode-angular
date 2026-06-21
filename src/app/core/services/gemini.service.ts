@@ -18,7 +18,16 @@ Return ONLY a valid JSON object (no markdown, no code fences, no extra text) wit
 - categoryLabel (string): capitalized version of category
 - readTime (string): e.g. "5 min de leitura"
 - paragraphs (array of objects with {text: string, isSubtitle?: boolean}): 5-8 paragraphs, mark 2-3 as subtitles
+- diagrams (array of objects with {type: string, code: string, caption: string}): 0-2 Mermaid diagrams when the article explains processes, architectures, or technical flows. Use type "mermaid". Code must be valid Mermaid syntax. If no diagram fits, return empty array [].
 - tags (array of 4-6 relevant tags in Portuguese)
+
+Diagram guidelines:
+- For AI articles: use flowcharts (graph TD) showing neural network architectures or data pipelines
+- For tech articles: use sequence diagrams or flowcharts showing system interactions
+- For security articles: use flowcharts showing attack vectors or defense mechanisms
+- For science articles: use graph diagrams showing relationships
+- Keep diagrams simple (5-10 nodes max)
+- Write diagram captions and node labels in Portuguese
 
 Topic: pick one from artificial intelligence, cybersecurity, tech startups, new gadgets, space technology, or programming frameworks.
 Date context: ${new Date().toLocaleDateString('pt-BR')}.
@@ -93,6 +102,8 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
           author_avatar: '',
           image_url: '',
           paragraphs: (raw['paragraphs'] as { text: string; isSubtitle?: boolean }[]) ?? [],
+          diagrams:
+            (raw['diagrams'] as { type: string; code: string; caption: string }[]) ?? [],
           tags: (raw['tags'] as string[]) ?? [],
         },
       ];

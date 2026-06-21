@@ -1,4 +1,6 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, Inject, PLATFORM_ID } from '@angular/core';
+import type { AfterViewInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -15,6 +17,8 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { NewsArticleService } from './news-article.service';
 import type { NewsArticleDetail } from './news-article.service';
+import { MermaidDiagramComponent } from './mermaid-diagram.component';
+import { BannerService } from '../core/services/banner.service';
 
 @Component({
   selector: 'app-news-article',
@@ -28,6 +32,7 @@ import type { NewsArticleDetail } from './news-article.service';
     HlmButtonImports,
     HlmCardImports,
     HlmSeparatorImports,
+    MermaidDiagramComponent,
   ],
   providers: [
     provideIcons({
@@ -153,10 +158,11 @@ import type { NewsArticleDetail } from './news-article.service';
           <div hlmSeparator class="mb-8"></div>
 
           <!-- Hero Image -->
-          <div
-            class="bg-muted mb-8 flex h-[300px] items-center justify-center rounded-lg md:h-[400px]"
-          >
-            <span class="text-muted-foreground text-5xl font-bold opacity-20">Agentwork News</span>
+          <div class="mb-8 overflow-hidden rounded-lg">
+            <svg
+              #heroBanner
+              class="hero-banner h-[300px] w-full md:h-[400px]"
+            ></svg>
           </div>
 
           <!-- Article Body -->
@@ -173,6 +179,20 @@ import type { NewsArticleDetail } from './news-article.service';
               }
             }
           </div>
+
+          <!-- Diagrams -->
+          @if (art()!.diagrams && art()!.diagrams.length > 0) {
+            <div class="mt-8">
+              @for (diagram of art()!.diagrams; track $index) {
+                @if (diagram.type === 'mermaid') {
+                  <app-mermaid-diagram
+                    [code]="diagram.code"
+                    [caption]="diagram.caption"
+                  />
+                }
+              }
+            </div>
+          }
 
           <!-- Tags -->
           <div class="mt-8 flex flex-wrap gap-2">
@@ -207,8 +227,11 @@ import type { NewsArticleDetail } from './news-article.service';
             <div class="grid gap-4 sm:grid-cols-2">
               @for (related of relatedArticles(); track related.id) {
                 <hlm-card class="cursor-pointer transition-shadow hover:shadow-md">
-                  <div class="bg-muted flex h-[100px] items-center justify-center">
-                    <span class="text-muted-foreground text-lg font-bold opacity-20">Agentwork</span>
+                  <div class="flex h-[100px] items-center justify-center">
+                    <svg
+                      class="banner-svg h-full w-full"
+                      [attr.data-category]="related.category"
+                    ></svg>
                   </div>
                   <div class="p-4">
                     <h3
@@ -258,9 +281,11 @@ import type { NewsArticleDetail } from './news-article.service';
     }
   `,
 })
-export class NewsArticleComponent {
+export class NewsArticleComponent implements AfterViewInit {
   private readonly articleService = inject(NewsArticleService);
+  private readonly bannerService = inject(BannerService);
   private readonly route = inject(ActivatedRoute);
+  private readonly isBrowser: boolean;
   readonly slug = input.required<string>();
 
   protected readonly article = signal<NewsArticleDetail | 'loading' | 'not-found'>('loading');
@@ -270,7 +295,8 @@ export class NewsArticleComponent {
     return v !== 'loading' && v !== 'not-found' ? v : undefined;
   });
 
-  constructor() {
+  constructor(@Inject(PLATFORM_ID) platformId: object) {
+    this.isBrowser = isPlatformBrowser(platformId);
     this.route.params.subscribe((params) => {
       const slug = params['slug'];
       if (slug) {
@@ -278,12 +304,50 @@ export class NewsArticleComponent {
         this.articleService.getArticle(slug).then((a) => {
           if (a) {
             this.article.set(a);
-            this.articleService.getRelatedArticles(slug).then((r) => this.relatedArticles.set(r));
+            this.articleService.getRelatedArticles(slug).then((r) => {
+              this.relatedArticles.set(r);
+              setTimeout(() => {
+                if (this.isBrowser) this.renderRelatedBanners();
+              }, 0);
+            });
+            setTimeout(() => {
+              if (this.isBrowser) this.renderHeroBanner(a.category);
+            }, 0);
           } else {
             this.article.set('not-found');
           }
         });
       }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    const v = this.article();
+    if (v && v !== 'loading' && v !== 'not-found') {
+      this.renderHeroBanner(v.category);
+    }
+  }
+
+  private renderHeroBanner(category: string): void {
+    const svg = document.querySelector('.hero-banner') as SVGSVGElement | null;
+    if (!svg) return;
+    const rect = svg.parentElement?.getBoundingClientRect();
+    const w = rect?.width ?? 800;
+    const h = rect?.height ?? 400;
+    svg.innerHTML = '';
+    this.bannerService.generate(svg, { width: w, height: h, category });
+  }
+
+  private renderRelatedBanners(): void {
+    const svgs = document.querySelectorAll('.banner-svg');
+    svgs.forEach((svg) => {
+      const el = svg as SVGSVGElement;
+      const category = el.getAttribute('data-category') ?? 'tech';
+      const rect = el.parentElement?.getBoundingClientRect();
+      const w = rect?.width ?? 300;
+      const h = rect?.height ?? 100;
+      el.innerHTML = '';
+      this.bannerService.generate(el, { width: w, height: h, category });
     });
   }
 }

@@ -1,4 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, Inject, PLATFORM_ID } from '@angular/core';
+import type { AfterViewInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSettings } from '@ng-icons/lucide';
@@ -7,6 +9,7 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
 import { AgentworkNewsService } from './agentwork-news.service';
+import { BannerService } from '../core/services/banner.service';
 
 @Component({
   selector: 'app-agentwork-news',
@@ -62,10 +65,11 @@ import { AgentworkNewsService } from './agentwork-news.service';
                 <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
                   <hlm-card class="overflow-hidden transition-shadow hover:shadow-md">
                     <div class="flex flex-col md:flex-row">
-                      <div
-                        class="bg-muted flex h-[280px] w-full items-center justify-center md:w-1/2"
-                      >
-                        <span class="text-muted-foreground text-4xl font-bold opacity-20">Agentwork</span>
+                      <div class="flex h-[280px] w-full items-center justify-center md:w-1/2">
+                        <svg
+                          class="banner-svg h-full w-full"
+                          [attr.data-category]="article.category"
+                        ></svg>
                       </div>
                       <div class="flex flex-1 flex-col justify-center p-6">
                         <hlm-badge variant="secondary" class="mb-2 w-fit">Featured</hlm-badge>
@@ -92,8 +96,11 @@ import { AgentworkNewsService } from './agentwork-news.service';
               @for (article of filteredArticles(); track article.id) {
                 <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
                   <hlm-card class="cursor-pointer transition-shadow hover:shadow-md">
-                    <div class="bg-muted flex h-[160px] items-center justify-center">
-                      <span class="text-muted-foreground text-2xl font-bold opacity-20">Agentwork</span>
+                    <div class="flex h-[160px] items-center justify-center">
+                      <svg
+                        class="banner-svg h-full w-full"
+                        [attr.data-category]="article.category"
+                      ></svg>
                     </div>
                     <div class="p-4">
                       <h3
@@ -146,18 +153,42 @@ import { AgentworkNewsService } from './agentwork-news.service';
     </div>
   `,
 })
-export class AgentworkNewsComponent {
+export class AgentworkNewsComponent implements AfterViewInit {
   protected readonly news = inject(AgentworkNewsService);
+  private readonly bannerService = inject(BannerService);
   protected readonly activeTab = signal('discover');
+  private readonly isBrowser: boolean;
 
   protected readonly featuredArticle = signal(this.news.articles()[0]);
-
   protected readonly filteredArticles = signal(this.news.articles().slice(1));
 
-  constructor() {
+  constructor(@Inject(PLATFORM_ID) platformId: object) {
+    this.isBrowser = isPlatformBrowser(platformId);
     this.news.init().then(() => {
       this.featuredArticle.set(this.news.articles()[0]);
       this.filteredArticles.set(this.news.articles().slice(1));
+      if (this.isBrowser) {
+        setTimeout(() => this.renderBanners(), 0);
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isBrowser) {
+      this.renderBanners();
+    }
+  }
+
+  private renderBanners(): void {
+    const svgs = document.querySelectorAll('.banner-svg');
+    svgs.forEach((svg) => {
+      const el = svg as SVGSVGElement;
+      const category = el.getAttribute('data-category') ?? 'tech';
+      const rect = el.parentElement?.getBoundingClientRect();
+      const w = rect?.width ?? 400;
+      const h = rect?.height ?? 200;
+      el.innerHTML = '';
+      this.bannerService.generate(el, { width: w, height: h, category });
     });
   }
 }

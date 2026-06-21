@@ -18,6 +18,7 @@ export interface DbArticle {
   author_avatar: string;
   image_url: string;
   paragraphs: { text: string; isSubtitle?: boolean }[];
+  diagrams: { type: string; code: string; caption: string }[];
   tags: string[];
   time?: string;
   created_at?: string;

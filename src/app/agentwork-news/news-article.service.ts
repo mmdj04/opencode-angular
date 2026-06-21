@@ -11,6 +11,12 @@ export interface ArticleParagraph {
   isSubtitle?: boolean;
 }
 
+export interface ArticleDiagram {
+  type: string;
+  code: string;
+  caption: string;
+}
+
 export interface NewsArticleDetail {
   slug: string;
   title: string;
@@ -24,6 +30,7 @@ export interface NewsArticleDetail {
   author: ArticleAuthor;
   imageUrl: string;
   paragraphs: ArticleParagraph[];
+  diagrams: ArticleDiagram[];
   tags: string[];
 }
 
@@ -60,6 +67,7 @@ export class NewsArticleService {
         },
         imageUrl: dbArticle.image_url,
         paragraphs: dbArticle.paragraphs,
+        diagrams: dbArticle.diagrams ?? [],
         tags: dbArticle.tags,
       };
     }

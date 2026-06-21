@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS news_articles (
   author_avatar TEXT,
   image_url TEXT,
   paragraphs JSONB DEFAULT '[]',
+  diagrams JSONB DEFAULT '[]',
   tags TEXT[] DEFAULT '{}',
   time TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
