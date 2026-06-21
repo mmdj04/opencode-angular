@@ -1,16 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideMoreHorizontal,
-  lucideSearch,
-} from '@ng-icons/lucide';
-import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
+import { lucideSettings } from '@ng-icons/lucide';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
-import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
-import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
 import { AgentworkNewsService } from './agentwork-news.service';
 
@@ -19,18 +13,14 @@ import { AgentworkNewsService } from './agentwork-news.service';
   imports: [
     RouterLink,
     NgIcon,
-    HlmAvatarImports,
     HlmBadgeImports,
     HlmButtonImports,
     HlmCardImports,
-    HlmInputGroupImports,
-    HlmSeparatorImports,
     HlmTabsImports,
   ],
   providers: [
     provideIcons({
-      lucideSearch,
-      lucideMoreHorizontal,
+      lucideSettings,
     }),
   ],
   template: `
@@ -46,38 +36,6 @@ import { AgentworkNewsService } from './agentwork-news.service';
         </div>
       </header>
 
-      <!-- Search + Quick Links -->
-      <section class="mx-auto max-w-6xl px-6 pt-6 pb-4">
-        <div hlmInputGroup class="mx-auto max-w-[580px]">
-          <hlm-input-group-addon align="inline-start">
-            <ng-icon hlmIcon name="lucideSearch" class="text-muted-foreground" />
-          </hlm-input-group-addon>
-          <input hlmInputGroupInput type="search" placeholder="Search the web" />
-        </div>
-
-        <!-- Quick Links -->
-        <div class="mx-auto mt-6 flex max-w-[500px] items-center justify-center gap-6">
-          @for (link of news.quickLinks; track link.name) {
-            <a
-              [href]="link.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex flex-col items-center gap-2"
-            >
-              <hlm-avatar size="lg">
-                <span hlmAvatarFallback class="text-sm font-bold">{{ link.name[0] }}</span>
-              </hlm-avatar>
-              <span class="text-muted-foreground text-[11px]">{{ link.name }}</span>
-            </a>
-          }
-          <button hlmBtn variant="ghost" size="icon-sm">
-            <ng-icon hlmIcon name="lucideMoreHorizontal" />
-          </button>
-        </div>
-      </section>
-
-      <div hlmSeparator class="my-2"></div>
-
       <!-- Tabs + Feed -->
       <section class="mx-auto max-w-6xl px-6">
         <nav
@@ -91,9 +49,6 @@ import { AgentworkNewsService } from './agentwork-news.service';
               @for (tab of news.tabs; track tab.id) {
                 <button hlmTabsTrigger [hlmTabsTrigger]="tab.id">{{ tab.label }}</button>
               }
-              <button hlmTabsTrigger [hlmTabsTrigger]="'more'">
-                <ng-icon hlmIcon name="lucideMoreHorizontal" />
-              </button>
             </div>
           </div>
         </nav>
