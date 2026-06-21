@@ -2,14 +2,9 @@ import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  lucideArrowLeft,
-  lucideBookmark,
   lucideClock,
   lucideFacebook,
   lucideLinkedin,
-  lucideMoreHorizontal,
-  lucideShare2,
-  lucideThumbsUp,
   lucideTwitter,
 } from '@ng-icons/lucide';
 import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
@@ -35,14 +30,9 @@ import { NewsArticleService } from './news-article.service';
   ],
   providers: [
     provideIcons({
-      lucideArrowLeft,
-      lucideBookmark,
       lucideClock,
       lucideFacebook,
       lucideLinkedin,
-      lucideMoreHorizontal,
-      lucideShare2,
-      lucideThumbsUp,
       lucideTwitter,
     }),
   ],
@@ -56,15 +46,6 @@ import { NewsArticleService } from './news-article.service';
               <a routerLink="/agentwork-news" class="flex items-center gap-1">
                 <span class="text-foreground text-[28px] font-bold tracking-tight">Agentwork News</span>
               </a>
-            </div>
-            <div class="flex items-center gap-2">
-              <button hlmBtn variant="ghost" size="icon-sm">
-                <ng-icon hlmIcon name="lucideShare2" />
-              </button>
-              <button hlmBtn variant="ghost" size="icon-sm">
-                <ng-icon hlmIcon name="lucideBookmark" />
-              </button>
-              <button hlmBtn variant="outline" size="sm">Sign in</button>
             </div>
           </div>
         </header>
@@ -121,14 +102,6 @@ import { NewsArticleService } from './news-article.service';
                 <p class="text-foreground text-sm font-medium">{{ art.source }}</p>
                 <p class="text-muted-foreground text-xs">Publicado em {{ art.date }}</p>
               </div>
-            </div>
-            <div class="flex items-center gap-1">
-              <button hlmBtn variant="ghost" size="icon-sm">
-                <ng-icon hlmIcon name="lucideThumbsUp" />
-              </button>
-              <button hlmBtn variant="ghost" size="icon-sm">
-                <ng-icon hlmIcon name="lucideMoreHorizontal" />
-              </button>
             </div>
           </div>
 

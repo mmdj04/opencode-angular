@@ -2,11 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  lucideCloud,
   lucideMoreHorizontal,
   lucideSearch,
-  lucideSettings,
-  lucideSparkles,
 } from '@ng-icons/lucide';
 import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
@@ -33,9 +30,6 @@ import { AgentworkNewsService } from './agentwork-news.service';
   providers: [
     provideIcons({
       lucideSearch,
-      lucideSettings,
-      lucideCloud,
-      lucideSparkles,
       lucideMoreHorizontal,
     }),
   ],
@@ -48,18 +42,6 @@ import { AgentworkNewsService } from './agentwork-news.service';
             <a routerLink="/" class="flex items-center gap-1">
               <span class="text-foreground text-[28px] font-bold tracking-tight">Agentwork News</span>
             </a>
-          </div>
-
-          <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 text-sm">
-              <ng-icon hlmIcon name="lucideCloud" class="text-muted-foreground" />
-              <span class="text-muted-foreground">São Paulo</span>
-              <span class="font-medium">28°C</span>
-            </div>
-            <button hlmBtn variant="ghost" size="icon-sm">
-              <ng-icon hlmIcon name="lucideSettings" />
-            </button>
-            <button hlmBtn variant="outline" size="sm">Sign in</button>
           </div>
         </div>
       </header>
@@ -111,13 +93,6 @@ import { AgentworkNewsService } from './agentwork-news.service';
               }
               <button hlmTabsTrigger [hlmTabsTrigger]="'more'">
                 <ng-icon hlmIcon name="lucideMoreHorizontal" />
-              </button>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button hlmBtn variant="outline" size="sm">
-                <ng-icon hlmIcon name="lucideSparkles" class="mr-1" />
-                Personalize
               </button>
             </div>
           </div>

@@ -52,7 +52,7 @@ export class NewsArticleService {
       subtitle: a.subtitle,
       source: a.source,
       sourceUrl: a.source_url,
-      date: a.date,
+      date: this.formatDate(a.created_at),
       readTime: a.read_time,
       category: a.category,
       categoryLabel: a.category_label,
@@ -76,7 +76,7 @@ export class NewsArticleService {
         subtitle: dbArticle.subtitle,
         source: dbArticle.source,
         sourceUrl: dbArticle.source_url,
-        date: dbArticle.date,
+        date: this.formatDate(dbArticle.created_at),
         readTime: dbArticle.read_time,
         category: dbArticle.category,
         categoryLabel: dbArticle.category_label,
@@ -103,5 +103,11 @@ export class NewsArticleService {
 
   getMoreFromSource(): RelatedArticle[] {
     return this.relatedArticles.filter((a) => a.category === 'brasil' || a.category === 'economia');
+  }
+
+  private formatDate(dateStr: string | undefined): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 }

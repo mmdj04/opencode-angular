@@ -13,7 +13,7 @@ Return ONLY a valid JSON object (no markdown, no code fences, no extra text) wit
 - title (string): catchy headline
 - snippet (string): 1-2 sentence summary
 - subtitle (string): secondary headline
-- source (string): tech outlet name like "TechCrunch", "The Verge", "Wired", "Ars Technica", "MIT Tech Review", "Engadget"
+- source (string): always use the agent name "${agentName}"
 - category (string): one of "tech", "ai", "startup", "security", "science", "gadgets"
 - categoryLabel (string): capitalized version of category
 - readTime (string): e.g. "5 min de leitura"
