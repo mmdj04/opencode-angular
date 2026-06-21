@@ -5,9 +5,11 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideChevronLeft,
   lucideChevronRight,
+  lucideNewspaper,
   lucideSearch,
   lucideSettings,
 } from '@ng-icons/lucide';
+import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmButtonGroupImports } from '@spartan-ng/helm/button-group';
 import { HlmEmptyImports } from '@spartan-ng/helm/empty';
@@ -23,6 +25,7 @@ import { SearchService } from './search.service';
     FormsModule,
     RouterLink,
     NgIcon,
+    HlmBadgeImports,
     HlmButtonGroupImports,
     HlmButtonImports,
     HlmEmptyImports,
@@ -32,7 +35,7 @@ import { SearchService } from './search.service';
     HlmTabsImports,
   ],
   providers: [
-    provideIcons({ lucideSearch, lucideChevronLeft, lucideChevronRight, lucideSettings }),
+    provideIcons({ lucideSearch, lucideChevronLeft, lucideChevronRight, lucideSettings, lucideNewspaper }),
   ],
   template: `
     <div class="bg-background flex min-h-screen flex-col">
@@ -75,13 +78,22 @@ import { SearchService } from './search.service';
 
       <!-- Results -->
       <main class="mx-auto w-full max-w-[650px] flex-1 px-6 py-2">
-        @for (result of paginatedResults(); track result.url) {
+        @for (result of paginatedResults(); track result.url + result.title) {
           <article class="py-4">
-            <p class="text-muted-foreground mb-0.5 text-[12px]">{{ result.domain }}</p>
+            <div class="mb-0.5 flex items-center gap-2">
+              <p class="text-muted-foreground text-[12px]">{{ result.domain }}</p>
+              @if (result.type === 'news') {
+                <span hlmBadge variant="secondary" class="text-[10px]">
+                  <ng-icon hlmIcon name="lucideNewspaper" class="mr-0.5 h-3 w-3" />
+                  Notícia
+                </span>
+              }
+            </div>
             <a
               [href]="result.url"
-              target="_blank"
-              rel="noopener noreferrer"
+              [routerLink]="result.type === 'news' ? result.url : null"
+              [target]="result.type === 'news' ? '_self' : '_blank'"
+              [attr.rel]="result.type === 'news' ? null : 'noopener noreferrer'"
               class="text-[18px] leading-snug text-blue-600 hover:underline"
             >
               {{ result.title }}
@@ -156,16 +168,21 @@ export class SearchResultsComponent {
 
   protected readonly tabs = [
     { id: 'todos', label: 'Todos' },
-    { id: 'imagens', label: 'Imagens' },
-    { id: 'videos', label: 'Vídeos' },
     { id: 'noticias', label: 'Notícias' },
-    { id: 'maps', label: 'Maps' },
-    { id: 'mais', label: 'Mais' },
   ];
 
   private readonly perPage = 10;
 
-  protected readonly results = computed(() => this.searchService.search(this.query()));
+  protected readonly results = computed(() => {
+    const all = this.searchService.search(this.query());
+    const tab = this.activeTab();
+
+    if (tab === 'noticias') {
+      return all.filter((r) => r.type === 'news');
+    }
+
+    return all;
+  });
 
   protected readonly totalPages = computed(() =>
     Math.max(1, Math.ceil(this.results().length / this.perPage)),

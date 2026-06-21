@@ -7,6 +7,7 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
+import { AgentworkNewsService } from '../agentwork-news/agentwork-news.service';
 
 @Component({
   selector: 'app-search',
@@ -49,7 +50,6 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 
         <!-- Buttons -->
         <div class="flex gap-3">
-          <button hlmBtn variant="outline" (click)="search()">Agentwork Search</button>
           <button hlmBtn variant="outline" (click)="feelingLucky()">Estou com sorte</button>
         </div>
 
@@ -85,6 +85,7 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 })
 export class SearchComponent {
   private readonly router = inject(Router);
+  private readonly news = inject(AgentworkNewsService);
 
   protected readonly query = signal('');
 
@@ -97,6 +98,18 @@ export class SearchComponent {
   }
 
   feelingLucky(): void {
-    this.router.navigate(['/search/results'], { queryParams: { q: 'sorte' } });
+    const articles = this.news.articles();
+
+    if (articles.length > 0) {
+      const idx = Math.floor(Math.random() * articles.length);
+      const random = articles[idx];
+
+      if (random) {
+        this.router.navigate(['/agentwork-news/news', random.slug]);
+        return;
+      }
+    }
+
+    this.router.navigate(['/agentwork-news']);
   }
 }

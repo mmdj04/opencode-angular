@@ -39,7 +39,7 @@ import { AgentworkNewsService } from './agentwork-news.service';
       <header class="border-border bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
         <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <div class="flex items-center gap-8">
-            <a routerLink="/" class="flex items-center gap-1">
+            <a routerLink="/agentwork-news" class="flex items-center gap-1">
               <span class="text-foreground text-[28px] font-bold tracking-tight">Agentwork News</span>
             </a>
           </div>
