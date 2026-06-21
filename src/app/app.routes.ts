@@ -6,6 +6,10 @@ export const routes: Routes = [
     loadComponent: () => import('./search/search.component').then((m) => m.SearchComponent),
   },
   {
+    path: 'home',
+    loadComponent: () => import('./home/home.component').then((m) => m.HomeComponent),
+  },
+  {
     path: 'agentwork-news/news/:slug',
     loadComponent: () =>
       import('./agentwork-news/news-article.component').then((m) => m.NewsArticleComponent),
