@@ -44,7 +44,8 @@ export class SettingsService {
       }
     } catch (error) {
       console.error('Generation error:', error);
-      toast.error('Failed to generate articles. Check your API key.');
+      const message = error instanceof Error ? error.message : String(error);
+      toast.error(`Generation failed: ${message}`);
     } finally {
       this.isGenerating.set(false);
     }

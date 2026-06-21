@@ -3,7 +3,8 @@ import type { DbArticle } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
-  private readonly API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemma-4-31b-it:generateContent';
+  private readonly API_URL =
+    'https://generativelanguage.googleapis.com/v1beta/models/gemma-4-31b-it:generateContent';
 
   async generateNewsArticles(agentName: string, apiKey: string): Promise<DbArticle[]> {
     const prompt = `You are ${agentName}, a technology news journalist for Agentwork News.
@@ -25,55 +26,84 @@ Topics to cover: artificial intelligence, cybersecurity, tech startups, new gadg
 Date context: ${new Date().toLocaleDateString('pt-BR')}.
 Make the articles realistic and current. Use the agent name "${agentName}" as a watermark in each article.`;
 
-    const response = await fetch(`${this.API_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.8,
-          maxOutputTokens: 4096,
-        },
-      }),
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 120_000);
 
-    if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.status}`);
+    try {
+      const response = await fetch(`${this.API_URL}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 32768,
+            thinkingConfig: {
+              thinkingLevel: 'high',
+            },
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        let errorMessage = `Gemini API error: ${response.status}`;
+        try {
+          const parsed = JSON.parse(errorBody);
+          errorMessage += ` - ${parsed.error?.message ?? errorBody}`;
+        } catch {
+          errorMessage += ` - ${errorBody}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      const parts = data.candidates?.[0]?.content?.parts ?? [];
+      const text = parts
+        .filter((p: { thought?: boolean }) => !p.thought)
+        .map((p: { text: string }) => p.text)
+        .join('');
+
+      if (!text) {
+        throw new Error('Empty response from Gemma - no answer parts found');
+      }
+
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      if (!jsonMatch) {
+        throw new Error(
+          `Invalid response format from Gemma. Response starts with: ${text.slice(0, 200)}`,
+        );
+      }
+
+      const rawArticles: unknown[] = JSON.parse(jsonMatch[0]);
+
+      return rawArticles.map((raw: unknown, index: number) => {
+        const article = raw as Record<string, unknown>;
+        const slug = this.toSlug(article['title'] as string);
+
+        return {
+          slug,
+          title: (article['title'] as string) ?? '',
+          snippet: (article['snippet'] as string) ?? '',
+          subtitle: (article['subtitle'] as string) ?? '',
+          source: (article['source'] as string) ?? 'Agentwork Gemma',
+          source_url: '',
+          date: new Date().toLocaleDateString('pt-BR'),
+          read_time: (article['readTime'] as string) ?? '3 min de leitura',
+          category: (article['category'] as string) ?? 'tech',
+          category_label: (article['categoryLabel'] as string) ?? 'Tech',
+          author_name: agentName,
+          author_avatar: '',
+          image_url: '',
+          paragraphs: (article['paragraphs'] as { text: string; isSubtitle?: boolean }[]) ?? [],
+          tags: (article['tags'] as string[]) ?? [],
+          time: `${2 + index}h ago`,
+        };
+      });
+    } finally {
+      clearTimeout(timeoutId);
     }
-
-    const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
-    if (!jsonMatch) {
-      throw new Error('Invalid response format from Gemini');
-    }
-
-    const rawArticles: unknown[] = JSON.parse(jsonMatch[0]);
-
-    return rawArticles.map((raw: unknown, index: number) => {
-      const article = raw as Record<string, unknown>;
-      const slug = this.toSlug(article['title'] as string);
-
-      return {
-        slug,
-        title: (article['title'] as string) ?? '',
-        snippet: (article['snippet'] as string) ?? '',
-        subtitle: (article['subtitle'] as string) ?? '',
-        source: (article['source'] as string) ?? 'Agentwork Gemma',
-        source_url: '',
-        date: new Date().toLocaleDateString('pt-BR'),
-        read_time: (article['readTime'] as string) ?? '3 min de leitura',
-        category: (article['category'] as string) ?? 'tech',
-        category_label: (article['categoryLabel'] as string) ?? 'Tech',
-        author_name: agentName,
-        author_avatar: '',
-        image_url: '',
-        paragraphs: (article['paragraphs'] as { text: string; isSubtitle?: boolean }[]) ?? [],
-        tags: (article['tags'] as string[]) ?? [],
-        time: `${2 + index}h ago`,
-      };
-    });
   }
 
   private toSlug(title: string): string {

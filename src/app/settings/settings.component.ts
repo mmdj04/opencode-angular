@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideKey } from '@ng-icons/lucide';
+import { lucideKey, lucideLoader2 } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -22,7 +22,7 @@ import { SettingsService } from './settings.service';
     HlmInputGroupImports,
     HlmLabelImports,
   ],
-  providers: [provideIcons({ lucideKey })],
+  providers: [provideIcons({ lucideKey, lucideLoader2 })],
   template: `
     <div class="bg-background flex min-h-screen items-center justify-center p-4">
       <hlm-card class="w-full max-w-[420px]">
@@ -65,7 +65,8 @@ import { SettingsService } from './settings.service';
 
           <button hlmBtn class="w-full" [disabled]="settings.isGenerating()" (click)="settings.save()">
             @if (settings.isGenerating()) {
-              Generating...
+              <ng-icon hlmIcon name="lucideLoader2" class="mr-2 animate-spin" />
+              Generating articles...
             } @else {
               Save Settings
             }
