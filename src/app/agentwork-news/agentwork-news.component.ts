@@ -69,6 +69,7 @@ import { BannerService } from '../core/services/banner.service';
                         <svg
                           class="banner-svg h-full w-full"
                           [attr.data-category]="article.category"
+                          [attr.data-seed]="article.title"
                         ></svg>
                       </div>
                       <div class="flex flex-1 flex-col justify-center p-6">
@@ -100,6 +101,7 @@ import { BannerService } from '../core/services/banner.service';
                       <svg
                         class="banner-svg h-full w-full"
                         [attr.data-category]="article.category"
+                        [attr.data-seed]="article.title"
                       ></svg>
                     </div>
                     <div class="p-4">
@@ -184,11 +186,12 @@ export class AgentworkNewsComponent implements AfterViewInit {
     svgs.forEach((svg) => {
       const el = svg as SVGSVGElement;
       const category = el.getAttribute('data-category') ?? 'tech';
+      const seed = el.getAttribute('data-seed') ?? '';
       const rect = el.parentElement?.getBoundingClientRect();
       const w = rect?.width ?? 400;
       const h = rect?.height ?? 200;
       el.innerHTML = '';
-      this.bannerService.generate(el, { width: w, height: h, category });
+      this.bannerService.generate(el, { width: w, height: h, category, seed });
     });
   }
 }

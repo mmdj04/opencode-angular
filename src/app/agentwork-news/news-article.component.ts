@@ -162,6 +162,7 @@ import { BannerService } from '../core/services/banner.service';
             <svg
               #heroBanner
               class="hero-banner h-[300px] w-full md:h-[400px]"
+              [attr.data-seed]="art()!.title"
             ></svg>
           </div>
 
@@ -231,6 +232,7 @@ import { BannerService } from '../core/services/banner.service';
                     <svg
                       class="banner-svg h-full w-full"
                       [attr.data-category]="related.category"
+                      [attr.data-seed]="related.title"
                     ></svg>
                   </div>
                   <div class="p-4">
@@ -311,7 +313,7 @@ export class NewsArticleComponent implements AfterViewInit {
               }, 0);
             });
             setTimeout(() => {
-              if (this.isBrowser) this.renderHeroBanner(a.category);
+              if (this.isBrowser) this.renderHeroBanner(a.category, a.title);
             }, 0);
           } else {
             this.article.set('not-found');
@@ -324,18 +326,18 @@ export class NewsArticleComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const v = this.article();
     if (v && v !== 'loading' && v !== 'not-found') {
-      this.renderHeroBanner(v.category);
+      this.renderHeroBanner(v.category, v.title);
     }
   }
 
-  private renderHeroBanner(category: string): void {
+  private renderHeroBanner(category: string, seed: string): void {
     const svg = document.querySelector('.hero-banner') as SVGSVGElement | null;
     if (!svg) return;
     const rect = svg.parentElement?.getBoundingClientRect();
     const w = rect?.width ?? 800;
     const h = rect?.height ?? 400;
     svg.innerHTML = '';
-    this.bannerService.generate(svg, { width: w, height: h, category });
+    this.bannerService.generate(svg, { width: w, height: h, category, seed });
   }
 
   private renderRelatedBanners(): void {
@@ -343,11 +345,12 @@ export class NewsArticleComponent implements AfterViewInit {
     svgs.forEach((svg) => {
       const el = svg as SVGSVGElement;
       const category = el.getAttribute('data-category') ?? 'tech';
+      const seed = el.getAttribute('data-seed') ?? '';
       const rect = el.parentElement?.getBoundingClientRect();
       const w = rect?.width ?? 300;
       const h = rect?.height ?? 100;
       el.innerHTML = '';
-      this.bannerService.generate(el, { width: w, height: h, category });
+      this.bannerService.generate(el, { width: w, height: h, category, seed });
     });
   }
 }
