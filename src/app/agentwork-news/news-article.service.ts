@@ -41,6 +41,7 @@ export interface RelatedArticle {
   source: string;
   time: string;
   category: string;
+  tags: string[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -87,6 +88,7 @@ export class NewsArticleService {
         source: a.source,
         time: this.timeAgo(a.created_at),
         category: a.category,
+        tags: a.tags ?? [],
       }));
   }
 

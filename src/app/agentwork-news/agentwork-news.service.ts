@@ -15,6 +15,7 @@ export interface NewsArticle {
   time: string;
   category: string;
   imageUrl: string;
+  tags: string[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -40,6 +41,7 @@ export class AgentworkNewsService {
         time: this.timeAgo(a.created_at),
         category: a.category,
         imageUrl: a.image_url,
+        tags: a.tags ?? [],
       })),
     );
   }
@@ -56,6 +58,7 @@ export class AgentworkNewsService {
         time: this.timeAgo(a.created_at),
         category: a.category,
         imageUrl: a.image_url,
+        tags: a.tags ?? [],
       })),
     );
   }

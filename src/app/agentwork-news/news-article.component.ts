@@ -163,6 +163,7 @@ import { BannerService } from '../core/services/banner.service';
               #heroBanner
               class="hero-banner h-[300px] w-full md:h-[400px]"
               [attr.data-seed]="art()!.title"
+              [attr.data-tags]="art()!.tags.join(',')"
             ></svg>
           </div>
 
@@ -233,6 +234,7 @@ import { BannerService } from '../core/services/banner.service';
                       class="banner-svg h-full w-full"
                       [attr.data-category]="related.category"
                       [attr.data-seed]="related.title"
+                      [attr.data-tags]="related.tags?.join(',') ?? ''"
                     ></svg>
                   </div>
                   <div class="p-4">
@@ -313,7 +315,7 @@ export class NewsArticleComponent implements AfterViewInit {
               }, 0);
             });
             setTimeout(() => {
-              if (this.isBrowser) this.renderHeroBanner(a.category, a.title);
+              if (this.isBrowser) this.renderHeroBanner(a.category, a.title, a.tags);
             }, 0);
           } else {
             this.article.set('not-found');
@@ -326,18 +328,18 @@ export class NewsArticleComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const v = this.article();
     if (v && v !== 'loading' && v !== 'not-found') {
-      this.renderHeroBanner(v.category, v.title);
+      this.renderHeroBanner(v.category, v.title, v.tags);
     }
   }
 
-  private renderHeroBanner(category: string, seed: string): void {
+  private renderHeroBanner(category: string, seed: string, tags: string[]): void {
     const svg = document.querySelector('.hero-banner') as SVGSVGElement | null;
     if (!svg) return;
     const rect = svg.parentElement?.getBoundingClientRect();
     const w = rect?.width ?? 800;
     const h = rect?.height ?? 400;
     svg.innerHTML = '';
-    this.bannerService.generate(svg, { width: w, height: h, category, seed });
+    this.bannerService.generate(svg, { width: w, height: h, category, seed, tags });
   }
 
   private renderRelatedBanners(): void {
@@ -346,11 +348,13 @@ export class NewsArticleComponent implements AfterViewInit {
       const el = svg as SVGSVGElement;
       const category = el.getAttribute('data-category') ?? 'tech';
       const seed = el.getAttribute('data-seed') ?? '';
+      const tagsStr = el.getAttribute('data-tags') ?? '';
+      const tags = tagsStr ? tagsStr.split(',') : [];
       const rect = el.parentElement?.getBoundingClientRect();
       const w = rect?.width ?? 300;
       const h = rect?.height ?? 100;
       el.innerHTML = '';
-      this.bannerService.generate(el, { width: w, height: h, category, seed });
+      this.bannerService.generate(el, { width: w, height: h, category, seed, tags });
     });
   }
 }
