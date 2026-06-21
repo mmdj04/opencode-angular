@@ -26,7 +26,7 @@ describe('NewsArticleComponent', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render MSN logo in header', () => {
+  it('should render Agentwork News logo in header', () => {
     const fixture = TestBed.createComponent(NewsArticleComponent);
 
     fixture.componentRef.setInput('slug', 'analfabetismo-no-brasil-cai-para-4-9');
@@ -34,7 +34,7 @@ describe('NewsArticleComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('msn');
+    expect(compiled.textContent).toContain('Agentwork News');
   });
 
   it('should render sign in button', () => {
@@ -56,7 +56,7 @@ describe('NewsArticleComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('© 2026 Microsoft');
+    expect(compiled.textContent).toContain('© 2026 Agentwork');
   });
 
   it('should render article title', () => {
@@ -136,7 +136,7 @@ describe('NewsArticleComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).toContain('Artigo não encontrado');
-    expect(compiled.textContent).toContain('Voltar ao MSN');
+    expect(compiled.textContent).toContain('Voltar ao Agentwork News');
   });
 
   it('should have computed article', () => {
@@ -144,7 +144,7 @@ describe('NewsArticleComponent', () => {
 
     fixture.componentRef.setInput('slug', 'analfabetismo-no-brasil-cai-para-4-9');
 
-    const comp = fixture.componentInstance as unknown as Record<string, unknown>;
+    const comp = fixture.componentInstance as any;
 
     expect(comp.article()).toBeTruthy();
   });
@@ -154,7 +154,7 @@ describe('NewsArticleComponent', () => {
 
     fixture.componentRef.setInput('slug', 'analfabetismo-no-brasil-cai-para-4-9');
 
-    const comp = fixture.componentInstance as unknown as Record<string, unknown>;
+    const comp = fixture.componentInstance as any;
 
     expect(comp.relatedArticles().length).toBeGreaterThan(0);
   });

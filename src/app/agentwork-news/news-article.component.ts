@@ -53,11 +53,8 @@ import { NewsArticleService } from './news-article.service';
         <header class="border-border bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
           <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
             <div class="flex items-center gap-4">
-              <a routerLink="/msn" class="flex items-center gap-1">
-                <span class="text-[28px] font-bold tracking-tight">
-                  <span class="text-[#f25022]">m</span><span class="text-[#7fba00]">s</span
-                  ><span class="text-[#00a4ef]">n</span>
-                </span>
+              <a routerLink="/agentwork-news" class="flex items-center gap-1">
+                <span class="text-foreground text-[28px] font-bold tracking-tight">Agentwork News</span>
               </a>
             </div>
             <div class="flex items-center gap-2">
@@ -78,13 +75,13 @@ import { NewsArticleService } from './news-article.service';
           <nav hlmBreadcrumb class="mb-6">
             <ol hlmBreadcrumbList>
               <li hlmBreadcrumbItem>
-                <a hlmBreadcrumbLink routerLink="/msn">Início</a>
+                <a hlmBreadcrumbLink routerLink="/agentwork-news">Início</a>
               </li>
               <li hlmBreadcrumbItem>
                 <span hlmBreadcrumbSeparator></span>
               </li>
               <li hlmBreadcrumbItem>
-                <a hlmBreadcrumbLink routerLink="/msn">{{ art.categoryLabel }}</a>
+                <a hlmBreadcrumbLink routerLink="/agentwork-news">{{ art.categoryLabel }}</a>
               </li>
               <li hlmBreadcrumbItem>
                 <span hlmBreadcrumbSeparator></span>
@@ -141,7 +138,7 @@ import { NewsArticleService } from './news-article.service';
           <div
             class="bg-muted mb-8 flex h-[300px] items-center justify-center rounded-lg md:h-[400px]"
           >
-            <span class="text-muted-foreground text-5xl font-bold opacity-20">MSN</span>
+            <span class="text-muted-foreground text-5xl font-bold opacity-20">Agentwork News</span>
           </div>
 
           <!-- Article Body -->
@@ -222,7 +219,7 @@ import { NewsArticleService } from './news-article.service';
             <div
               class="text-muted-foreground flex flex-wrap items-center justify-center gap-4 text-xs"
             >
-              <span>© 2026 Microsoft</span>
+              <span>© 2026 Agentwork</span>
               <a href="#" class="hover:underline">Privacy</a>
               <a href="#" class="hover:underline">Terms</a>
               <a href="#" class="hover:underline">About</a>
@@ -237,7 +234,7 @@ import { NewsArticleService } from './news-article.service';
         <div class="text-center">
           <h1 class="text-foreground mb-2 text-2xl font-bold">Artigo não encontrado</h1>
           <p class="text-muted-foreground mb-4">O artigo que você procura não existe.</p>
-          <a hlmBtn routerLink="/msn">Voltar ao MSN</a>
+          <a hlmBtn routerLink="/agentwork-news">Voltar ao Agentwork News</a>
         </div>
       </div>
     }

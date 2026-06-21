@@ -6,12 +6,19 @@ export const routes: Routes = [
     loadComponent: () => import('./search/search.component').then((m) => m.SearchComponent),
   },
   {
-    path: 'msn/news/:slug',
-    loadComponent: () => import('./msn/news-article.component').then((m) => m.NewsArticleComponent),
+    path: 'agentwork-news/news/:slug',
+    loadComponent: () =>
+      import('./agentwork-news/news-article.component').then((m) => m.NewsArticleComponent),
   },
   {
-    path: 'msn',
-    loadComponent: () => import('./msn/msn.component').then((m) => m.MsnComponent),
+    path: 'agentwork-news',
+    loadComponent: () =>
+      import('./agentwork-news/agentwork-news.component').then((m) => m.AgentworkNewsComponent),
+  },
+  {
+    path: 'settings',
+    loadComponent: () =>
+      import('./settings/settings.component').then((m) => m.SettingsComponent),
   },
   {
     path: 'search/results',

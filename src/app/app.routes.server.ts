@@ -3,7 +3,7 @@ import { RenderMode } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
   {
-    path: 'msn/news/:slug',
+    path: 'agentwork-news/news/:slug',
     renderMode: RenderMode.Client,
   },
   {

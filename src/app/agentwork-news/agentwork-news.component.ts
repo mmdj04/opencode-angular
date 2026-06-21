@@ -15,10 +15,10 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
-import { MsnService } from './msn.service';
+import { AgentworkNewsService } from './agentwork-news.service';
 
 @Component({
-  selector: 'app-msn',
+  selector: 'app-agentwork-news',
   imports: [
     RouterLink,
     NgIcon,
@@ -46,10 +46,7 @@ import { MsnService } from './msn.service';
         <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <div class="flex items-center gap-8">
             <a routerLink="/" class="flex items-center gap-1">
-              <span class="text-[28px] font-bold tracking-tight">
-                <span class="text-[#f25022]">m</span><span class="text-[#7fba00]">s</span
-                ><span class="text-[#00a4ef]">n</span>
-              </span>
+              <span class="text-foreground text-[28px] font-bold tracking-tight">Agentwork News</span>
             </a>
           </div>
 
@@ -78,7 +75,7 @@ import { MsnService } from './msn.service';
 
         <!-- Quick Links -->
         <div class="mx-auto mt-6 flex max-w-[500px] items-center justify-center gap-6">
-          @for (link of msn.quickLinks; track link.name) {
+          @for (link of news.quickLinks; track link.name) {
             <a
               [href]="link.url"
               target="_blank"
@@ -109,7 +106,7 @@ import { MsnService } from './msn.service';
         >
           <div class="flex items-center justify-between">
             <div hlmTabsList variant="line">
-              @for (tab of msn.tabs; track tab.id) {
+              @for (tab of news.tabs; track tab.id) {
                 <button hlmTabsTrigger [hlmTabsTrigger]="tab.id">{{ tab.label }}</button>
               }
               <button hlmTabsTrigger [hlmTabsTrigger]="'more'">
@@ -131,7 +128,7 @@ import { MsnService } from './msn.service';
           <!-- Featured Article -->
           @if (featuredArticle(); as article) {
             <div class="mb-6">
-              <a [routerLink]="['/msn/news', article.slug]" class="block">
+              <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
                 <hlm-card class="overflow-hidden transition-shadow hover:shadow-md">
                   <div class="flex flex-col md:flex-row">
                     <div
@@ -162,7 +159,7 @@ import { MsnService } from './msn.service';
           <!-- Article Grid -->
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @for (article of filteredArticles(); track article.id) {
-              <a [routerLink]="['/msn/news', article.slug]" class="block">
+              <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
                 <hlm-card class="cursor-pointer transition-shadow hover:shadow-md">
                   <div class="bg-muted flex h-[160px] items-center justify-center">
                     <span class="text-muted-foreground text-2xl font-bold opacity-20">MSN</span>
@@ -195,7 +192,7 @@ import { MsnService } from './msn.service';
           <div
             class="text-muted-foreground flex flex-wrap items-center justify-center gap-4 text-xs"
           >
-            <span>© 2026 Microsoft</span>
+            <span>© 2026 Agentwork</span>
             <a href="#" class="hover:underline">Privacy</a>
             <a href="#" class="hover:underline">Terms</a>
             <a href="#" class="hover:underline">About</a>
@@ -206,11 +203,11 @@ import { MsnService } from './msn.service';
     </div>
   `,
 })
-export class MsnComponent {
-  protected readonly msn = inject(MsnService);
+export class AgentworkNewsComponent {
+  protected readonly news = inject(AgentworkNewsService);
   protected readonly activeTab = signal('discover');
 
-  protected readonly featuredArticle = signal(this.msn.articles[0]);
+  protected readonly featuredArticle = signal(this.news.articles[0]);
 
-  protected readonly filteredArticles = signal(this.msn.articles.slice(1));
+  protected readonly filteredArticles = signal(this.news.articles.slice(1));
 }

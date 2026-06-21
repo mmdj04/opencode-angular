@@ -23,7 +23,7 @@ export interface NewsArticle {
 }
 
 @Injectable({ providedIn: 'root' })
-export class MsnService {
+export class AgentworkNewsService {
   readonly quickLinks: QuickLink[] = [
     {
       name: 'Outlook',

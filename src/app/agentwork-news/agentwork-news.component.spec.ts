@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { MsnComponent } from './msn.component';
+import { AgentworkNewsComponent } from './agentwork-news.component';
 
-describe('MsnComponent', () => {
+describe('AgentworkNewsComponent', () => {
   beforeEach(() => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
@@ -11,23 +11,23 @@ describe('MsnComponent', () => {
   });
 
   it('should create', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render MSN logo', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+  it('should render Agentwork News logo', () => {
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('msn');
+    expect(compiled.textContent).toContain('Agentwork News');
   });
 
   it('should render quick links', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
@@ -39,7 +39,7 @@ describe('MsnComponent', () => {
   });
 
   it('should render tabs', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
@@ -51,7 +51,7 @@ describe('MsnComponent', () => {
   });
 
   it('should render articles', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
@@ -61,19 +61,19 @@ describe('MsnComponent', () => {
   });
 
   it('should render footer', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('© 2026 Microsoft');
+    expect(compiled.textContent).toContain('© 2026 Agentwork');
     expect(compiled.textContent).toContain('Privacy');
     expect(compiled.textContent).toContain('Terms');
   });
 
   it('should render personalize button', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
@@ -83,7 +83,7 @@ describe('MsnComponent', () => {
   });
 
   it('should render search input', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
@@ -95,7 +95,7 @@ describe('MsnComponent', () => {
   });
 
   it('should render featured article', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
@@ -105,7 +105,7 @@ describe('MsnComponent', () => {
   });
 
   it('should render avatar fallbacks for quick links', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
@@ -117,15 +117,15 @@ describe('MsnComponent', () => {
   });
 
   it('should have activeTab signal', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
-    const comp = fixture.componentInstance as unknown as Record<string, unknown>;
+    const comp = fixture.componentInstance as any;
 
     expect(comp.activeTab()).toBe('discover');
   });
 
   it('should render weather info', () => {
-    const fixture = TestBed.createComponent(MsnComponent);
+    const fixture = TestBed.createComponent(AgentworkNewsComponent);
 
     fixture.detectChanges();
 
