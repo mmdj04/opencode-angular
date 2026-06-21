@@ -125,64 +125,77 @@ import { AgentworkNewsService } from './agentwork-news.service';
 
         <!-- News Feed -->
         <div class="py-6">
-          <!-- Featured Article -->
-          @if (featuredArticle(); as article) {
-            <div class="mb-6">
-              <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
-                <hlm-card class="overflow-hidden transition-shadow hover:shadow-md">
-                  <div class="flex flex-col md:flex-row">
-                    <div
-                      class="bg-muted flex h-[280px] w-full items-center justify-center md:w-1/2"
-                    >
-                      <span class="text-muted-foreground text-4xl font-bold opacity-20">MSN</span>
+          @if (news.articles().length > 0) {
+            <!-- Featured Article -->
+            @if (featuredArticle(); as article) {
+              <div class="mb-6">
+                <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
+                  <hlm-card class="overflow-hidden transition-shadow hover:shadow-md">
+                    <div class="flex flex-col md:flex-row">
+                      <div
+                        class="bg-muted flex h-[280px] w-full items-center justify-center md:w-1/2"
+                      >
+                        <span class="text-muted-foreground text-4xl font-bold opacity-20">MSN</span>
+                      </div>
+                      <div class="flex flex-1 flex-col justify-center p-6">
+                        <hlm-badge variant="secondary" class="mb-2 w-fit">Featured</hlm-badge>
+                        <h2 class="text-foreground mb-2 text-xl leading-snug font-semibold">
+                          {{ article.title }}
+                        </h2>
+                        <p class="text-muted-foreground mb-3 text-sm leading-relaxed">
+                          {{ article.snippet }}
+                        </p>
+                        <div class="flex items-center gap-2 text-xs">
+                          <span class="text-muted-foreground">{{ article.source }}</span>
+                          <span class="text-muted-foreground">·</span>
+                          <span class="text-muted-foreground">{{ article.time }}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div class="flex flex-1 flex-col justify-center p-6">
-                      <hlm-badge variant="secondary" class="mb-2 w-fit">Featured</hlm-badge>
-                      <h2 class="text-foreground mb-2 text-xl leading-snug font-semibold">
+                  </hlm-card>
+                </a>
+              </div>
+            }
+
+            <!-- Article Grid -->
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              @for (article of filteredArticles(); track article.id) {
+                <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
+                  <hlm-card class="cursor-pointer transition-shadow hover:shadow-md">
+                    <div class="bg-muted flex h-[160px] items-center justify-center">
+                      <span class="text-muted-foreground text-2xl font-bold opacity-20">MSN</span>
+                    </div>
+                    <div class="p-4">
+                      <h3
+                        class="text-foreground mb-1 line-clamp-2 text-sm leading-snug font-semibold"
+                      >
                         {{ article.title }}
-                      </h2>
-                      <p class="text-muted-foreground mb-3 text-sm leading-relaxed">
+                      </h3>
+                      <p class="text-muted-foreground mb-2 line-clamp-2 text-xs leading-relaxed">
                         {{ article.snippet }}
                       </p>
-                      <div class="flex items-center gap-2 text-xs">
+                      <div class="flex items-center gap-2 text-[11px]">
                         <span class="text-muted-foreground">{{ article.source }}</span>
                         <span class="text-muted-foreground">·</span>
                         <span class="text-muted-foreground">{{ article.time }}</span>
                       </div>
                     </div>
-                  </div>
-                </hlm-card>
+                  </hlm-card>
+                </a>
+              }
+            </div>
+          } @else {
+            <!-- Empty State -->
+            <div class="py-16 text-center">
+              <p class="text-muted-foreground mb-4 text-lg">
+                No articles yet. Configure your AI agent to generate tech news.
+              </p>
+              <a hlmBtn routerLink="/settings">
+                <ng-icon hlmIcon name="lucideSettings" class="mr-2" />
+                Go to Settings
               </a>
             </div>
           }
-
-          <!-- Article Grid -->
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            @for (article of filteredArticles(); track article.id) {
-              <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
-                <hlm-card class="cursor-pointer transition-shadow hover:shadow-md">
-                  <div class="bg-muted flex h-[160px] items-center justify-center">
-                    <span class="text-muted-foreground text-2xl font-bold opacity-20">MSN</span>
-                  </div>
-                  <div class="p-4">
-                    <h3
-                      class="text-foreground mb-1 line-clamp-2 text-sm leading-snug font-semibold"
-                    >
-                      {{ article.title }}
-                    </h3>
-                    <p class="text-muted-foreground mb-2 line-clamp-2 text-xs leading-relaxed">
-                      {{ article.snippet }}
-                    </p>
-                    <div class="flex items-center gap-2 text-[11px]">
-                      <span class="text-muted-foreground">{{ article.source }}</span>
-                      <span class="text-muted-foreground">·</span>
-                      <span class="text-muted-foreground">{{ article.time }}</span>
-                    </div>
-                  </div>
-                </hlm-card>
-              </a>
-            }
-          </div>
         </div>
       </section>
 
