@@ -19,7 +19,6 @@ Return ONLY a valid JSON object (no markdown, no code fences, no extra text) wit
 - readTime (string): e.g. "5 min de leitura"
 - paragraphs (array of objects with {text: string, isSubtitle?: boolean}): 5-8 paragraphs, mark 2-3 as subtitles
 - tags (array of 4-6 relevant tags in Portuguese)
-- time (string): e.g. "2h ago"
 
 Topic: pick one from artificial intelligence, cybersecurity, tech startups, new gadgets, space technology, or programming frameworks.
 Date context: ${new Date().toLocaleDateString('pt-BR')}.
@@ -95,7 +94,6 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
           image_url: '',
           paragraphs: (raw['paragraphs'] as { text: string; isSubtitle?: boolean }[]) ?? [],
           tags: (raw['tags'] as string[]) ?? [],
-          time: '2h ago',
         },
       ];
     } finally {

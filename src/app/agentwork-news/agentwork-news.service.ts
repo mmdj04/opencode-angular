@@ -82,7 +82,7 @@ export class AgentworkNewsService {
         title: a.title,
         snippet: a.snippet,
         source: a.source,
-        time: a.time,
+        time: this.timeAgo(a.created_at),
         category: a.category,
         imageUrl: a.image_url,
       })),
@@ -98,7 +98,7 @@ export class AgentworkNewsService {
         title: a.title,
         snippet: a.snippet,
         source: a.source,
-        time: a.time,
+        time: this.timeAgo(a.created_at),
         category: a.category,
         imageUrl: a.image_url,
       })),
@@ -111,5 +111,20 @@ export class AgentworkNewsService {
     }
 
     return this.articles().filter((a) => a.category === category);
+  }
+
+  private timeAgo(dateStr: string | undefined): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffH = Math.floor(diffMin / 60);
+    const diffD = Math.floor(diffH / 24);
+
+    if (diffMin < 1) return 'agora';
+    if (diffMin < 60) return `${diffMin}min atrás`;
+    if (diffH < 24) return `${diffH}h atrás`;
+    return `${diffD}d atrás`;
   }
 }

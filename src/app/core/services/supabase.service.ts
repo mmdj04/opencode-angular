@@ -19,7 +19,7 @@ export interface DbArticle {
   image_url: string;
   paragraphs: { text: string; isSubtitle?: boolean }[];
   tags: string[];
-  time: string;
+  time?: string;
   created_at?: string;
 }
 
