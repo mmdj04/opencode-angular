@@ -36,7 +36,6 @@ export class SettingsService {
         this.apiKey(),
       );
 
-      await this.supabase.clearGemmaArticles();
       const success = await this.supabase.insertArticles(articles);
 
       if (success) {

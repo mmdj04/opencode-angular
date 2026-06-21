@@ -163,7 +163,7 @@ import { NewsArticleService } from './news-article.service';
               @for (related of relatedArticles(); track related.id) {
                 <hlm-card class="cursor-pointer transition-shadow hover:shadow-md">
                   <div class="bg-muted flex h-[100px] items-center justify-center">
-                    <span class="text-muted-foreground text-lg font-bold opacity-20">MSN</span>
+                    <span class="text-muted-foreground text-lg font-bold opacity-20">Agentwork</span>
                   </div>
                   <div class="p-4">
                     <h3

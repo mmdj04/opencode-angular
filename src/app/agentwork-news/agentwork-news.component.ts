@@ -110,7 +110,7 @@ import { AgentworkNewsService } from './agentwork-news.service';
                       <div
                         class="bg-muted flex h-[280px] w-full items-center justify-center md:w-1/2"
                       >
-                        <span class="text-muted-foreground text-4xl font-bold opacity-20">MSN</span>
+                        <span class="text-muted-foreground text-4xl font-bold opacity-20">Agentwork</span>
                       </div>
                       <div class="flex flex-1 flex-col justify-center p-6">
                         <hlm-badge variant="secondary" class="mb-2 w-fit">Featured</hlm-badge>
@@ -138,7 +138,7 @@ import { AgentworkNewsService } from './agentwork-news.service';
                 <a [routerLink]="['/agentwork-news/news', article.slug]" class="block">
                   <hlm-card class="cursor-pointer transition-shadow hover:shadow-md">
                     <div class="bg-muted flex h-[160px] items-center justify-center">
-                      <span class="text-muted-foreground text-2xl font-bold opacity-20">MSN</span>
+                      <span class="text-muted-foreground text-2xl font-bold opacity-20">Agentwork</span>
                     </div>
                     <div class="p-4">
                       <h3
