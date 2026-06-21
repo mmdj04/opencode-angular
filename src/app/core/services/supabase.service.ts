@@ -72,7 +72,19 @@ export class SupabaseService {
   }
 
   async clearGemmaArticles(): Promise<boolean> {
-    const { error } = await this.supabase.from('news_articles').delete().neq('id', '');
+    const { data: ids, error: fetchError } = await this.supabase
+      .from('news_articles')
+      .select('id');
+
+    if (fetchError) {
+      console.error('Error fetching article IDs:', fetchError);
+      return false;
+    }
+
+    if (!ids || ids.length === 0) return true;
+
+    const idList = ids.map((r: { id: string }) => r.id);
+    const { error } = await this.supabase.from('news_articles').delete().in('id', idList);
 
     if (error) {
       console.error('Error clearing articles:', error);
