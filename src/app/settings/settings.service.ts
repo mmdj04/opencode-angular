@@ -1,4 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { toast } from '@spartan-ng/brain/sonner';
 import { GeminiService } from '../core/services/gemini.service';
 import { SupabaseService } from '../core/services/supabase.service';
@@ -7,6 +8,7 @@ import { SupabaseService } from '../core/services/supabase.service';
 export class SettingsService {
   private readonly gemini = inject(GeminiService);
   private readonly supabase = inject(SupabaseService);
+  private readonly router = inject(Router);
 
   readonly agentName = signal('');
   readonly apiKey = signal('');
@@ -26,7 +28,7 @@ export class SettingsService {
     }
 
     this.isGenerating.set(true);
-    toast.info('Generating articles with Gemma...');
+    toast.info('Generating article with Gemma...');
 
     try {
       const articles = await this.gemini.generateNewsArticles(
@@ -38,9 +40,16 @@ export class SettingsService {
       const success = await this.supabase.insertArticles(articles);
 
       if (success) {
-        toast.success(`${articles.length} articles generated successfully!`);
+        toast.success('Article generated!', {
+          action: {
+            label: 'View',
+            onClick: () => {
+              this.router.navigate(['/agentwork-news']);
+            },
+          },
+        });
       } else {
-        toast.error('Failed to save articles to Supabase');
+        toast.error('Failed to save article to Supabase');
       }
     } catch (error) {
       console.error('Generation error:', error);

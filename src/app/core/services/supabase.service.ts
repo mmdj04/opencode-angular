@@ -72,10 +72,7 @@ export class SupabaseService {
   }
 
   async clearGemmaArticles(): Promise<boolean> {
-    const { error } = await this.supabase
-      .from('news_articles')
-      .delete()
-      .eq('source', 'Agentwork Gemma');
+    const { error } = await this.supabase.from('news_articles').delete().neq('id', '');
 
     if (error) {
       console.error('Error clearing articles:', error);
