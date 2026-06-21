@@ -1,5 +1,5 @@
-import { Component, inject, input, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject, input, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideClock,
@@ -14,6 +14,7 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { NewsArticleService } from './news-article.service';
+import type { NewsArticleDetail } from './news-article.service';
 
 @Component({
   selector: 'app-news-article',
@@ -37,7 +38,51 @@ import { NewsArticleService } from './news-article.service';
     }),
   ],
   template: `
-    @if (article(); as art) {
+    @if (article() === 'loading') {
+      <!-- Skeleton Loading -->
+      <div class="bg-background min-h-screen">
+        <header class="border-border bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
+          <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+            <a routerLink="/agentwork-news" class="flex items-center gap-1">
+              <span class="text-foreground text-[28px] font-bold tracking-tight">Agentwork News</span>
+            </a>
+          </div>
+        </header>
+        <article class="mx-auto max-w-3xl px-6 py-8">
+          <div class="mb-6 flex gap-2">
+            <div class="skeleton-shimmer h-4 w-16"></div>
+            <div class="skeleton-shimmer h-4 w-24"></div>
+          </div>
+          <div class="mb-4 flex gap-3">
+            <div class="skeleton-shimmer h-6 w-16"></div>
+            <div class="skeleton-shimmer h-4 w-24"></div>
+          </div>
+          <div class="skeleton-shimmer mb-3 h-10 w-full"></div>
+          <div class="skeleton-shimmer mb-3 h-10 w-3/4"></div>
+          <div class="skeleton-shimmer mb-6 h-6 w-full"></div>
+          <div class="mb-6 flex items-center gap-3">
+            <div class="skeleton-shimmer h-10 w-10 rounded-full"></div>
+            <div>
+              <div class="skeleton-shimmer mb-1 h-4 w-32"></div>
+              <div class="skeleton-shimmer h-3 w-40"></div>
+            </div>
+          </div>
+          <div class="skeleton-shimmer mb-8 h-px w-full"></div>
+          <div class="skeleton-shimmer mb-8 h-[300px] w-full rounded-lg md:h-[400px]"></div>
+          <div class="space-y-4">
+            <div class="skeleton-shimmer h-4 w-full"></div>
+            <div class="skeleton-shimmer h-4 w-full"></div>
+            <div class="skeleton-shimmer h-4 w-5/6"></div>
+            <div class="skeleton-shimmer mt-6 h-6 w-1/2"></div>
+            <div class="skeleton-shimmer h-4 w-full"></div>
+            <div class="skeleton-shimmer h-4 w-full"></div>
+            <div class="skeleton-shimmer h-4 w-4/5"></div>
+            <div class="skeleton-shimmer h-4 w-full"></div>
+            <div class="skeleton-shimmer h-4 w-2/3"></div>
+          </div>
+        </article>
+      </div>
+    } @else if (art()) {
       <div class="bg-background min-h-screen">
         <!-- Header -->
         <header class="border-border bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
@@ -62,45 +107,45 @@ import { NewsArticleService } from './news-article.service';
                 <span hlmBreadcrumbSeparator></span>
               </li>
               <li hlmBreadcrumbItem>
-                <a hlmBreadcrumbLink routerLink="/agentwork-news">{{ art.categoryLabel }}</a>
+                <a hlmBreadcrumbLink routerLink="/agentwork-news">{{ art()!.categoryLabel }}</a>
               </li>
               <li hlmBreadcrumbItem>
                 <span hlmBreadcrumbSeparator></span>
               </li>
               <li hlmBreadcrumbItem>
-                <span hlmBreadcrumbPage class="line-clamp-1">{{ art.title }}</span>
+                <span hlmBreadcrumbPage class="line-clamp-1">{{ art()!.title }}</span>
               </li>
             </ol>
           </nav>
 
           <!-- Category + Date -->
           <div class="mb-4 flex items-center gap-3">
-            <hlm-badge variant="secondary">{{ art.categoryLabel }}</hlm-badge>
+            <hlm-badge variant="secondary">{{ art()!.categoryLabel }}</hlm-badge>
             <div class="text-muted-foreground flex items-center gap-1 text-xs">
               <ng-icon hlmIcon name="lucideClock" class="size-3" />
-              <span>{{ art.readTime }}</span>
+              <span>{{ art()!.readTime }}</span>
             </div>
           </div>
 
           <!-- Title -->
           <h1 class="text-foreground mb-3 text-3xl leading-tight font-bold md:text-4xl">
-            {{ art.title }}
+            {{ art()!.title }}
           </h1>
 
           <!-- Subtitle -->
           <p class="text-muted-foreground mb-6 text-lg leading-relaxed">
-            {{ art.subtitle }}
+            {{ art()!.subtitle }}
           </p>
 
           <!-- Author + Source -->
           <div class="mb-6 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <hlm-avatar>
-                <span hlmAvatarFallback class="text-sm font-bold">{{ art.source[0] }}</span>
+                <span hlmAvatarFallback class="text-sm font-bold">{{ art()!.source[0] }}</span>
               </hlm-avatar>
               <div>
-                <p class="text-foreground text-sm font-medium">{{ art.source }}</p>
-                <p class="text-muted-foreground text-xs">Publicado em {{ art.date }}</p>
+                <p class="text-foreground text-sm font-medium">{{ art()!.source }}</p>
+                <p class="text-muted-foreground text-xs">Publicado em {{ art()!.date }}</p>
               </div>
             </div>
           </div>
@@ -116,7 +161,7 @@ import { NewsArticleService } from './news-article.service';
 
           <!-- Article Body -->
           <div class="prose-custom">
-            @for (para of art.paragraphs; track $index) {
+            @for (para of art()!.paragraphs; track $index) {
               @if (para.isSubtitle) {
                 <h2 class="text-foreground mt-8 mb-3 text-xl font-semibold">
                   {{ para.text }}
@@ -131,7 +176,7 @@ import { NewsArticleService } from './news-article.service';
 
           <!-- Tags -->
           <div class="mt-8 flex flex-wrap gap-2">
-            @for (tag of art.tags; track tag) {
+            @for (tag of art()!.tags; track tag) {
               <hlm-badge variant="outline" class="cursor-pointer">{{ tag }}</hlm-badge>
             }
           </div>
@@ -215,16 +260,30 @@ import { NewsArticleService } from './news-article.service';
 })
 export class NewsArticleComponent {
   private readonly articleService = inject(NewsArticleService);
+  private readonly route = inject(ActivatedRoute);
   readonly slug = input.required<string>();
 
-  protected readonly article = signal<import('./news-article.service').NewsArticleDetail | undefined>(
-    undefined,
-  );
-  protected readonly relatedArticles = signal(this.articleService.getRelatedArticles());
+  protected readonly article = signal<NewsArticleDetail | 'loading' | 'not-found'>('loading');
+  protected readonly relatedArticles = signal<import('./news-article.service').RelatedArticle[]>([]);
+  protected readonly art = computed(() => {
+    const v = this.article();
+    return v !== 'loading' && v !== 'not-found' ? v : undefined;
+  });
 
   constructor() {
-    this.articleService.init().then(() => {
-      this.articleService.getArticle(this.slug()).then((a) => this.article.set(a));
+    this.route.params.subscribe((params) => {
+      const slug = params['slug'];
+      if (slug) {
+        this.article.set('loading');
+        this.articleService.getArticle(slug).then((a) => {
+          if (a) {
+            this.article.set(a);
+            this.articleService.getRelatedArticles(slug).then((r) => this.relatedArticles.set(r));
+          } else {
+            this.article.set('not-found');
+          }
+        });
+      }
     });
   }
 }

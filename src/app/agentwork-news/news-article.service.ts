@@ -36,35 +36,9 @@ export interface RelatedArticle {
   category: string;
 }
 
-
-
 @Injectable({ providedIn: 'root' })
 export class NewsArticleService {
   private readonly supabase = inject(SupabaseService);
-  private articles: NewsArticleDetail[] = [];
-  private relatedArticles: RelatedArticle[] = [];
-
-  async init(): Promise<void> {
-    const dbArticles = await this.supabase.getArticles();
-    this.articles = dbArticles.map((a) => ({
-      slug: a.slug,
-      title: a.title,
-      subtitle: a.subtitle,
-      source: a.source,
-      sourceUrl: a.source_url,
-      date: this.formatDate(a.created_at),
-      readTime: a.read_time,
-      category: a.category,
-      categoryLabel: a.category_label,
-      author: {
-        name: a.author_name,
-        avatar: a.author_avatar,
-      },
-      imageUrl: a.image_url,
-      paragraphs: a.paragraphs,
-      tags: a.tags,
-    }));
-  }
 
   async getArticle(slug: string): Promise<NewsArticleDetail | undefined> {
     const dbArticle = await this.supabase.getArticleBySlug(slug);
@@ -93,16 +67,34 @@ export class NewsArticleService {
     return undefined;
   }
 
-  getAllSlugs(): string[] {
-    return this.articles.map((a) => a.slug);
+  async getRelatedArticles(currentSlug: string): Promise<RelatedArticle[]> {
+    const dbArticles = await this.supabase.getArticles();
+    return dbArticles
+      .filter((a) => a.slug !== currentSlug)
+      .slice(0, 4)
+      .map((a) => ({
+        id: a.id ?? '',
+        title: a.title,
+        snippet: a.snippet,
+        source: a.source,
+        time: this.timeAgo(a.created_at),
+        category: a.category,
+      }));
   }
 
-  getRelatedArticles(): RelatedArticle[] {
-    return this.relatedArticles;
-  }
+  private timeAgo(dateStr: string | undefined): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffH = Math.floor(diffMin / 60);
+    const diffD = Math.floor(diffH / 24);
 
-  getMoreFromSource(): RelatedArticle[] {
-    return this.relatedArticles.filter((a) => a.category === 'brasil' || a.category === 'economia');
+    if (diffMin < 1) return 'agora';
+    if (diffMin < 60) return `${diffMin}min atrás`;
+    if (diffH < 24) return `${diffH}h atrás`;
+    return `${diffD}d atrás`;
   }
 
   private formatDate(dateStr: string | undefined): string {

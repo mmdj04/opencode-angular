@@ -94,7 +94,7 @@ import { SearchService } from './search.service';
               [routerLink]="result.type === 'news' ? result.url : null"
               [target]="result.type === 'news' ? '_self' : '_blank'"
               [attr.rel]="result.type === 'news' ? null : 'noopener noreferrer'"
-              class="text-[18px] leading-snug text-blue-600 hover:underline"
+              class="text-[18px] leading-snug text-[#e0e0e0] hover:underline"
             >
               {{ result.title }}
             </a>

@@ -13,9 +13,14 @@ import { routes } from './app.routes';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { ThemeService } from './core/services/theme.service';
+import { AgentworkNewsService } from './agentwork-news/agentwork-news.service';
 
 function initializeTheme(): void {
   inject(ThemeService).init();
+}
+
+function initializeNews(): void {
+  inject(AgentworkNewsService).init();
 }
 
 export const appConfig: ApplicationConfig = {
@@ -27,5 +32,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor])),
     provideAppInitializer(initializeTheme),
+    provideAppInitializer(initializeNews),
   ],
 };
