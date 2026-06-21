@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideKey, lucideSettings } from '@ng-icons/lucide';
+import { lucideKey } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -22,15 +22,12 @@ import { SettingsService } from './settings.service';
     HlmInputGroupImports,
     HlmLabelImports,
   ],
-  providers: [provideIcons({ lucideSettings, lucideKey })],
+  providers: [provideIcons({ lucideKey })],
   template: `
     <div class="bg-background flex min-h-screen items-center justify-center p-4">
       <hlm-card class="w-full max-w-[420px]">
         <div class="flex flex-col gap-6 p-8">
           <div class="flex flex-col items-center gap-2 text-center">
-            <div class="bg-muted flex size-16 items-center justify-center rounded-full">
-              <ng-icon hlmIcon name="lucideSettings" class="text-muted-foreground size-8" />
-            </div>
             <h1 class="text-foreground text-2xl font-bold tracking-tight">Settings</h1>
             <p class="text-muted-foreground text-sm">Configure your AI agent</p>
           </div>
@@ -66,7 +63,13 @@ import { SettingsService } from './settings.service';
             </div>
           </div>
 
-          <button hlmBtn class="w-full" (click)="settings.save()">Save Settings</button>
+          <button hlmBtn class="w-full" [disabled]="settings.isGenerating()" (click)="settings.save()">
+            @if (settings.isGenerating()) {
+              Generating...
+            } @else {
+              Save Settings
+            }
+          </button>
 
           <div class="text-center">
             <a routerLink="/" class="text-muted-foreground hover:text-foreground text-sm underline">

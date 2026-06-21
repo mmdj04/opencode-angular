@@ -52,6 +52,7 @@
     "@ng-icons/core": "^33.2.4",
     "@ng-icons/lucide": "^33.2.4",
     "@spartan-ng/brain": "^0.0.1-alpha.718",
+    "@supabase/supabase-js": "^2.108.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "embla-carousel": ">=8.0.0 <9.0.0",

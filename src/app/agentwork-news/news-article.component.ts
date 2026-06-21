@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -244,6 +244,14 @@ export class NewsArticleComponent {
   private readonly articleService = inject(NewsArticleService);
   readonly slug = input.required<string>();
 
-  protected readonly article = computed(() => this.articleService.getArticle(this.slug()));
-  protected readonly relatedArticles = computed(() => this.articleService.getRelatedArticles());
+  protected readonly article = signal<import('./news-article.service').NewsArticleDetail | undefined>(
+    undefined,
+  );
+  protected readonly relatedArticles = signal(this.articleService.getRelatedArticles());
+
+  constructor() {
+    this.articleService.init().then(() => {
+      this.articleService.getArticle(this.slug()).then((a) => this.article.set(a));
+    });
+  }
 }

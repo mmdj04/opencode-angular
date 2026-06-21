@@ -207,7 +207,14 @@ export class AgentworkNewsComponent {
   protected readonly news = inject(AgentworkNewsService);
   protected readonly activeTab = signal('discover');
 
-  protected readonly featuredArticle = signal(this.news.articles[0]);
+  protected readonly featuredArticle = signal(this.news.articles()[0]);
 
-  protected readonly filteredArticles = signal(this.news.articles.slice(1));
+  protected readonly filteredArticles = signal(this.news.articles().slice(1));
+
+  constructor() {
+    this.news.init().then(() => {
+      this.featuredArticle.set(this.news.articles()[0]);
+      this.filteredArticles.set(this.news.articles().slice(1));
+    });
+  }
 }
