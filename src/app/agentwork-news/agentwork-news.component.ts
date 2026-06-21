@@ -7,40 +7,52 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
 import { AgentworkNewsService } from './agentwork-news.service';
-import { MermaidDiagramComponent } from './mermaid-diagram.component';
-
-const CATEGORY_BANNERS: Record<string, string> = {
-  research: `graph TD
-    A[Hipótese] --> B[Revisão de Literatura]
-    B --> C[Metodologia]
-    C --> D[Experimento]
-    D --> E[Análise de Dados]
-    E --> F[Publicação]`,
-  docs: `graph LR
-    A[Planejamento] --> B[Escrita]
-    B --> C[Revisão Técnica]
-    C --> D[Publicação]
-    D --> E[Feedback]
-    E --> F[Atualização]`,
-  'deep-tech': `graph TD
-    A[Teoria Quântica] --> B[Simulação]
-    B --> C[Protótipo]
-    C --> D[Experimento]
-    D --> E[Descoberta]
-    E --> F[Aplicação Prática]`,
-  'ai-labs': `graph TD
-    A[Problema] --> B[Coleta de Dados]
-    B --> C[Treinamento]
-    C --> D[Avaliação]
-    D --> E[Deploy]
-    E --> F[Monitoramento]`,
-};
 
 const CATEGORY_LABELS: Record<string, string> = {
   research: 'Pesquisa',
   docs: 'Documentação',
   'deep-tech': 'Deep Tech',
   'ai-labs': 'AI Labs',
+};
+
+const CATEGORY_DESCRIPTIONS: Record<
+  string,
+  { title: string; description: string; features: string[] }
+> = {
+  research: {
+    title: 'Pesquisa Científica',
+    description:
+      'Artigos sobre métodos, descobertas e avanços científicos. Acompanhe as últimas tendências em pesquisa acadêmica.',
+    features: [
+      'Revisão de literatura',
+      'Metodologia',
+      'Análise de dados',
+      'Publicações',
+    ],
+  },
+  docs: {
+    title: 'Documentação',
+    description:
+      'Guias, tutoriais e referências técnicas para desenvolvedores.',
+    features: ['Guias de uso', 'Referências de API', 'Exemplos práticos', 'Atualizações'],
+  },
+  'deep-tech': {
+    title: 'Deep Tech',
+    description:
+      'Tecnologias de ponta e inovações disruptivas que estão moldando o futuro.',
+    features: [
+      'Computação quântica',
+      'Biotech',
+      'Neurociência',
+      'Materiais avançados',
+    ],
+  },
+  'ai-labs': {
+    title: 'AI Labs',
+    description:
+      'Experimentos e desenvolvimento de inteligência artificial em produção.',
+    features: ['Modelos de linguagem', 'Computer Vision', 'NLP', 'Deploy em produção'],
+  },
 };
 
 @Component({
@@ -52,7 +64,6 @@ const CATEGORY_LABELS: Record<string, string> = {
     HlmButtonImports,
     HlmCardImports,
     HlmTabsImports,
-    MermaidDiagramComponent,
   ],
   providers: [
     provideIcons({
@@ -92,14 +103,25 @@ const CATEGORY_LABELS: Record<string, string> = {
         <!-- Category Banner -->
         <div class="py-6">
           @if (activeTab(); as tab) {
-            <div class="mb-6 overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-4">
-              <div class="mb-3 flex items-center gap-3">
-                <hlm-badge variant="secondary">{{ getCategoryLabel(tab) }}</hlm-badge>
+            <div class="overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] p-6">
+              <div class="mb-4">
+                <span class="text-muted-foreground text-xs font-semibold tracking-widest uppercase">
+                  {{ getCategoryLabel(tab) }}
+                </span>
               </div>
-              <app-mermaid-diagram
-                [code]="getCategoryBanner(tab)"
-                [caption]="getCategoryCaption(tab)"
-              />
+              <h2 class="text-foreground mb-3 text-2xl font-bold">
+                {{ getCategoryDescription(tab).title }}
+              </h2>
+              <p class="text-muted-foreground mb-6 max-w-2xl text-sm leading-relaxed">
+                {{ getCategoryDescription(tab).description }}
+              </p>
+              <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                @for (feature of getCategoryDescription(tab).features; track feature) {
+                  <div class="rounded-md border border-[#2a2a2a] bg-[#171717] px-4 py-3">
+                    <span class="text-foreground text-sm">{{ feature }}</span>
+                  </div>
+                }
+              </div>
             </div>
           }
         </div>
@@ -197,21 +219,21 @@ export class AgentworkNewsComponent {
     this.news.getArticlesByCategory(this.activeTab()),
   );
 
-  getCategoryBanner(category: string): string {
-    return CATEGORY_BANNERS[category] ?? CATEGORY_BANNERS['research']!;
-  }
-
   getCategoryLabel(category: string): string {
     return CATEGORY_LABELS[category] ?? category;
   }
 
-  getCategoryCaption(category: string): string {
-    const captions: Record<string, string> = {
-      research: 'Fluxo de pesquisa científica',
-      docs: 'Pipeline de documentação técnica',
-      'deep-tech': 'Ciclo de desenvolvimento em tecnologia de ponta',
-      'ai-labs': 'Pipeline de desenvolvimento de IA',
-    };
-    return captions[category] ?? '';
+  getCategoryDescription(category: string): {
+    title: string;
+    description: string;
+    features: string[];
+  } {
+    return (
+      CATEGORY_DESCRIPTIONS[category] ?? {
+        title: category,
+        description: '',
+        features: [],
+      }
+    );
   }
 }
