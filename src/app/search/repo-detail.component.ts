@@ -17,9 +17,6 @@ import {
   octCode,
   octIssueOpened,
   octGitPullRequest,
-  octPlay,
-  octShield,
-  octGraph,
   octEye,
 } from '@ng-icons/octicons';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -55,9 +52,6 @@ const LINK_INTERCEPTOR = `
       octCode,
       octIssueOpened,
       octGitPullRequest,
-      octPlay,
-      octShield,
-      octGraph,
       octEye,
     }),
   ],
@@ -118,21 +112,6 @@ const LINK_INTERCEPTOR = `
             <span class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e] flex items-center gap-1.5">
               <ng-icon name="octGitPullRequest" style="font-size:16px;width:16px;height:16px" />
               Pull requests
-            </span>
-            <span class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e] flex items-center gap-1.5">
-              <ng-icon name="octPlay" style="font-size:16px;width:16px;height:16px" />
-              Actions
-            </span>
-            <a
-              routerLink="/github/security"
-              class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e] hover:text-white flex items-center gap-1.5"
-            >
-              <ng-icon name="octShield" style="font-size:16px;width:16px;height:16px" />
-              Security
-            </a>
-            <span class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e] flex items-center gap-1.5">
-              <ng-icon name="octGraph" style="font-size:16px;width:16px;height:16px" />
-              Insights
             </span>
             <span
               class="border-b-2 pb-3 pt-2 flex items-center gap-1.5 cursor-pointer transition-colors"

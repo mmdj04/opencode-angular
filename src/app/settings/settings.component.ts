@@ -57,6 +57,11 @@ import { AuthService } from '../core/services/auth.service';
                 <ng-icon hlmIcon name="lucideLogOut" class="text-muted-foreground" />
               </button>
             </div>
+          } @else {
+            <div class="flex gap-3">
+              <a routerLink="/sign-in" hlmBtn variant="outline" class="w-full">Sign In</a>
+              <a routerLink="/sign-up" hlmBtn class="w-full">Sign Up</a>
+            </div>
           }
 
           <div class="flex flex-col gap-4">
