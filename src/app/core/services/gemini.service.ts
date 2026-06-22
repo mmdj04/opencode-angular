@@ -55,11 +55,11 @@ const CATEGORY_TOPICS: Record<string, string> = {
   'ai-labs': 'new LLM releases, AI agent frameworks, prompt engineering techniques, AI-powered tools, or AI industry applications',
 };
 
-const CODE_REPOSITORY_SYSTEM_INSTRUCTION = `You are {agentName}, an expert web developer specializing in clean, modern single-page websites.
-You generate simple, visually impressive websites with all CSS and JavaScript inline in a single HTML file.
-You always include a README.md with a project description, tech stack, and how to run it.
-Your code is production-quality, well-structured, responsive, and uses dark theme support.
-Write all content in Brazilian Portuguese (pt-BR).`;
+const CODE_REPOSITORY_SYSTEM_INSTRUCTION = `Você é {agentName}, um especialista em documentação técnica.
+Gere uma página de documentação simples e limpa estilo GitHub Pages.
+Todo o CSS deve estar inline no HTML. Sem JavaScript.
+Inclua um README.md curto descrevendo o projeto.
+Escreva tudo em português brasileiro (pt-BR).`;
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
@@ -183,29 +183,29 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
   async generateCodeRepository(agentName: string, apiKey: string): Promise<GeneratedRepo> {
     const systemInstruction = CODE_REPOSITORY_SYSTEM_INSTRUCTION.replace('{agentName}', agentName);
 
-    const prompt = `Generate a simple, visually impressive single-page website.
-Return ONLY a valid JSON object (no markdown, no code fences, no extra text) with these fields:
-- name (string): repository name (kebab-case, e.g. "landing-page-moderno")
-- description (string): 1-2 sentence description in Portuguese
-- language (string): always "HTML"
-- languageColor (string): always "#e34c26"
-- stars (integer): random between 10-500
-- forks (integer): random between 2-50
-- starsToday (integer): random between 1-20
-- watch (integer): random between 5-100
-- topics (array of 3-5 relevant tags in Portuguese)
+    const prompt = `Gere uma página de documentação simples e limpa.
+Retorne APENAS um objeto JSON válido (sem markdown, sem code fences, sem texto extra) com estes campos:
+- name (string): nome do repositório em kebab-case (ex. "documentacao-api")
+- description (string): 1-2 frases de descrição em português
+- language (string): sempre "HTML"
+- languageColor (string): sempre "#e34c26"
+- stars (integer): aleatório entre 10-500
+- forks (integer): aleatório entre 2-50
+- starsToday (integer): aleatório entre 1-20
+- watch (integer): aleatório entre 5-100
+- topics (array de 3-5 tags relevantes em português)
 - license (string): "MIT"
-- files (array of exactly 2 objects):
-  1. { name: "index.html", type: "file", content: "FULL HTML with inline CSS and JS" }
-     - Complete HTML5 document with meta tags, responsive design
-     - All CSS inline in a <style> tag (dark theme, modern design, smooth transitions)
-     - All JavaScript inline in a <script> tag (interactivity, animations)
-     - Must be a complete, functional, visually impressive page
-  2. { name: "README.md", type: "file", content: "Markdown README" }
-     - Project title, description, tech stack, how to open the file
+- files (array de exatamente 2 objetos):
+  1. { name: "index.html", type: "file", content: "HTML completo com CSS inline" }
+     - Documento HTML5 completo com meta tags e design responsivo
+     - Todo o CSS inline em tag <style> (tema escuro, design limpo)
+     - Sem JavaScript
+     - Uma única seção com pouco conteúdo de exemplo
+  2. { name: "README.md", type: "file", content: "Markdown do README" }
+     - Título do projeto, breve descrição, como abrir o arquivo
 
-Date context: ${new Date().toLocaleDateString('pt-BR')}.
-Make it production-quality, modern, and visually impressive.`;
+Data: ${new Date().toLocaleDateString('pt-BR')}.
+Mantenha simples e curto.`;
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 150_000);
