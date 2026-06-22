@@ -26,6 +26,17 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { SupabaseService, type DbGeneratedRepo } from '../core/services/supabase.service';
 import { TRENDING_REPOS } from './trending-data';
 
+const LINK_INTERCEPTOR = `
+<base target="_blank">
+<script>
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a');
+    if (link && link.getAttribute('href') && !link.getAttribute('href').startsWith('#') && !link.getAttribute('href').startsWith('javascript:')) {
+      e.preventDefault();
+    }
+  });
+</script>`;
+
 @Component({
   selector: 'app-repo-detail',
   imports: [RouterLink, NgIcon, HlmButtonImports],
@@ -85,7 +96,15 @@ import { TRENDING_REPOS } from './trending-data';
 
           <!-- Repo nav tabs -->
           <nav class="mb-6 flex items-center gap-4 border-b border-[#21262d] pb-px text-[14px]">
-            <span class="border-b-2 border-primary text-foreground flex items-center gap-1.5 pb-3 pt-2 font-semibold">
+            <span
+              class="border-b-2 pb-3 pt-2 flex items-center gap-1.5 cursor-pointer transition-colors"
+              [class.border-primary]="activeTab() === 'code'"
+              [class.text-foreground]="activeTab() === 'code'"
+              [class.font-semibold]="activeTab() === 'code'"
+              [class.border-transparent]="activeTab() !== 'code'"
+              [class.text-[#8b949e]]="activeTab() !== 'code'"
+              (click)="activeTab.set('code'); selectedFile.set(null)"
+            >
               <ng-icon name="octCode" style="font-size:16px;width:16px;height:16px" />
               Code
             </span>
@@ -114,6 +133,18 @@ import { TRENDING_REPOS } from './trending-data';
             <span class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e] flex items-center gap-1.5">
               <ng-icon name="octGraph" style="font-size:16px;width:16px;height:16px" />
               Insights
+            </span>
+            <span
+              class="border-b-2 pb-3 pt-2 flex items-center gap-1.5 cursor-pointer transition-colors"
+              [class.border-primary]="activeTab() === 'preview'"
+              [class.text-foreground]="activeTab() === 'preview'"
+              [class.font-semibold]="activeTab() === 'preview'"
+              [class.border-transparent]="activeTab() !== 'preview'"
+              [class.text-[#8b949e]]="activeTab() !== 'preview'"
+              (click)="activeTab.set('preview'); selectedFile.set(null)"
+            >
+              <ng-icon name="octEye" style="font-size:16px;width:16px;height:16px" />
+              Preview
             </span>
           </nav>
 
@@ -147,9 +178,27 @@ import { TRENDING_REPOS } from './trending-data';
 
           <!-- Two column layout -->
           <div class="flex flex-col gap-6 lg:flex-row">
-            <!-- Left: File tree or File content -->
+            <!-- Left: Main content area -->
             <div class="min-w-0 flex-1">
-              @if (selectedFile(); as file) {
+              @if (activeTab() === 'preview') {
+                <!-- GLOBAL PREVIEW: site completo -->
+                <div class="border border-[#21262d]">
+                  <div class="border-b border-[#21262d] px-4 py-2">
+                    <span class="text-foreground text-[14px] font-semibold">Preview</span>
+                  </div>
+                  @if (assembledSrcdoc()) {
+                    <iframe
+                      [srcdoc]="assembledSrcdoc()"
+                      sandbox="allow-scripts allow-same-origin"
+                      class="h-[calc(100vh-200px)] w-full border-0 bg-background"
+                    ></iframe>
+                  } @else {
+                    <div class="flex flex-col items-center justify-center py-12 text-center">
+                      <p class="text-muted-foreground text-[14px]">No HTML files to preview</p>
+                    </div>
+                  }
+                </div>
+              } @else if (selectedFile(); as file) {
                 <!-- File content viewer -->
                 <div class="border border-[#21262d]">
                   <div class="flex items-center justify-between border-b border-[#21262d] px-4 py-2">
@@ -186,8 +235,8 @@ import { TRENDING_REPOS } from './trending-data';
                   } @else {
                     <iframe
                       [srcdoc]="safeSrcdoc()"
-                      sandbox="allow-scripts"
-                      class="h-[calc(100vh-200px)] w-full border-0 bg-white"
+                      sandbox="allow-scripts allow-same-origin"
+                      class="h-[calc(100vh-200px)] w-full border-0 bg-background"
                     ></iframe>
                   }
                 </div>
@@ -328,16 +377,69 @@ export class RepoDetailComponent {
   protected readonly generatedRepo = signal<DbGeneratedRepo | null>(null);
   protected readonly selectedFile = signal<{ name: string; content: string } | null>(null);
   protected readonly previewMode = signal<'code' | 'preview'>('code');
+  protected readonly activeTab = signal<'code' | 'preview'>('code');
 
   protected readonly isHtmlFile = computed(() => {
     const file = this.selectedFile();
     return file?.name.endsWith('.html') ?? false;
   });
 
+  private injectLinkInterceptor(html: string): string {
+    if (html.includes('<head>')) {
+      return html.replace('<head>', '<head>' + LINK_INTERCEPTOR);
+    }
+    if (html.includes('<html')) {
+      return html.replace(/<html[^>]*>/, '$&<head>' + LINK_INTERCEPTOR + '</head>');
+    }
+    return LINK_INTERCEPTOR + html;
+  }
+
   protected readonly safeSrcdoc = computed(() => {
     const file = this.selectedFile();
     if (!file || !file.name.endsWith('.html')) return '';
-    return this.sanitizer.bypassSecurityTrustHtml(file.content);
+    return this.sanitizer.bypassSecurityTrustHtml(this.injectLinkInterceptor(file.content));
+  });
+
+  protected readonly assembledSrcdoc = computed(() => {
+    const generated = this.generatedRepo();
+    if (!generated) return '';
+
+    const files = generated.files;
+    const htmlFile =
+      files.find((f) => f.name === 'index.html') ??
+      files.find((f) => f.name.endsWith('.html'));
+    if (!htmlFile) return '';
+
+    let html = htmlFile.content;
+
+    // Inline CSS: <link rel="stylesheet" href="style.css"> → <style>...</style>
+    html = html.replace(
+      /<link\s+[^>]*href=["']([^"']+\.css)["'][^>]*\/?>/gi,
+      (_, cssPath: string) => {
+        const cssFileName = cssPath.split('/').pop() ?? cssPath;
+        const cssFile = files.find(
+          (f) => f.name === cssPath || f.name === cssFileName || f.name.endsWith('/' + cssPath),
+        );
+        return cssFile ? `<style>${cssFile.content}</style>` : '';
+      },
+    );
+
+    // Inline JS: <script src="script.js"></script> → <script>...</script>
+    html = html.replace(
+      /<script\s+[^>]*src=["']([^"']+\.js)["'][^>]*>\s*<\/script>/gi,
+      (_, jsPath: string) => {
+        const jsFileName = jsPath.split('/').pop() ?? jsPath;
+        const jsFile = files.find(
+          (f) => f.name === jsPath || f.name === jsFileName || f.name.endsWith('/' + jsPath),
+        );
+        return jsFile ? `<script>${jsFile.content}</script>` : '';
+      },
+    );
+
+    // Inject link interceptor
+    html = this.injectLinkInterceptor(html);
+
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   });
 
   protected readonly repo = computed(() => {
@@ -410,6 +512,7 @@ export class RepoDetailComponent {
     if (file) {
       this.selectedFile.set({ name: file.name, content: file.content });
       this.previewMode.set('code');
+      this.activeTab.set('code');
     }
   }
 
