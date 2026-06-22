@@ -35,6 +35,11 @@ export const routes: Routes = [
       import('./search/repo-detail.component').then((m) => m.RepoDetailComponent),
   },
   {
+    path: 'dev/:username',
+    loadComponent: () =>
+      import('./search/developer-detail.component').then((m) => m.DeveloperDetailComponent),
+  },
+  {
     path: 'sign-in',
     loadComponent: () => import('./auth/sign-in.component').then((m) => m.SignInComponent),
   },

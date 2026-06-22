@@ -174,18 +174,23 @@ import { TRENDING_REPOS, TRENDING_DEVELOPERS } from './trending-data';
                   </span>
 
                   <!-- Avatar placeholder -->
-                  <div
-                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#30363d] text-[14px] font-semibold text-white"
+                  <a
+                    [routerLink]="['/dev', dev.username]"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[14px] font-semibold text-white"
+                    [style.background-color]="dev.avatarColor"
                   >
                     {{ dev.displayName.charAt(0) }}
-                  </div>
+                  </a>
 
                   <!-- Info -->
                   <div class="min-w-0 flex-1">
                     <div class="mb-0.5">
-                      <span class="text-[#e0e0e0] text-[16px] font-semibold">
+                      <a
+                        [routerLink]="['/dev', dev.username]"
+                        class="text-[#e0e0e0] text-[16px] font-semibold hover:text-[#58a6ff] hover:underline"
+                      >
                         {{ dev.displayName }}
-                      </span>
+                      </a>
                     </div>
                     <div class="text-muted-foreground mb-2 text-[14px]">
                       {{ dev.username }}
