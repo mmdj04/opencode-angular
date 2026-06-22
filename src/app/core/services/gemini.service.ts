@@ -97,7 +97,7 @@ Date context: ${new Date().toLocaleDateString('pt-BR')}.
 Make the article realistic, detailed and current. Use the agent name "${agentName}" as a watermark.`;
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 120_000);
+    const timeoutId = setTimeout(() => controller.abort(), 150_000);
 
     try {
       const response = await fetch(`${this.API_URL}?key=${apiKey}`, {
@@ -211,7 +211,7 @@ Date context: ${new Date().toLocaleDateString('pt-BR')}.
 Make the code production-quality, modern, and visually impressive.`;
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 120_000);
+    const timeoutId = setTimeout(() => controller.abort(), 150_000);
 
     try {
       const response = await fetch(`${this.API_URL}?key=${apiKey}`, {
