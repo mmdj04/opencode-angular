@@ -14,7 +14,6 @@ export interface GeneratedRepo {
   topics: string[];
   license: string;
   defaultBranch: string;
-  template: string;
   files: { name: string; type: string; content: string }[];
 }
 
@@ -55,6 +54,12 @@ const CATEGORY_TOPICS: Record<string, string> = {
   'deep-tech': 'quantum computing advances, biotech innovations, neuroscience discoveries, space technology, nanotechnology, or advanced materials',
   'ai-labs': 'new LLM releases, AI agent frameworks, prompt engineering techniques, AI-powered tools, or AI industry applications',
 };
+
+const CODE_REPOSITORY_SYSTEM_INSTRUCTION = `You are {agentName}, an expert web developer specializing in clean, modern single-page websites.
+You generate simple, visually impressive websites with all CSS and JavaScript inline in a single HTML file.
+You always include a README.md with a project description, tech stack, and how to run it.
+Your code is production-quality, well-structured, responsive, and uses dark theme support.
+Write all content in Brazilian Portuguese (pt-BR).`;
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
@@ -175,40 +180,32 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
     }
   }
 
-  async generateCodeRepository(
-    agentName: string,
-    apiKey: string,
-    template: string,
-  ): Promise<GeneratedRepo> {
-    const prompt = `You are ${agentName}, an expert web developer.
-Generate a complete, production-quality ${template} website as a GitHub repository.
+  async generateCodeRepository(agentName: string, apiKey: string): Promise<GeneratedRepo> {
+    const systemInstruction = CODE_REPOSITORY_SYSTEM_INSTRUCTION.replace('{agentName}', agentName);
 
-Template type: ${template}
-Choose an appropriate name, description, language, and topics for this ${template} project.
-
+    const prompt = `Generate a simple, visually impressive single-page website.
 Return ONLY a valid JSON object (no markdown, no code fences, no extra text) with these fields:
-- name (string): repository name (kebab-case, e.g. "my-portfolio-site")
-- description (string): 1-2 sentence description
-- language (string): primary language ("HTML", "CSS", or "JavaScript")
-- languageColor (string): hex color for the language badge
-- stars (integer): random star count between 10-500
-- forks (integer): random fork count between 2-50
-- starsToday (integer): random stars today between 1-20
-- watch (integer): random watch count between 5-100
-- topics (array of 3-5 relevant tags)
-- license (string): e.g. "MIT"
-- files (array of objects with {name: string, type: string, content: string}):
-  - name: filename like "index.html", "styles.css", "script.js"
-  - type: "file"
-  - content: the FULL source code content of the file (must be complete, functional code)
-  - Include at minimum: index.html, styles.css, script.js
-  - The HTML must be complete with proper structure, meta tags, responsive design
-  - The CSS must be modern, clean, with smooth transitions and dark theme support
-  - The JS must be functional with interactivity and animations
-  - Make the code impressive, well-structured, and visually appealing
+- name (string): repository name (kebab-case, e.g. "landing-page-moderno")
+- description (string): 1-2 sentence description in Portuguese
+- language (string): always "HTML"
+- languageColor (string): always "#e34c26"
+- stars (integer): random between 10-500
+- forks (integer): random between 2-50
+- starsToday (integer): random between 1-20
+- watch (integer): random between 5-100
+- topics (array of 3-5 relevant tags in Portuguese)
+- license (string): "MIT"
+- files (array of exactly 2 objects):
+  1. { name: "index.html", type: "file", content: "FULL HTML with inline CSS and JS" }
+     - Complete HTML5 document with meta tags, responsive design
+     - All CSS inline in a <style> tag (dark theme, modern design, smooth transitions)
+     - All JavaScript inline in a <script> tag (interactivity, animations)
+     - Must be a complete, functional, visually impressive page
+  2. { name: "README.md", type: "file", content: "Markdown README" }
+     - Project title, description, tech stack, how to open the file
 
 Date context: ${new Date().toLocaleDateString('pt-BR')}.
-Make the code production-quality, modern, and visually impressive.`;
+Make it production-quality, modern, and visually impressive.`;
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 150_000);
@@ -220,6 +217,7 @@ Make the code production-quality, modern, and visually impressive.`;
         signal: controller.signal,
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
+          systemInstruction: { parts: [{ text: systemInstruction }] },
           generationConfig: {
             temperature: 0.7,
             maxOutputTokens: 32768,
@@ -271,7 +269,6 @@ Make the code production-quality, modern, and visually impressive.`;
         topics: (raw['topics'] as string[]) ?? [],
         license: (raw['license'] as string) ?? 'MIT',
         defaultBranch: 'main',
-        template,
         files: (raw['files'] as { name: string; type: string; content: string }[]) ?? [],
       };
     } finally {

@@ -5,14 +5,6 @@ import { toast } from '@spartan-ng/brain/sonner';
 import { GeminiService } from '../core/services/gemini.service';
 import { SupabaseService } from '../core/services/supabase.service';
 
-export const CODE_TEMPLATES = [
-  'Landing Page',
-  'Portfolio',
-  'Blog',
-  'E-commerce',
-  'Dashboard',
-] as const;
-
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
   private readonly gemini = inject(GeminiService);
@@ -23,7 +15,6 @@ export class SettingsService {
   readonly agentName = signal('');
   readonly apiKey = signal('');
   readonly isGenerating = signal(false);
-  readonly selectedTemplate = signal<string>(CODE_TEMPLATES[0]);
   readonly isCodeGenerating = signal(false);
 
   constructor() {
@@ -87,13 +78,12 @@ export class SettingsService {
     }
 
     this.isCodeGenerating.set(true);
-    toast.info(`Generating ${this.selectedTemplate()} with Gemma...`);
+    toast.info('Generating website with Gemma...');
 
     try {
       const repo = await this.gemini.generateCodeRepository(
         this.agentName(),
         this.apiKey(),
-        this.selectedTemplate(),
       );
 
       const success = await this.supabase.insertGeneratedRepo({
@@ -109,7 +99,7 @@ export class SettingsService {
         topics: repo.topics,
         license: repo.license,
         default_branch: repo.defaultBranch,
-        template: repo.template,
+        template: '',
         files: repo.files,
       });
 
