@@ -16,6 +16,16 @@ export const routes: Routes = [
       import('./search/repo-detail.component').then((m) => m.RepoDetailComponent),
   },
   {
+    path: 'github/repo/:owner/:name/issues',
+    loadComponent: () =>
+      import('./github/issues.component').then((m) => m.IssuesComponent),
+  },
+  {
+    path: 'github/security',
+    loadComponent: () =>
+      import('./github/security.component').then((m) => m.SecurityComponent),
+  },
+  {
     path: 'github/dev/:username',
     loadComponent: () =>
       import('./search/developer-detail.component').then((m) => m.DeveloperDetailComponent),

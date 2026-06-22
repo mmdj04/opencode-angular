@@ -9,7 +9,7 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { SupabaseService, type DbGeneratedRepo } from '../core/services/supabase.service';
-import { TRENDING_DEVELOPERS } from './trending-data';
+import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
 
 @Component({
   selector: 'app-github-trending',
@@ -30,6 +30,10 @@ import { TRENDING_DEVELOPERS } from './trending-data';
           <a routerLink="/" class="text-foreground shrink-0 text-xl font-bold hover:no-underline">
             Agentwork
           </a>
+          <nav class="flex items-center gap-4 text-[14px]">
+            <a routerLink="/github" class="text-muted-foreground hover:text-foreground">Trending</a>
+            <a routerLink="/github/security" class="text-muted-foreground hover:text-foreground">Security</a>
+          </nav>
           <div hlmInputGroup class="flex-1">
             <hlm-input-group-addon align="inline-start">
               <ng-icon hlmIcon name="lucideSearch" class="text-muted-foreground" />
@@ -292,6 +296,7 @@ export class GitHubTrendingComponent {
   protected readonly query = signal('');
   protected readonly activeTab = signal<'repositories' | 'developers'>('repositories');
   protected readonly generatedRepos = signal<DbGeneratedRepo[]>([]);
+  protected readonly allDevelopers = signal<TrendingDeveloper[]>([]);
   protected readonly isLoading = signal(true);
 
   protected readonly filteredRepos = computed(() => {
@@ -323,8 +328,9 @@ export class GitHubTrendingComponent {
 
   protected readonly filteredDevelopers = computed(() => {
     const q = this.query().toLowerCase().trim();
-    if (!q) return TRENDING_DEVELOPERS;
-    return TRENDING_DEVELOPERS.filter(
+    const devs = this.allDevelopers();
+    if (!q) return devs;
+    return devs.filter(
       (d) =>
         d.displayName.toLowerCase().includes(q) ||
         d.username.toLowerCase().includes(q) ||
@@ -336,15 +342,43 @@ export class GitHubTrendingComponent {
   constructor() {
     afterNextRender(() => {
       if (this.isBrowser) {
-        this.loadGeneratedRepos();
+        this.loadData();
       }
     });
   }
 
-  private async loadGeneratedRepos(): Promise<void> {
+  private async loadData(): Promise<void> {
     this.isLoading.set(true);
-    const repos = await this.supabase.getGeneratedRepos();
+    const [repos, profiles] = await Promise.all([
+      this.supabase.getGeneratedRepos(),
+      this.supabase.getDeveloperProfiles(),
+    ]);
     this.generatedRepos.set(repos);
+
+    const supabaseDevs: TrendingDeveloper[] = profiles.map((p, i) => ({
+      rank: i + 1,
+      displayName: p.display_name,
+      username: p.username,
+      bio: p.bio,
+      location: p.location,
+      website: p.website,
+      twitter: p.twitter,
+      avatarColor: p.avatar_color,
+      followers: p.followers,
+      following: p.following,
+      type: 'ai-agent',
+      topLanguages: p.top_languages,
+      pinnedRepos: p.pinned_repos,
+      repos: p.repos,
+      popularRepo: p.popular_repo,
+    }));
+
+    const hardcodedWithOffset = TRENDING_DEVELOPERS.map((d) => ({
+      ...d,
+      rank: d.rank + supabaseDevs.length,
+    }));
+
+    this.allDevelopers.set([...supabaseDevs, ...hardcodedWithOffset]);
     this.isLoading.set(false);
   }
 

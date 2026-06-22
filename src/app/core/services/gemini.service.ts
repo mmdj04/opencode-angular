@@ -15,6 +15,39 @@ export interface GeneratedRepo {
   license: string;
   defaultBranch: string;
   files: { name: string; type: string; content: string }[];
+  developerProfile: GeneratedDeveloperProfile;
+}
+
+export interface GeneratedDeveloperProfile {
+  username: string;
+  displayName: string;
+  bio: string;
+  location: string;
+  website: string;
+  twitter: string;
+  avatarColor: string;
+  followers: number;
+  following: number;
+  topLanguages: { name: string; color: string; percentage: number }[];
+  pinnedRepos: {
+    name: string;
+    description: string;
+    language: string;
+    languageColor: string;
+    stars: number;
+    forks: number;
+    updated: string;
+  }[];
+  repos: {
+    name: string;
+    description: string;
+    language: string;
+    languageColor: string;
+    stars: number;
+    forks: number;
+    updated: string;
+  }[];
+  popularRepo: { name: string; description: string };
 }
 
 const CATEGORY_PROMPTS: Record<string, string> = {
@@ -55,11 +88,16 @@ const CATEGORY_TOPICS: Record<string, string> = {
   'ai-labs': 'new LLM releases, AI agent frameworks, prompt engineering techniques, AI-powered tools, or AI industry applications',
 };
 
-const CODE_REPOSITORY_SYSTEM_INSTRUCTION = `Você é {agentName}, um especialista em documentação técnica.
+const CODE_REPOSITORY_SYSTEM_INSTRUCTION = `Você é {agentName}, um especialista em documentação técnica e desenvolvimento web.
 Gere uma página de documentação simples e limpa estilo GitHub Pages.
 Todo o CSS deve estar inline no HTML. Sem JavaScript.
 Inclua um README.md curto descrevendo o projeto.
-Escreva tudo em português brasileiro (pt-BR).`;
+Escreva tudo em português brasileiro (pt-BR).
+Você também deve gerar um perfil de developer para o GitHub Trends.
+O username do developer deve ser o nome do agente em kebab-case (ex: "meu-agente").
+O display_name deve ser o nome original do agente.
+O bio deve descrever o agente como um desarrollador especialista em documentação e web.
+As languages devem incluir HTML (40%), CSS (30%), JavaScript (20%), Markdown (10%).`;
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
@@ -182,8 +220,16 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
 
   async generateCodeRepository(agentName: string, apiKey: string): Promise<GeneratedRepo> {
     const systemInstruction = CODE_REPOSITORY_SYSTEM_INSTRUCTION.replace('{agentName}', agentName);
+    const username = agentName
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 30);
 
-    const prompt = `Gere uma página de documentação simples e limpa.
+    const prompt = `Gere uma página de documentação simples e limpa, e um perfil de developer.
 Retorne APENAS um objeto JSON válido (sem markdown, sem code fences, sem texto extra) com estes campos:
 - name (string): nome do repositório em kebab-case (ex. "documentacao-api")
 - description (string): 1-2 frases de descrição em português
@@ -203,6 +249,23 @@ Retorne APENAS um objeto JSON válido (sem markdown, sem code fences, sem texto 
      - Uma única seção com pouco conteúdo de exemplo
   2. { name: "README.md", type: "file", content: "Markdown do README" }
      - Título do projeto, breve descrição, como abrir o arquivo
+- developerProfile (object):
+  - username: "${username}"
+  - displayName: "${agentName}"
+  - bio: "Desenvolvedor especialista em documentação técnica e web. Contributor ativo no Agentwork."
+  - location: "São Paulo, Brazil"
+  - website: ""
+  - twitter: "@${username}"
+  - avatarColor: "#6366f1"
+  - followers (integer): aleatório entre 100-5000
+  - following (integer): aleatório entre 50-300
+  - topLanguages (array de 4 objetos com {name, color, percentage}):
+    HTML #e34c26 40, CSS #563d7c 30, JavaScript #f1e05a 20, Markdown #083fa1 10
+  - pinnedRepos (array de 2 objetos com {name, description, language, languageColor, stars, forks, updated}):
+    O primeiro é o repo que está sendo gerado, o segundo é um repo fictício anterior
+  - repos (array de 3-5 objetos com {name, description, language, languageColor, stars, forks, updated}):
+    Inclua o repo atual + 2-4 repos fictícios
+  - popularRepo (object com {name, description}): o repo que está sendo gerado
 
 Data: ${new Date().toLocaleDateString('pt-BR')}.
 Mantenha simples e curto.`;
@@ -255,6 +318,7 @@ Mantenha simples e curto.`;
       }
 
       const raw: Record<string, unknown> = JSON.parse(jsonMatch[0]);
+      const rawProfile = raw['developerProfile'] as Record<string, unknown> ?? {};
 
       return {
         owner: agentName,
@@ -270,6 +334,21 @@ Mantenha simples e curto.`;
         license: (raw['license'] as string) ?? 'MIT',
         defaultBranch: 'main',
         files: (raw['files'] as { name: string; type: string; content: string }[]) ?? [],
+        developerProfile: {
+          username: (rawProfile['username'] as string) ?? username,
+          displayName: (rawProfile['displayName'] as string) ?? agentName,
+          bio: (rawProfile['bio'] as string) ?? '',
+          location: (rawProfile['location'] as string) ?? '',
+          website: (rawProfile['website'] as string) ?? '',
+          twitter: (rawProfile['twitter'] as string) ?? '',
+          avatarColor: (rawProfile['avatarColor'] as string) ?? '#6366f1',
+          followers: (rawProfile['followers'] as number) ?? 0,
+          following: (rawProfile['following'] as number) ?? 0,
+          topLanguages: (rawProfile['topLanguages'] as { name: string; color: string; percentage: number }[]) ?? [],
+          pinnedRepos: (rawProfile['pinnedRepos'] as { name: string; description: string; language: string; languageColor: string; stars: number; forks: number; updated: string }[]) ?? [],
+          repos: (rawProfile['repos'] as { name: string; description: string; language: string; languageColor: string; stars: number; forks: number; updated: string }[]) ?? [],
+          popularRepo: (rawProfile['popularRepo'] as { name: string; description: string }) ?? { name: '', description: '' },
+        },
       };
     } finally {
       clearTimeout(timeoutId);

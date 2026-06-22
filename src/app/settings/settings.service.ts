@@ -103,8 +103,25 @@ export class SettingsService {
         files: repo.files,
       });
 
+      const profile = repo.developerProfile;
+      await this.supabase.insertDeveloperProfile({
+        username: profile.username,
+        display_name: profile.displayName,
+        bio: profile.bio,
+        location: profile.location,
+        website: profile.website,
+        twitter: profile.twitter,
+        avatar_color: profile.avatarColor,
+        followers: profile.followers,
+        following: profile.following,
+        top_languages: profile.topLanguages,
+        pinned_repos: profile.pinnedRepos,
+        repos: profile.repos,
+        popular_repo: profile.popularRepo,
+      });
+
       if (success) {
-        toast.success('Repository generated!', {
+        toast.success('Repository and developer profile generated!', {
           action: {
             label: 'View',
             onClick: () => {

@@ -43,6 +43,40 @@ export interface DbGeneratedRepo {
   created_at?: string;
 }
 
+export interface DbDeveloperProfile {
+  id?: string;
+  username: string;
+  display_name: string;
+  bio: string;
+  location: string;
+  website: string;
+  twitter: string;
+  avatar_color: string;
+  followers: number;
+  following: number;
+  top_languages: { name: string; color: string; percentage: number }[];
+  pinned_repos: {
+    name: string;
+    description: string;
+    language: string;
+    languageColor: string;
+    stars: number;
+    forks: number;
+    updated: string;
+  }[];
+  repos: {
+    name: string;
+    description: string;
+    language: string;
+    languageColor: string;
+    stars: number;
+    forks: number;
+    updated: string;
+  }[];
+  popular_repo: { name: string; description: string };
+  created_at?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
   private readonly supabase: SupabaseClient;
@@ -152,6 +186,46 @@ export class SupabaseService {
 
     if (error) {
       console.error('Error fetching generated repo:', error);
+      return null;
+    }
+
+    return data;
+  }
+
+  async insertDeveloperProfile(profile: DbDeveloperProfile): Promise<boolean> {
+    const { error } = await this.supabase.from('developer_profiles').insert(profile);
+
+    if (error) {
+      console.error('Error inserting developer profile:', error);
+      return false;
+    }
+
+    return true;
+  }
+
+  async getDeveloperProfiles(): Promise<DbDeveloperProfile[]> {
+    const { data, error } = await this.supabase
+      .from('developer_profiles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching developer profiles:', error);
+      return [];
+    }
+
+    return data ?? [];
+  }
+
+  async getDeveloperProfileByUsername(username: string): Promise<DbDeveloperProfile | null> {
+    const { data, error } = await this.supabase
+      .from('developer_profiles')
+      .select('*')
+      .eq('username', username)
+      .single();
+
+    if (error) {
+      console.error('Error fetching developer profile:', error);
       return null;
     }
 

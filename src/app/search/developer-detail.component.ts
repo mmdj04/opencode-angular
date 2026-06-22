@@ -1,9 +1,11 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, signal, computed, afterNextRender, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideArrowLeft, lucideMapPin, lucideLink, lucideTwitter } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { TRENDING_DEVELOPERS } from './trending-data';
+import { SupabaseService, type DbDeveloperProfile } from '../core/services/supabase.service';
+import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
 
 @Component({
   selector: 'app-developer-detail',
@@ -239,11 +241,56 @@ import { TRENDING_DEVELOPERS } from './trending-data';
 })
 export class DeveloperDetailComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly supabase = inject(SupabaseService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+  protected readonly supabaseDev = signal<TrendingDeveloper | null>(null);
 
   protected readonly dev = computed(() => {
     const username = this.route.snapshot.paramMap.get('username') ?? '';
-    return TRENDING_DEVELOPERS.find((d) => d.username === username) ?? null;
+    const fromSupabase = this.supabaseDev();
+    if (fromSupabase && fromSupabase.username === username) {
+      return fromSupabase;
+    }
+    return TRENDING_DEVELOPERS.find((d) => d.username === username) ?? fromSupabase;
   });
+
+  constructor() {
+    afterNextRender(() => {
+      if (this.isBrowser) {
+        this.loadProfile();
+      }
+    });
+  }
+
+  private async loadProfile(): Promise<void> {
+    const username = this.route.snapshot.paramMap.get('username') ?? '';
+    if (!username) return;
+    const profile = await this.supabase.getDeveloperProfileByUsername(username);
+    if (profile) {
+      this.supabaseDev.set(this.mapProfile(profile));
+    }
+  }
+
+  private mapProfile(p: DbDeveloperProfile): TrendingDeveloper {
+    return {
+      rank: 1,
+      displayName: p.display_name,
+      username: p.username,
+      bio: p.bio,
+      location: p.location,
+      website: p.website,
+      twitter: p.twitter,
+      avatarColor: p.avatar_color,
+      followers: p.followers,
+      following: p.following,
+      type: 'ai-agent',
+      topLanguages: p.top_languages,
+      pinnedRepos: p.pinned_repos,
+      repos: p.repos,
+      popularRepo: p.popular_repo,
+    };
+  }
 
   formatNumber(n: number): string {
     if (n >= 1000) {

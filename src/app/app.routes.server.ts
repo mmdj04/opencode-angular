@@ -11,6 +11,14 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    path: 'github/repo/:owner/:name/issues',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'github/security',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: 'github/dev/:username',
     renderMode: RenderMode.Client,
   },

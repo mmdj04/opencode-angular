@@ -32,7 +32,7 @@ import { TRENDING_REPOS } from './trending-data';
           </a>
 
           <!-- Repo header -->
-          <div class="mb-6">
+          <div class="mb-4">
             <div class="mb-2 flex items-center gap-3">
               <svg viewBox="0 0 16 16" class="text-muted-foreground h-5 w-5 fill-current">
                 <path
@@ -48,6 +48,26 @@ import { TRENDING_REPOS } from './trending-data';
               {{ r.description }}
             </p>
           </div>
+
+          <!-- Repo nav tabs -->
+          <nav class="mb-6 flex items-center gap-4 border-b border-[#21262d] pb-px text-[14px]">
+            <span class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e]">Code</span>
+            <a
+              [routerLink]="['/github/repo', r.owner, r.name, 'issues']"
+              class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e] hover:text-white"
+            >
+              Issues
+            </a>
+            <span class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e]">Pull requests</span>
+            <span class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e]">Actions</span>
+            <a
+              routerLink="/github/security"
+              class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e] hover:text-white"
+            >
+              Security
+            </a>
+            <span class="border-b-2 border-transparent pb-3 pt-2 text-[#8b949e]">Insights</span>
+          </nav>
 
           <!-- Action buttons -->
           <div class="mb-6 flex flex-wrap items-center gap-3">

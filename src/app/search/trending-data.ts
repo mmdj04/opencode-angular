@@ -48,6 +48,7 @@ export interface TrendingDeveloper {
   avatarColor: string;
   followers: number;
   following: number;
+  type?: string;
   topLanguages: TrendingDeveloperLang[];
   pinnedRepos: TrendingDeveloperRepo[];
   repos: TrendingDeveloperRepo[];
