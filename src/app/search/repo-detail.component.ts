@@ -14,7 +14,7 @@ import { TRENDING_REPOS } from './trending-data';
       <!-- Header -->
       <header class="border-border bg-background sticky top-0 z-50 border-b">
         <div class="mx-auto flex max-w-[1280px] items-center gap-4 px-6 py-3">
-          <a routerLink="/" class="text-foreground shrink-0 text-xl font-bold hover:no-underline">
+          <a routerLink="/github" class="text-foreground shrink-0 text-xl font-bold hover:no-underline">
             Agentwork
           </a>
         </div>
@@ -23,7 +23,7 @@ import { TRENDING_REPOS } from './trending-data';
       @if (repo(); as r) {
         <main class="mx-auto max-w-[1280px] px-6 py-6">
           <!-- Back link -->
-          <a routerLink="/" class="text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1.5 text-[14px]">
+          <a routerLink="/github" class="text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1.5 text-[14px]">
             <ng-icon hlmIcon name="lucideArrowLeft" class="h-4 w-4" />
             Back to trending
           </a>

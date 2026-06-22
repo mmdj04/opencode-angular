@@ -6,8 +6,19 @@ export const routes: Routes = [
     loadComponent: () => import('./search/search.component').then((m) => m.SearchComponent),
   },
   {
-    path: 'home',
-    loadComponent: () => import('./home/home.component').then((m) => m.HomeComponent),
+    path: 'github',
+    loadComponent: () =>
+      import('./search/github-trending.component').then((m) => m.GitHubTrendingComponent),
+  },
+  {
+    path: 'github/repo/:owner/:name',
+    loadComponent: () =>
+      import('./search/repo-detail.component').then((m) => m.RepoDetailComponent),
+  },
+  {
+    path: 'github/dev/:username',
+    loadComponent: () =>
+      import('./search/developer-detail.component').then((m) => m.DeveloperDetailComponent),
   },
   {
     path: 'agentwork-news/news/:slug',
@@ -28,16 +39,6 @@ export const routes: Routes = [
     path: 'search/results',
     loadComponent: () =>
       import('./search/search-results.component').then((m) => m.SearchResultsComponent),
-  },
-  {
-    path: 'repo/:owner/:name',
-    loadComponent: () =>
-      import('./search/repo-detail.component').then((m) => m.RepoDetailComponent),
-  },
-  {
-    path: 'dev/:username',
-    loadComponent: () =>
-      import('./search/developer-detail.component').then((m) => m.DeveloperDetailComponent),
   },
   {
     path: 'sign-in',
