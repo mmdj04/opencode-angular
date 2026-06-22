@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, afterNextRender, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideArrowLeft, lucideGitFork, lucideStar } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -88,15 +89,43 @@ import { TRENDING_REPOS } from './trending-data';
                 <!-- File content viewer -->
                 <div class="border border-[#21262d]">
                   <div class="flex items-center justify-between border-b border-[#21262d] px-4 py-2">
-                    <span class="text-foreground text-[14px] font-semibold">{{ file.name }}</span>
+                    <div class="flex items-center gap-3">
+                      <span class="text-foreground text-[14px] font-semibold">{{ file.name }}</span>
+                      @if (isHtmlFile()) {
+                        <div class="flex items-center gap-1 rounded-md border border-[#30363d] bg-[#161b22] p-0.5">
+                          <button
+                            class="rounded px-2.5 py-1 text-[12px] font-medium transition-colors"
+                            [class]="previewMode() === 'code' ? 'bg-[#30363d] text-white' : 'text-[#8b949e] hover:text-white'"
+                            (click)="previewMode.set('code')"
+                          >
+                            Code
+                          </button>
+                          <button
+                            class="rounded px-2.5 py-1 text-[12px] font-medium transition-colors"
+                            [class]="previewMode() === 'preview' ? 'bg-[#30363d] text-white' : 'text-[#8b949e] hover:text-white'"
+                            (click)="previewMode.set('preview')"
+                          >
+                            Preview
+                          </button>
+                        </div>
+                      }
+                    </div>
                     <button
                       class="text-muted-foreground hover:text-foreground text-[13px]"
-                      (click)="selectedFile.set(null)"
+                      (click)="selectedFile.set(null); previewMode.set('code')"
                     >
                       ← Back to files
                     </button>
                   </div>
-                  <pre class="overflow-x-auto p-4 text-[13px] leading-relaxed text-[#e0e0e0]"><code>{{ file.content }}</code></pre>
+                  @if (previewMode() === 'code' || !isHtmlFile()) {
+                    <pre class="overflow-x-auto p-4 text-[13px] leading-relaxed text-[#e0e0e0]"><code>{{ file.content }}</code></pre>
+                  } @else {
+                    <iframe
+                      [srcdoc]="safeSrcdoc()"
+                      sandbox="allow-scripts"
+                      class="h-[calc(100vh-200px)] w-full border-0 bg-white"
+                    ></iframe>
+                  }
                 </div>
               } @else {
                 <!-- File tree -->
@@ -264,10 +293,23 @@ import { TRENDING_REPOS } from './trending-data';
 export class RepoDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly supabase = inject(SupabaseService);
+  private readonly sanitizer = inject(DomSanitizer);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   protected readonly generatedRepo = signal<DbGeneratedRepo | null>(null);
   protected readonly selectedFile = signal<{ name: string; content: string } | null>(null);
+  protected readonly previewMode = signal<'code' | 'preview'>('code');
+
+  protected readonly isHtmlFile = computed(() => {
+    const file = this.selectedFile();
+    return file?.name.endsWith('.html') ?? false;
+  });
+
+  protected readonly safeSrcdoc = computed(() => {
+    const file = this.selectedFile();
+    if (!file || !file.name.endsWith('.html')) return '';
+    return this.sanitizer.bypassSecurityTrustHtml(file.content);
+  });
 
   protected readonly repo = computed(() => {
     const owner = this.route.snapshot.paramMap.get('owner') ?? '';
@@ -338,6 +380,7 @@ export class RepoDetailComponent {
     const file = generated.files.find((f) => f.name === entry.name);
     if (file) {
       this.selectedFile.set({ name: file.name, content: file.content });
+      this.previewMode.set('code');
     }
   }
 
