@@ -87,9 +87,7 @@ import { TRENDING_REPOS, TRENDING_DEVELOPERS } from './trending-data';
                         />
                       </svg>
                       <a
-                        href="https://github.com/{{ repo.owner }}/{{ repo.name }}"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        [routerLink]="['/repo', repo.owner, repo.name]"
                         class="text-[#e0e0e0] text-[20px] font-semibold hover:text-[#58a6ff] hover:underline"
                       >
                         {{ repo.owner }} / {{ repo.name }}

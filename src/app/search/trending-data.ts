@@ -1,3 +1,10 @@
+export interface FileTreeEntry {
+  name: string;
+  type: 'file' | 'folder';
+  lastCommit: string;
+  date: string;
+}
+
 export interface TrendingRepo {
   owner: string;
   name: string;
@@ -7,6 +14,11 @@ export interface TrendingRepo {
   stars: number;
   forks: number;
   starsToday: number;
+  watch: number;
+  topics: string[];
+  license: string;
+  defaultBranch: string;
+  fileTree: FileTreeEntry[];
 }
 
 export interface TrendingDeveloper {
@@ -30,6 +42,19 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 72892,
     forks: 9863,
     starsToday: 442,
+    watch: 312,
+    topics: ['ai', 'agent', 'superagent', 'llm', 'automation', 'python'],
+    license: 'Apache-2.0',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: '.github', type: 'folder', lastCommit: 'ci: update workflow', date: '2 weeks ago' },
+      { name: 'src', type: 'folder', lastCommit: 'feat: add memory module', date: '3 days ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add integration tests', date: '1 week ago' },
+      { name: 'docs', type: 'folder', lastCommit: 'docs: update API reference', date: '5 days ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'pyproject.toml', type: 'file', lastCommit: 'chore: bump version', date: '3 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '8 months ago' },
+    ],
   },
   {
     owner: 'koala73',
@@ -41,6 +66,19 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 58401,
     forks: 9229,
     starsToday: 163,
+    watch: 198,
+    topics: ['dashboard', 'intelligence', 'monitoring', 'ai', 'real-time'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: '.github', type: 'folder', lastCommit: 'ci: add deployment', date: '1 month ago' },
+      { name: 'src', type: 'folder', lastCommit: 'feat: add geo tracking', date: '2 days ago' },
+      { name: 'public', type: 'folder', lastCommit: 'chore: update assets', date: '2 weeks ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update overview', date: '1 week ago' },
+      { name: 'package.json', type: 'file', lastCommit: 'chore: bump deps', date: '2 days ago' },
+      { name: 'tsconfig.json', type: 'file', lastCommit: 'chore: update config', date: '1 month ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '1 year ago' },
+    ],
   },
   {
     owner: 'penpot',
@@ -51,6 +89,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 52546,
     forks: 3362,
     starsToday: 1135,
+    watch: 420,
+    topics: ['design', 'open-source', 'figma', 'collaboration', 'svg'],
+    license: 'MPL-2.0',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'backend', type: 'folder', lastCommit: 'feat: improve performance', date: '1 week ago' },
+      { name: 'frontend', type: 'folder', lastCommit: 'fix: resolve rendering issue', date: '3 days ago' },
+      { name: 'docker', type: 'folder', lastCommit: 'chore: update Dockerfile', date: '2 weeks ago' },
+      { name: 'docs', type: 'folder', lastCommit: 'docs: add deployment guide', date: '1 month ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '2 weeks ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '5 years ago' },
+    ],
   },
   {
     owner: 'ZhuLinsen',
@@ -62,6 +112,19 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 45252,
     forks: 41729,
     starsToday: 568,
+    watch: 156,
+    topics: ['stock', 'llm', 'finance', 'analysis', 'python', 'ai'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'src', type: 'folder', lastCommit: 'feat: add multi-market support', date: '4 days ago' },
+      { name: 'config', type: 'folder', lastCommit: 'chore: update config', date: '1 week ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add unit tests', date: '2 weeks ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'requirements.txt', type: 'file', lastCommit: 'chore: update deps', date: '4 days ago' },
+      { name: 'setup.py', type: 'file', lastCommit: 'chore: bump version', date: '1 week ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '6 months ago' },
+    ],
   },
   {
     owner: 'microsoft',
@@ -73,6 +136,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 23400,
     forks: 3600,
     starsToday: 312,
+    watch: 280,
+    topics: ['llm', 'ai', 'microsoft', 'dotnet', 'plugins'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: '.github', type: 'folder', lastCommit: 'ci: update pipelines', date: '1 week ago' },
+      { name: 'dotnet', type: 'folder', lastCommit: 'feat: add new connector', date: '2 days ago' },
+      { name: 'python', type: 'folder', lastCommit: 'fix: resolve import issue', date: '5 days ago' },
+      { name: 'samples', type: 'folder', lastCommit: 'docs: add sample app', date: '1 week ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update overview', date: '1 week ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '2 years ago' },
+    ],
   },
   {
     owner: 'anthropics',
@@ -84,6 +159,19 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 18200,
     forks: 890,
     starsToday: 520,
+    watch: 95,
+    topics: ['cli', 'coding', 'ai', 'claude', 'terminal'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'src', type: 'folder', lastCommit: 'feat: improve code analysis', date: '1 day ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add e2e tests', date: '3 days ago' },
+      { name: 'docs', type: 'folder', lastCommit: 'docs: update CLI reference', date: '1 week ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '3 days ago' },
+      { name: 'package.json', type: 'file', lastCommit: 'chore: bump version', date: '1 day ago' },
+      { name: 'tsconfig.json', type: 'file', lastCommit: 'chore: update config', date: '2 weeks ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '4 months ago' },
+    ],
   },
   {
     owner: 'tursodatabase',
@@ -94,17 +182,40 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 21025,
     forks: 1074,
     starsToday: 548,
+    watch: 88,
+    topics: ['database', 'sqlite', 'rust', 'sql', 'embedded'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'crates', type: 'folder', lastCommit: 'feat: improve query perf', date: '2 days ago' },
+      { name: 'libsql', type: 'folder', lastCommit: 'fix: resolve sync issue', date: '5 days ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add concurrency tests', date: '1 week ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'Cargo.toml', type: 'file', lastCommit: 'chore: bump version', date: '2 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '3 years ago' },
+    ],
   },
   {
     owner: 'openai',
     name: 'codex',
-    description:
-      'Lightweight coding agent that runs in your terminal',
+    description: 'Lightweight coding agent that runs in your terminal',
     language: 'TypeScript',
     languageColor: '#3178C6',
     stars: 25800,
     forks: 1900,
     starsToday: 890,
+    watch: 145,
+    topics: ['cli', 'coding', 'ai', 'openai', 'agent'],
+    license: 'Apache-2.0',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'src', type: 'folder', lastCommit: 'feat: add tool support', date: '1 day ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add integration tests', date: '3 days ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '2 days ago' },
+      { name: 'package.json', type: 'file', lastCommit: 'chore: bump version', date: '1 day ago' },
+      { name: 'tsconfig.json', type: 'file', lastCommit: 'chore: update config', date: '1 week ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '3 months ago' },
+    ],
   },
   {
     owner: 'mukul975',
@@ -116,6 +227,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 18053,
     forks: 2158,
     starsToday: 361,
+    watch: 72,
+    topics: ['cybersecurity', 'ai', 'agents', 'mitre', 'skills'],
+    license: 'Apache-2.0',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'skills', type: 'folder', lastCommit: 'feat: add new skill set', date: '3 days ago' },
+      { name: 'frameworks', type: 'folder', lastCommit: 'docs: update mappings', date: '1 week ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: validate skill formats', date: '2 weeks ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'pyproject.toml', type: 'file', lastCommit: 'chore: bump version', date: '3 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '5 months ago' },
+    ],
   },
   {
     owner: 'DeusData',
@@ -127,6 +250,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 10846,
     forks: 814,
     starsToday: 1032,
+    watch: 64,
+    topics: ['mcp', 'code-intelligence', 'knowledge-graph', 'performance'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'src', type: 'folder', lastCommit: 'feat: add new parser', date: '2 days ago' },
+      { name: 'include', type: 'folder', lastCommit: 'fix: resolve memory leak', date: '5 days ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add benchmarks', date: '1 week ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'Makefile', type: 'file', lastCommit: 'chore: optimize build', date: '2 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '4 months ago' },
+    ],
   },
   {
     owner: 'smicallef',
@@ -137,6 +272,19 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 18912,
     forks: 3117,
     starsToday: 294,
+    watch: 112,
+    topics: ['osint', 'security', 'threat-intelligence', 'python'],
+    license: 'MIT',
+    defaultBranch: 'master',
+    fileTree: [
+      { name: 'spiderfoot', type: 'folder', lastCommit: 'feat: add new module', date: '4 days ago' },
+      { name: 'modules', type: 'folder', lastCommit: 'fix: resolve API issue', date: '1 week ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add unit tests', date: '2 weeks ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'requirements.txt', type: 'file', lastCommit: 'chore: update deps', date: '4 days ago' },
+      { name: 'setup.py', type: 'file', lastCommit: 'chore: bump version', date: '1 week ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '6 years ago' },
+    ],
   },
   {
     owner: 'topoteretes',
@@ -148,6 +296,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 18856,
     forks: 1985,
     starsToday: 347,
+    watch: 89,
+    topics: ['ai', 'memory', 'knowledge-graph', 'agents', 'rag'],
+    license: 'Apache-2.0',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'cognee', type: 'folder', lastCommit: 'feat: add graph engine', date: '3 days ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add integration tests', date: '1 week ago' },
+      { name: 'docs', type: 'folder', lastCommit: 'docs: update API docs', date: '2 weeks ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'pyproject.toml', type: 'file', lastCommit: 'chore: bump version', date: '3 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '1 year ago' },
+    ],
   },
   {
     owner: 'palmier-io',
@@ -158,6 +318,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 6263,
     forks: 452,
     starsToday: 1834,
+    watch: 45,
+    topics: ['macos', 'video', 'editor', 'ai', 'swift'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'Palmier', type: 'folder', lastCommit: 'feat: add AI features', date: '2 days ago' },
+      { name: 'Resources', type: 'folder', lastCommit: 'chore: update assets', date: '1 week ago' },
+      { name: 'Tests', type: 'folder', lastCommit: 'test: add UI tests', date: '2 weeks ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'Package.swift', type: 'file', lastCommit: 'chore: update deps', date: '2 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '8 months ago' },
+    ],
   },
   {
     owner: 'calesthi',
@@ -169,6 +341,20 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 10047,
     forks: 1389,
     starsToday: 987,
+    watch: 76,
+    topics: ['python', 'agent', 'flux', 'open-source', 'video-production'],
+    license: 'AGPL-3.0',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: '.github', type: 'folder', lastCommit: 'ci: update workflow', date: '2 months ago' },
+      { name: 'docs', type: 'folder', lastCommit: 'feat(tts): add Doubao provider', date: 'last month' },
+      { name: 'lib', type: 'folder', lastCommit: 'fix(source_media_review): use registry.get()', date: '2 months ago' },
+      { name: 'pipeline_defs', type: 'folder', lastCommit: 'feat(character-animation): add rigged...', date: '2 months ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update showcase', date: '3 months ago' },
+      { name: 'package.json', type: 'file', lastCommit: 'chore: bump dependencies', date: '3 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '3 months ago' },
+      { name: 'tsconfig.json', type: 'file', lastCommit: 'chore: migrate to TypeScript 6.0', date: '2 months ago' },
+    ],
   },
   {
     owner: 'mikumifa',
@@ -179,6 +365,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 3780,
     forks: 469,
     starsToday: 67,
+    watch: 32,
+    topics: ['bilibili', 'ticket', 'automation', 'python'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'src', type: 'folder', lastCommit: 'feat: improve stability', date: '1 week ago' },
+      { name: 'config', type: 'folder', lastCommit: 'chore: update config', date: '2 weeks ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'requirements.txt', type: 'file', lastCommit: 'chore: update deps', date: '1 week ago' },
+      { name: 'setup.py', type: 'file', lastCommit: 'chore: bump version', date: '2 weeks ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '1 year ago' },
+    ],
   },
   {
     owner: 'oven-sh',
@@ -189,6 +387,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 76500,
     forks: 2800,
     starsToday: 145,
+    watch: 520,
+    topics: ['javascript', 'runtime', 'bundler', 'zig', 'performance'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'src', type: 'folder', lastCommit: 'feat: improve bundler speed', date: '1 day ago' },
+      { name: 'test', type: 'folder', lastCommit: 'test: add Node compat tests', date: '3 days ago' },
+      { name: 'packages', type: 'folder', lastCommit: 'chore: update internal deps', date: '1 week ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'build.zig', type: 'file', lastCommit: 'chore: optimize build', date: '1 day ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '3 years ago' },
+    ],
   },
   {
     owner: 'vercel',
@@ -199,6 +409,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 132000,
     forks: 28500,
     starsToday: 210,
+    watch: 1200,
+    topics: ['react', 'framework', 'nextjs', 'vercel', 'ssr'],
+    license: 'MIT',
+    defaultBranch: 'canary',
+    fileTree: [
+      { name: '.github', type: 'folder', lastCommit: 'ci: update workflows', date: '1 week ago' },
+      { name: 'packages', type: 'folder', lastCommit: 'feat: improve streaming', date: '2 days ago' },
+      { name: 'examples', type: 'folder', lastCommit: 'docs: add new example', date: '1 week ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'package.json', type: 'file', lastCommit: 'chore: bump version', date: '2 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '7 years ago' },
+    ],
   },
   {
     owner: 'denoland',
@@ -209,6 +431,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 101000,
     forks: 5600,
     starsToday: 178,
+    watch: 380,
+    topics: ['javascript', 'typescript', 'runtime', 'rust', 'secure'],
+    license: 'MIT',
+    defaultBranch: 'main',
+    fileTree: [
+      { name: 'cli', type: 'folder', lastCommit: 'feat: improve permissions', date: '2 days ago' },
+      { name: 'runtime', type: 'folder', lastCommit: 'fix: resolve memory issue', date: '5 days ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add spec tests', date: '1 week ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'Cargo.toml', type: 'file', lastCommit: 'chore: bump version', date: '2 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '6 years ago' },
+    ],
   },
   {
     owner: 'langchain-ai',
@@ -219,6 +453,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 105000,
     forks: 16900,
     starsToday: 390,
+    watch: 890,
+    topics: ['llm', 'ai', 'framework', 'python', 'rag', 'agents'],
+    license: 'MIT',
+    defaultBranch: 'master',
+    fileTree: [
+      { name: 'libs', type: 'folder', lastCommit: 'feat: add new chain', date: '1 day ago' },
+      { name: 'docs', type: 'folder', lastCommit: 'docs: update tutorial', date: '3 days ago' },
+      { name: 'tests', type: 'folder', lastCommit: 'test: add unit tests', date: '1 week ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'pyproject.toml', type: 'file', lastCommit: 'chore: bump version', date: '1 day ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '3 years ago' },
+    ],
   },
   {
     owner: 'supabase',
@@ -229,6 +475,18 @@ export const TRENDING_REPOS: TrendingRepo[] = [
     stars: 77800,
     forks: 7300,
     starsToday: 256,
+    watch: 450,
+    topics: ['firebase', 'database', 'auth', 'realtime', 'postgres'],
+    license: 'Apache-2.0',
+    defaultBranch: 'master',
+    fileTree: [
+      { name: 'apps', type: 'folder', lastCommit: 'feat: add new dashboard', date: '2 days ago' },
+      { name: 'packages', type: 'folder', lastCommit: 'fix: resolve auth issue', date: '5 days ago' },
+      { name: 'docker', type: 'folder', lastCommit: 'chore: update docker-compose', date: '1 week ago' },
+      { name: 'README.md', type: 'file', lastCommit: 'docs: update README', date: '1 week ago' },
+      { name: 'package.json', type: 'file', lastCommit: 'chore: bump version', date: '2 days ago' },
+      { name: 'LICENSE', type: 'file', lastCommit: 'Initial commit', date: '4 years ago' },
+    ],
   },
 ];
 
@@ -374,7 +632,7 @@ export const TRENDING_DEVELOPERS: TrendingDeveloper[] = [
     username: 'simonw',
     popularRepo: {
       name: 'datasette',
-      'description': 'An open source multi-tool for exploring and publishing data',
+      description: 'An open source multi-tool for exploring and publishing data',
     },
   },
   {
