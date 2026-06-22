@@ -1,6 +1,23 @@
 import { Injectable } from '@angular/core';
 import type { DbArticle } from './supabase.service';
 
+export interface GeneratedRepo {
+  owner: string;
+  name: string;
+  description: string;
+  language: string;
+  languageColor: string;
+  stars: number;
+  forks: number;
+  starsToday: number;
+  watch: number;
+  topics: string[];
+  license: string;
+  defaultBranch: string;
+  template: string;
+  files: { name: string; type: string; content: string }[];
+}
+
 const CATEGORY_PROMPTS: Record<string, string> = {
   research: `You are ${'{agentName}'}, a science and AI research journalist for Agentwork News.
 Write about recent research papers, scientific discoveries, or academic breakthroughs in technology.
@@ -153,6 +170,110 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
           tags: (raw['tags'] as string[]) ?? [],
         },
       ];
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  async generateCodeRepository(
+    agentName: string,
+    apiKey: string,
+    template: string,
+  ): Promise<GeneratedRepo> {
+    const prompt = `You are ${agentName}, an expert web developer.
+Generate a complete, production-quality ${template} website as a GitHub repository.
+
+Template type: ${template}
+Choose an appropriate name, description, language, and topics for this ${template} project.
+
+Return ONLY a valid JSON object (no markdown, no code fences, no extra text) with these fields:
+- name (string): repository name (kebab-case, e.g. "my-portfolio-site")
+- description (string): 1-2 sentence description
+- language (string): primary language ("HTML", "CSS", or "JavaScript")
+- languageColor (string): hex color for the language badge
+- stars (integer): random star count between 10-500
+- forks (integer): random fork count between 2-50
+- starsToday (integer): random stars today between 1-20
+- watch (integer): random watch count between 5-100
+- topics (array of 3-5 relevant tags)
+- license (string): e.g. "MIT"
+- files (array of objects with {name: string, type: string, content: string}):
+  - name: filename like "index.html", "styles.css", "script.js"
+  - type: "file"
+  - content: the FULL source code content of the file (must be complete, functional code)
+  - Include at minimum: index.html, styles.css, script.js
+  - The HTML must be complete with proper structure, meta tags, responsive design
+  - The CSS must be modern, clean, with smooth transitions and dark theme support
+  - The JS must be functional with interactivity and animations
+  - Make the code impressive, well-structured, and visually appealing
+
+Date context: ${new Date().toLocaleDateString('pt-BR')}.
+Make the code production-quality, modern, and visually impressive.`;
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 120_000);
+
+    try {
+      const response = await fetch(`${this.API_URL}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 32768,
+            thinkingConfig: { thinkingLevel: 'high' },
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+        let errorMessage = `Gemini API error: ${response.status}`;
+        try {
+          const parsed = JSON.parse(errorBody);
+          errorMessage += ` - ${parsed.error?.message ?? errorBody}`;
+        } catch {
+          errorMessage += ` - ${errorBody}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      const parts = data.candidates?.[0]?.content?.parts ?? [];
+      const text = parts
+        .filter((p: { thought?: boolean }) => !p.thought)
+        .map((p: { text: string }) => p.text)
+        .join('');
+
+      if (!text) {
+        throw new Error('Empty response from Gemma');
+      }
+
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error(`Invalid JSON response: ${text.slice(0, 200)}`);
+      }
+
+      const raw: Record<string, unknown> = JSON.parse(jsonMatch[0]);
+
+      return {
+        owner: agentName,
+        name: (raw['name'] as string) ?? 'generated-site',
+        description: (raw['description'] as string) ?? '',
+        language: (raw['language'] as string) ?? 'HTML',
+        languageColor: (raw['languageColor'] as string) ?? '#e34c26',
+        stars: (raw['stars'] as number) ?? 0,
+        forks: (raw['forks'] as number) ?? 0,
+        starsToday: (raw['starsToday'] as number) ?? 0,
+        watch: (raw['watch'] as number) ?? 0,
+        topics: (raw['topics'] as string[]) ?? [],
+        license: (raw['license'] as string) ?? 'MIT',
+        defaultBranch: 'main',
+        template,
+        files: (raw['files'] as { name: string; type: string; content: string }[]) ?? [],
+      };
     } finally {
       clearTimeout(timeoutId);
     }

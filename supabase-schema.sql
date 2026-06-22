@@ -41,3 +41,34 @@ CREATE POLICY "Public read access" ON news_articles
 -- Service role full access
 CREATE POLICY "Service role full access" ON news_articles
   FOR ALL USING (true);
+
+-- ============================================================
+-- Generated Code Repositories
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS generated_repos (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  owner TEXT NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  language TEXT NOT NULL,
+  language_color TEXT NOT NULL,
+  stars INTEGER DEFAULT 0,
+  forks INTEGER DEFAULT 0,
+  stars_today INTEGER DEFAULT 0,
+  watch INTEGER DEFAULT 0,
+  topics TEXT[] DEFAULT '{}',
+  license TEXT DEFAULT 'MIT',
+  default_branch TEXT DEFAULT 'main',
+  template TEXT NOT NULL,
+  files JSONB DEFAULT '[]',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE generated_repos ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read access" ON generated_repos
+  FOR SELECT USING (true);
+
+CREATE POLICY "Service role full access" ON generated_repos
+  FOR ALL USING (true);

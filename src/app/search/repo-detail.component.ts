@@ -1,8 +1,10 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, signal, computed, afterNextRender, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideArrowLeft, lucideGitFork, lucideStar } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { SupabaseService, type DbGeneratedRepo } from '../core/services/supabase.service';
 import { TRENDING_REPOS } from './trending-data';
 
 @Component({
@@ -80,60 +82,80 @@ import { TRENDING_REPOS } from './trending-data';
 
           <!-- Two column layout -->
           <div class="flex flex-col gap-6 lg:flex-row">
-            <!-- Left: File tree -->
+            <!-- Left: File tree or File content -->
             <div class="min-w-0 flex-1">
-              <div class="border border-[#21262d]">
-                <!-- File tree header -->
-                <div class="border-b border-[#21262d] px-4 py-3">
-                  <div class="flex items-center gap-2 text-[14px]">
-                    <svg viewBox="0 0 16 16" class="text-muted-foreground h-4 w-4 fill-current">
-                      <path
-                        d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"
-                      />
-                    </svg>
-                    <span class="text-foreground font-semibold">{{ r.owner }}</span>
+              @if (selectedFile(); as file) {
+                <!-- File content viewer -->
+                <div class="border border-[#21262d]">
+                  <div class="flex items-center justify-between border-b border-[#21262d] px-4 py-2">
+                    <span class="text-foreground text-[14px] font-semibold">{{ file.name }}</span>
+                    <button
+                      class="text-muted-foreground hover:text-foreground text-[13px]"
+                      (click)="selectedFile.set(null)"
+                    >
+                      ← Back to files
+                    </button>
                   </div>
+                  <pre class="overflow-x-auto p-4 text-[13px] leading-relaxed text-[#e0e0e0]"><code>{{ file.content }}</code></pre>
                 </div>
-
-                <!-- Branch selector -->
-                <div class="border-b border-[#21262d] px-4 py-2">
-                  <div class="flex items-center gap-2 text-[14px]">
-                    <svg viewBox="0 0 16 16" class="text-muted-foreground h-4 w-4 fill-current">
-                      <path
-                        d="M9.5 3.25a2.25 2.25 0 11-3 2.122V6A2.5 2.5 0 005.5 8.5h.253a.25.25 0 01.2-.1l.816.306a.75.75 0 00.583 0l2.143-.794a.75.75 0 00.46.176h.28a2.25 2.25 0 010 1.5h-.28a.75.75 0 00-.46.176l-2.143.794a.75.75 0 01-.583 0l-.816-.306a.25.25 0 01-.2-.1H5.5a4 4 0 01-4-4v-.628A2.25 2.25 0 013.25 1h1.5zm5.75 0a.75.75 0 00-.75.75v.628c0 .245.132.476.344.6l.816.306a2.25 2.25 0 001.38.524h.28a.75.75 0 01.75.75v1.5a.75.75 0 01-.75.75h-.28a2.25 2.25 0 00-1.38.524l-.816.306a.25.25 0 01-.2.1H5.5a2.5 2.5 0 00-2.5 2.5v.628a2.25 2.25 0 01-1 1.932V13.25A1.75 1.75 0 001.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3h-2.5V4a.75.75 0 00-.75.75z"
-                      />
-                    </svg>
-                    <span class="text-foreground font-semibold">{{ r.defaultBranch }}</span>
-                  </div>
-                </div>
-
-                <!-- File list -->
-                @for (entry of r.fileTree; track entry.name) {
-                  <div class="flex items-center gap-3 border-b border-[#21262d] px-4 py-2.5 last:border-b-0 hover:bg-[#161b22]">
-                    <!-- Icon -->
-                    @if (entry.type === 'folder') {
-                      <svg viewBox="0 0 16 16" class="h-4 w-4 fill-current" style="color: #54aeff">
+              } @else {
+                <!-- File tree -->
+                <div class="border border-[#21262d]">
+                  <!-- File tree header -->
+                  <div class="border-b border-[#21262d] px-4 py-3">
+                    <div class="flex items-center gap-2 text-[14px]">
+                      <svg viewBox="0 0 16 16" class="text-muted-foreground h-4 w-4 fill-current">
                         <path
                           d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"
                         />
                       </svg>
-                    } @else {
+                      <span class="text-foreground font-semibold">{{ r.owner }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Branch selector -->
+                  <div class="border-b border-[#21262d] px-4 py-2">
+                    <div class="flex items-center gap-2 text-[14px]">
                       <svg viewBox="0 0 16 16" class="text-muted-foreground h-4 w-4 fill-current">
                         <path
-                          d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0113.25 16h-9.5A1.75 1.75 0 012 14.25V1.75zm1.75-.25a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 00.25-.25V6H9.75A1.75 1.75 0 018 4.25V1.5H3.75zm5.75.56v2.19c0 .138.112.25.25.25h2.19L9.5 2.06z"
+                          d="M9.5 3.25a2.25 2.25 0 11-3 2.122V6A2.5 2.5 0 005.5 8.5h.253a.25.25 0 01.2-.1l.816.306a.75.75 0 00.583 0l2.143-.794a.75.75 0 00.46.176h.28a2.25 2.25 0 010 1.5h-.28a.75.75 0 00-.46.176l-2.143.794a.75.75 0 01-.583 0l-.816-.306a.25.25 0 01-.2-.1H5.5a4 4 0 01-4-4v-.628A2.25 2.25 0 013.25 1h1.5zm5.75 0a.75.75 0 00-.75.75v.628c0 .245.132.476.344.6l.816.306a2.25 2.25 0 001.38.524h.28a.75.75 0 01.75.75v1.5a.75.75 0 01-.75.75h-.28a2.25 2.25 0 00-1.38.524l-.816.306a.25.25 0 01-.2.1H5.5a2.5 2.5 0 00-2.5 2.5v.628a2.25 2.25 0 01-1 1.932V13.25A1.75 1.75 0 001.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3h-2.5V4a.75.75 0 00-.75.75z"
                         />
                       </svg>
-                    }
-
-                    <!-- Name + last commit + date -->
-                    <div class="min-w-0 flex-1">
-                      <span class="text-foreground text-[14px]">{{ entry.name }}</span>
+                      <span class="text-foreground font-semibold">{{ r.defaultBranch }}</span>
                     </div>
-                    <span class="text-muted-foreground hidden truncate text-[13px] sm:block">{{ entry.lastCommit }}</span>
-                    <span class="text-muted-foreground hidden w-[100px] shrink-0 text-right text-[13px] sm:block">{{ entry.date }}</span>
                   </div>
-                }
-              </div>
+
+                  <!-- File list -->
+                  @for (entry of fileTree(); track entry.name) {
+                    <div
+                      class="flex cursor-pointer items-center gap-3 border-b border-[#21262d] px-4 py-2.5 last:border-b-0 hover:bg-[#161b22]"
+                      (click)="onFileClick(entry)"
+                    >
+                      <!-- Icon -->
+                      @if (entry.type === 'folder') {
+                        <svg viewBox="0 0 16 16" class="h-4 w-4 fill-current" style="color: #54aeff">
+                          <path
+                            d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"
+                          />
+                        </svg>
+                      } @else {
+                        <svg viewBox="0 0 16 16" class="text-muted-foreground h-4 w-4 fill-current">
+                          <path
+                            d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0113.25 16h-9.5A1.75 1.75 0 012 14.25V1.75zm1.75-.25a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 00.25-.25V6H9.75A1.75 1.75 0 018 4.25V1.5H3.75zm5.75.56v2.19c0 .138.112.25.25.25h2.19L9.5 2.06z"
+                          />
+                        </svg>
+                      }
+
+                      <!-- Name + last commit + date -->
+                      <div class="min-w-0 flex-1">
+                        <span class="text-foreground text-[14px]">{{ entry.name }}</span>
+                      </div>
+                      <span class="text-muted-foreground hidden truncate text-[13px] sm:block">{{ entry.lastCommit }}</span>
+                      <span class="text-muted-foreground hidden w-[100px] shrink-0 text-right text-[13px] sm:block">{{ entry.date }}</span>
+                    </div>
+                  }
+                </div>
+              }
             </div>
 
             <!-- Right: About sidebar -->
@@ -253,12 +275,83 @@ import { TRENDING_REPOS } from './trending-data';
 })
 export class RepoDetailComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly supabase = inject(SupabaseService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+  protected readonly generatedRepo = signal<DbGeneratedRepo | null>(null);
+  protected readonly selectedFile = signal<{ name: string; content: string } | null>(null);
 
   protected readonly repo = computed(() => {
     const owner = this.route.snapshot.paramMap.get('owner') ?? '';
     const name = this.route.snapshot.paramMap.get('name') ?? '';
-    return TRENDING_REPOS.find((r) => r.owner === owner && r.name === name) ?? null;
+    const generated = this.generatedRepo();
+    if (generated && generated.owner === owner && generated.name === name) {
+      return {
+        owner: generated.owner,
+        name: generated.name,
+        description: generated.description,
+        language: generated.language,
+        languageColor: generated.language_color,
+        stars: generated.stars,
+        forks: generated.forks,
+        watch: generated.watch,
+        topics: generated.topics,
+        license: generated.license,
+        defaultBranch: generated.default_branch,
+        fileTree: generated.files.map((f) => ({
+          name: f.name,
+          type: 'file' as const,
+          lastCommit: 'Generated by Gemma',
+          date: new Date().toLocaleDateString('pt-BR'),
+        })),
+      };
+    }
+    return (
+      TRENDING_REPOS.find((r) => r.owner === owner && r.name === name) ?? null
+    );
   });
+
+  protected readonly fileTree = computed(() => {
+    const owner = this.route.snapshot.paramMap.get('owner') ?? '';
+    const name = this.route.snapshot.paramMap.get('name') ?? '';
+    const generated = this.generatedRepo();
+    if (generated && generated.owner === owner && generated.name === name) {
+      return generated.files.map((f) => ({
+        name: f.name,
+        type: 'file' as const,
+        lastCommit: 'Generated by Gemma',
+        date: new Date().toLocaleDateString('pt-BR'),
+      }));
+    }
+    return this.repo()?.fileTree ?? [];
+  });
+
+  constructor() {
+    afterNextRender(() => {
+      if (this.isBrowser) {
+        this.loadGeneratedRepo();
+      }
+    });
+  }
+
+  private async loadGeneratedRepo(): Promise<void> {
+    const owner = this.route.snapshot.paramMap.get('owner') ?? '';
+    const name = this.route.snapshot.paramMap.get('name') ?? '';
+    const repo = await this.supabase.getGeneratedRepoByOwnerAndName(owner, name);
+    if (repo) {
+      this.generatedRepo.set(repo);
+    }
+  }
+
+  onFileClick(entry: { name: string; type: string }): void {
+    if (entry.type !== 'file') return;
+    const generated = this.generatedRepo();
+    if (!generated) return;
+    const file = generated.files.find((f) => f.name === entry.name);
+    if (file) {
+      this.selectedFile.set({ name: file.name, content: file.content });
+    }
+  }
 
   formatNumber(n: number): string {
     if (n >= 1000) {

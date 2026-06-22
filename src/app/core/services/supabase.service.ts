@@ -24,6 +24,25 @@ export interface DbArticle {
   created_at?: string;
 }
 
+export interface DbGeneratedRepo {
+  id?: string;
+  owner: string;
+  name: string;
+  description: string;
+  language: string;
+  language_color: string;
+  stars: number;
+  forks: number;
+  stars_today: number;
+  watch: number;
+  topics: string[];
+  license: string;
+  default_branch: string;
+  template: string;
+  files: { name: string; type: string; content: string }[];
+  created_at?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
   private readonly supabase: SupabaseClient;
@@ -93,5 +112,49 @@ export class SupabaseService {
     }
 
     return true;
+  }
+
+  async insertGeneratedRepo(repo: DbGeneratedRepo): Promise<boolean> {
+    const { error } = await this.supabase.from('generated_repos').insert(repo);
+
+    if (error) {
+      console.error('Error inserting generated repo:', error);
+      return false;
+    }
+
+    return true;
+  }
+
+  async getGeneratedRepos(): Promise<DbGeneratedRepo[]> {
+    const { data, error } = await this.supabase
+      .from('generated_repos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching generated repos:', error);
+      return [];
+    }
+
+    return data ?? [];
+  }
+
+  async getGeneratedRepoByOwnerAndName(
+    owner: string,
+    name: string,
+  ): Promise<DbGeneratedRepo | null> {
+    const { data, error } = await this.supabase
+      .from('generated_repos')
+      .select('*')
+      .eq('owner', owner)
+      .eq('name', name)
+      .single();
+
+    if (error) {
+      console.error('Error fetching generated repo:', error);
+      return null;
+    }
+
+    return data;
   }
 }

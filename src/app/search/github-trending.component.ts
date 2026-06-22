@@ -1,4 +1,5 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, afterNextRender, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -6,6 +7,7 @@ import { lucideSearch, lucideStar } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
+import { SupabaseService, type DbGeneratedRepo } from '../core/services/supabase.service';
 import { TRENDING_REPOS, TRENDING_DEVELOPERS } from './trending-data';
 
 @Component({
@@ -254,14 +256,33 @@ import { TRENDING_REPOS, TRENDING_DEVELOPERS } from './trending-data';
 })
 export class GitHubTrendingComponent {
   private readonly router = inject(Router);
+  private readonly supabase = inject(SupabaseService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   protected readonly query = signal('');
   protected readonly activeTab = signal<'repositories' | 'developers'>('repositories');
+  protected readonly generatedRepos = signal<DbGeneratedRepo[]>([]);
 
   protected readonly filteredRepos = computed(() => {
     const q = this.query().toLowerCase().trim();
-    if (!q) return TRENDING_REPOS;
-    return TRENDING_REPOS.filter(
+    const generated = this.generatedRepos().map((r) => ({
+      owner: r.owner,
+      name: r.name,
+      description: r.description,
+      language: r.language,
+      languageColor: r.language_color,
+      stars: r.stars,
+      forks: r.forks,
+      starsToday: r.stars_today,
+      watch: r.watch,
+      topics: r.topics,
+      license: r.license,
+      defaultBranch: r.default_branch,
+      fileTree: [] as { name: string; type: 'file' | 'folder'; lastCommit: string; date: string }[],
+    }));
+    const allRepos = [...generated, ...TRENDING_REPOS];
+    if (!q) return allRepos;
+    return allRepos.filter(
       (r) =>
         r.name.toLowerCase().includes(q) ||
         r.owner.toLowerCase().includes(q) ||
@@ -281,6 +302,19 @@ export class GitHubTrendingComponent {
         d.popularRepo.description.toLowerCase().includes(q),
     );
   });
+
+  constructor() {
+    afterNextRender(() => {
+      if (this.isBrowser) {
+        this.loadGeneratedRepos();
+      }
+    });
+  }
+
+  private async loadGeneratedRepos(): Promise<void> {
+    const repos = await this.supabase.getGeneratedRepos();
+    this.generatedRepos.set(repos);
+  }
 
   search(): void {
     const q = this.query();
