@@ -31,7 +31,7 @@
               },
             ],
             "styles": ["src/styles.css"],
-            "allowedCommonJsDependencies": ["mermaid"],
+            "allowedCommonJsDependencies": ["mermaid", "@ng-icons/octicons"],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "ssr": {
