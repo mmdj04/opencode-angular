@@ -14,6 +14,7 @@ import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { ThemeService } from './core/services/theme.service';
 import { AgentworkNewsService } from './agentwork-news/agentwork-news.service';
+import { AuthService } from './core/services/auth.service';
 
 function initializeTheme(): void {
   inject(ThemeService).init();
@@ -21,6 +22,10 @@ function initializeTheme(): void {
 
 function initializeNews(): void {
   inject(AgentworkNewsService).init();
+}
+
+function initializeAuth(): void {
+  inject(AuthService).loadSession();
 }
 
 export const appConfig: ApplicationConfig = {
@@ -33,5 +38,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor])),
     provideAppInitializer(initializeTheme),
     provideAppInitializer(initializeNews),
+    provideAppInitializer(initializeAuth),
   ],
 };

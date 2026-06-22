@@ -33,9 +33,6 @@ import { RouterLink } from '@angular/router';
             <div class="flex items-center gap-2">
               <span class="text-foreground text-[14px] font-semibold">SECURITY.md</span>
             </div>
-            <svg viewBox="0 0 16 16" class="text-muted-foreground h-4 w-4 fill-current">
-              <path d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L3.46 11.1a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.25.25 0 00.108-.064l8.61-8.61a.25.25 0 000-.354L12.427 2.487z" />
-            </svg>
           </div>
 
           <!-- Card content -->

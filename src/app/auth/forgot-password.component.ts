@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -9,6 +9,8 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
+import { SupabaseService } from '../core/services/supabase.service';
+import { toast } from '@spartan-ng/brain/sonner';
 
 @Component({
   selector: 'app-forgot-password',
@@ -83,9 +85,24 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
   `,
 })
 export class ForgotPasswordComponent {
+  private readonly supabase = inject(SupabaseService);
+
   email = '';
 
-  onSubmit() {
-    console.warn('Forgot password:', { email: this.email });
+  async onSubmit(): Promise<void> {
+    if (!this.email) {
+      toast.error('Please enter your email');
+      return;
+    }
+
+    const { error } = await this.supabase.supabase.auth.resetPasswordForEmail(this.email, {
+      redirectTo: `${window.location.origin}/settings`,
+    });
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success('Check your email for the reset link');
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -9,6 +9,7 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -138,6 +139,8 @@ import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
   `,
 })
 export class SignUpComponent {
+  private readonly auth = inject(AuthService);
+
   email = '';
   password = '';
   showPassword = signal(false);
@@ -153,8 +156,12 @@ export class SignUpComponent {
     { label: '8 characters or more', met: signal(this.password.length >= 8) },
   ]);
 
-  onGithub() {
-    console.warn('Sign up with GitHub');
+  async onGithub(): Promise<void> {
+    try {
+      await this.auth.signInWithGitHub();
+    } catch {
+      // Error handled by AuthService
+    }
   }
 
   onSubmit() {

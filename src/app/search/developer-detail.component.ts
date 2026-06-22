@@ -2,7 +2,16 @@ import { Component, inject, signal, computed, afterNextRender, PLATFORM_ID } fro
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideArrowLeft, lucideMapPin, lucideLink, lucideTwitter } from '@ng-icons/lucide';
+import { lucideTwitter } from '@ng-icons/lucide';
+import {
+  octArrowLeft,
+  octLocation,
+  octLink,
+  octRepo,
+  octStar,
+  octRepoForked,
+  octMarkGithub,
+} from '@ng-icons/octicons';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { SupabaseService, type DbDeveloperProfile } from '../core/services/supabase.service';
 import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
@@ -10,7 +19,18 @@ import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
 @Component({
   selector: 'app-developer-detail',
   imports: [RouterLink, NgIcon, HlmButtonImports],
-  providers: [provideIcons({ lucideArrowLeft, lucideMapPin, lucideLink, lucideTwitter })],
+  providers: [
+    provideIcons({
+      octArrowLeft,
+      octLocation,
+      octLink,
+      octRepo,
+      octStar,
+      octRepoForked,
+      octMarkGithub,
+      lucideTwitter,
+    }),
+  ],
   template: `
     <div class="bg-background min-h-screen">
       <!-- Header -->
@@ -26,7 +46,7 @@ import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
         <main class="mx-auto max-w-[1280px] px-6 py-6">
           <!-- Back link -->
           <a routerLink="/github" class="text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-1.5 text-[14px]">
-            <ng-icon hlmIcon name="lucideArrowLeft" class="h-4 w-4" />
+            <ng-icon name="octArrowLeft" class="text-muted-foreground" style="font-size:16px;width:16px;height:16px" />
             Back to trending
           </a>
 
@@ -58,19 +78,19 @@ import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
               <div class="text-muted-foreground mt-2 flex flex-wrap items-center gap-4 text-[14px]">
                 @if (d.location) {
                   <span class="flex items-center gap-1">
-                    <ng-icon hlmIcon name="lucideMapPin" class="h-4 w-4" />
+                    <ng-icon name="octLocation" style="font-size:16px;width:16px;height:16px" />
                     {{ d.location }}
                   </span>
                 }
                 @if (d.website) {
                   <a href="{{ d.website }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-[#58a6ff] hover:underline">
-                    <ng-icon hlmIcon name="lucideLink" class="h-4 w-4" />
+                    <ng-icon name="octLink" style="font-size:16px;width:16px;height:16px" />
                     {{ formatWebsite(d.website) }}
                   </a>
                 }
                 @if (d.twitter) {
                   <a href="https://twitter.com/{{ d.twitter.replace('@', '') }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-[#58a6ff] hover:underline">
-                    <ng-icon hlmIcon name="lucideTwitter" class="h-4 w-4" />
+                    <ng-icon name="lucideTwitter" style="font-size:16px;width:16px;height:16px" />
                     {{ d.twitter }}
                   </a>
                 }
@@ -98,13 +118,11 @@ import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   @for (repo of d.pinnedRepos; track repo.name) {
                     <a
-                      [routerLink]="['/repo', d.username, repo.name]"
+                      [routerLink]="['/github/repo', d.username, repo.name]"
                       class="border border-[#21262d] p-4 hover:bg-[#161b22]"
                     >
                       <div class="mb-1 flex items-center gap-2">
-                        <svg viewBox="0 0 16 16" class="text-muted-foreground h-4 w-4 fill-current">
-                          <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z" />
-                        </svg>
+                        <ng-icon name="octRepo" class="text-muted-foreground" style="font-size:16px;width:16px;height:16px" />
                         <span class="text-[14px] font-semibold text-[#58a6ff]">{{ repo.name }}</span>
                         <span class="text-muted-foreground rounded-full border border-[#30363d] px-2 py-0.5 text-[11px] font-medium">
                           Public
@@ -117,15 +135,11 @@ import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
                           <span class="text-[#8b949e]">{{ repo.language }}</span>
                         </span>
                         <span class="flex items-center gap-1 text-[#8b949e]">
-                          <svg viewBox="0 0 16 16" class="h-3.5 w-3.5 fill-current">
-                            <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" />
-                          </svg>
+                          <ng-icon name="octStar" style="font-size:14px;width:14px;height:14px" />
                           {{ formatNumber(repo.stars) }}
                         </span>
                         <span class="flex items-center gap-1 text-[#8b949e]">
-                          <svg viewBox="0 0 16 16" class="h-3.5 w-3.5 fill-current">
-                            <path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z" />
-                          </svg>
+                          <ng-icon name="octRepoForked" style="font-size:14px;width:14px;height:14px" />
                           {{ formatNumber(repo.forks) }}
                         </span>
                       </div>
@@ -140,7 +154,7 @@ import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
                 <div class="border border-[#21262d]">
                   @for (repo of d.repos; track repo.name) {
                     <a
-                      [routerLink]="['/repo', d.username, repo.name]"
+                      [routerLink]="['/github/repo', d.username, repo.name]"
                       class="block border-b border-[#21262d] px-4 py-4 last:border-b-0 hover:bg-[#161b22]"
                     >
                       <div class="flex items-start justify-between gap-4">
@@ -158,15 +172,11 @@ import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
                               <span class="text-[#8b949e]">{{ repo.language }}</span>
                             </span>
                             <span class="flex items-center gap-1 text-[#8b949e]">
-                              <svg viewBox="0 0 16 16" class="h-3.5 w-3.5 fill-current">
-                                <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" />
-                              </svg>
+                              <ng-icon name="octStar" style="font-size:14px;width:14px;height:14px" />
                               {{ formatNumber(repo.stars) }}
                             </span>
                             <span class="flex items-center gap-1 text-[#8b949e]">
-                              <svg viewBox="0 0 16 16" class="h-3.5 w-3.5 fill-current">
-                                <path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z" />
-                              </svg>
+                              <ng-icon name="octRepoForked" style="font-size:14px;width:14px;height:14px" />
                               {{ formatNumber(repo.forks) }}
                             </span>
                             <span class="text-muted-foreground">Updated {{ repo.updated }}</span>
@@ -213,9 +223,7 @@ import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
                 rel="noopener noreferrer"
                 class="border-border text-foreground flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-[14px] font-semibold hover:bg-[#161b22]"
               >
-                <svg viewBox="0 0 16 16" class="h-4 w-4 fill-current">
-                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-                </svg>
+                <ng-icon name="octMarkGithub" style="font-size:16px;width:16px;height:16px" />
                 View on GitHub
               </a>
             </div>

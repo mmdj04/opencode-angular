@@ -79,7 +79,7 @@ export interface DbDeveloperProfile {
 
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
-  private readonly supabase: SupabaseClient;
+  readonly supabase: SupabaseClient;
 
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
@@ -230,5 +230,20 @@ export class SupabaseService {
     }
 
     return data;
+  }
+
+  async checkUsernameExists(username: string): Promise<boolean> {
+    const { data, error } = await this.supabase
+      .from('developer_profiles')
+      .select('username')
+      .eq('username', username)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error checking username:', error);
+      return false;
+    }
+
+    return !!data;
   }
 }

@@ -64,6 +64,11 @@ export const routes: Routes = [
       import('./auth/forgot-password.component').then((m) => m.ForgotPasswordComponent),
   },
   {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./auth/auth-callback.component').then((m) => m.AuthCallbackComponent),
+  },
+  {
     path: '**',
     loadComponent: () => import('./not-found/not-found.component').then((m) => m.NotFoundComponent),
   },

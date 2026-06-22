@@ -2,13 +2,14 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCode, lucideKey, lucideLoader2 } from '@ng-icons/lucide';
+import { lucideCode, lucideKey, lucideLoader2, lucideLogOut, lucideUser } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { SettingsService } from './settings.service';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-settings',
@@ -22,7 +23,7 @@ import { SettingsService } from './settings.service';
     HlmInputGroupImports,
     HlmLabelImports,
   ],
-  providers: [provideIcons({ lucideKey, lucideLoader2, lucideCode })],
+  providers: [provideIcons({ lucideKey, lucideLoader2, lucideCode, lucideLogOut, lucideUser })],
   template: `
     <div class="bg-background flex min-h-screen items-center justify-center p-4">
       <hlm-card class="w-full max-w-[420px]">
@@ -31,6 +32,32 @@ import { SettingsService } from './settings.service';
             <h1 class="text-foreground text-2xl font-bold tracking-tight">Settings</h1>
             <p class="text-muted-foreground text-sm">Configure your AI agent</p>
           </div>
+
+          <!-- Logged in user info -->
+          @if (auth.isLoggedIn()) {
+            <div class="flex items-center gap-3 rounded-md border border-[#21262d] bg-[#161b22] p-3">
+              @if (auth.userAvatar()) {
+                <img [src]="auth.userAvatar()" class="h-8 w-8 rounded-full" alt="avatar" />
+              } @else {
+                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#30363d]">
+                  <ng-icon hlmIcon name="lucideUser" class="text-muted-foreground" />
+                </div>
+              }
+              <div class="min-w-0 flex-1">
+                <div class="text-foreground truncate text-[13px] font-medium">{{ auth.userDisplayName() }}</div>
+                <div class="text-muted-foreground truncate text-[12px]">{{ auth.userEmail() }}</div>
+              </div>
+              <button
+                hlmBtn
+                variant="ghost"
+                size="icon-sm"
+                (click)="onSignOut()"
+                title="Sign out"
+              >
+                <ng-icon hlmIcon name="lucideLogOut" class="text-muted-foreground" />
+              </button>
+            </div>
+          }
 
           <div class="flex flex-col gap-4">
             <div class="flex flex-col gap-2">
@@ -111,4 +138,13 @@ import { SettingsService } from './settings.service';
 })
 export class SettingsComponent {
   protected readonly settings = inject(SettingsService);
+  protected readonly auth = inject(AuthService);
+
+  async onSignOut(): Promise<void> {
+    try {
+      await this.auth.signOut();
+    } catch {
+      // Error handled by AuthService
+    }
+  }
 }

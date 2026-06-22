@@ -86,8 +86,10 @@ export class SettingsService {
         this.apiKey(),
       );
 
+      const uniqueUsername = await this.getUniqueUsername(repo.owner);
+
       const success = await this.supabase.insertGeneratedRepo({
-        owner: repo.owner,
+        owner: uniqueUsername,
         name: repo.name,
         description: repo.description,
         language: repo.language,
@@ -105,7 +107,7 @@ export class SettingsService {
 
       const profile = repo.developerProfile;
       await this.supabase.insertDeveloperProfile({
-        username: profile.username,
+        username: uniqueUsername,
         display_name: profile.displayName,
         bio: profile.bio,
         location: profile.location,
@@ -125,7 +127,7 @@ export class SettingsService {
           action: {
             label: 'View',
             onClick: () => {
-              this.router.navigate(['/github/repo', repo.owner, repo.name]);
+              this.router.navigate(['/github/repo', uniqueUsername, repo.name]);
             },
           },
         });
@@ -139,6 +141,23 @@ export class SettingsService {
     } finally {
       this.isCodeGenerating.set(false);
     }
+  }
+
+  private async getUniqueUsername(baseUsername: string): Promise<string> {
+    const slug = baseUsername
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    let candidate = slug;
+    let counter = 2;
+
+    while (await this.supabase.checkUsernameExists(candidate)) {
+      candidate = `${slug}-${counter}`;
+      counter++;
+    }
+
+    return candidate;
   }
 
   private load(): void {
