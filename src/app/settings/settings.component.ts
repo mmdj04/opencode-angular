@@ -1,4 +1,4 @@
-import { Component, inject, afterNextRender, effect, PLATFORM_ID } from '@angular/core';
+import { Component, inject, effect, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -435,24 +435,22 @@ export class SettingsComponent {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   constructor() {
-    afterNextRender(() => {
-      if (this.isBrowser) {
-        effect(() => {
-          if (this.auth.authLoaded() && !this.auth.isLoggedIn()) {
-            this.router.navigate(['/sign-in']);
-          }
-        });
+    if (this.isBrowser) {
+      effect(() => {
+        if (this.auth.authLoaded() && !this.auth.isLoggedIn()) {
+          this.router.navigate(['/sign-in']);
+        }
+      });
 
-        effect(() => {
-          const userId = this.auth.user()?.id;
-          if (userId) {
-            this.settings.loadAgents();
-          } else {
-            this.settings.agents.set([]);
-          }
-        });
-      }
-    });
+      effect(() => {
+        const userId = this.auth.user()?.id;
+        if (userId) {
+          this.settings.loadAgents();
+        } else {
+          this.settings.agents.set([]);
+        }
+      });
+    }
   }
 
   async onSignOut(): Promise<void> {
