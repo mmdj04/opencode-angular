@@ -231,10 +231,10 @@ import { AuthService } from '../core/services/auth.service';
                                 size="icon-sm"
                                 class="text-muted-foreground hover:text-foreground"
                                 title="Generate article"
-                                [disabled]="settings.generatingArticleFor() === agent.id || agent.status !== 'active'"
+                                [disabled]="settings.generatingArticleFor().has(agent.id!) || agent.status !== 'active'"
                                 (click)="settings.openConfirmDialog(agent, 'article')"
                               >
-                                @if (settings.generatingArticleFor() === agent.id) {
+                                @if (settings.generatingArticleFor().has(agent.id!)) {
                                   <ng-icon hlmIcon name="lucideLoader2" class="h-4 w-4 animate-spin" />
                                 } @else {
                                   <ng-icon hlmIcon name="lucideNewspaper" class="h-4 w-4" />
@@ -248,10 +248,10 @@ import { AuthService } from '../core/services/auth.service';
                                 size="icon-sm"
                                 class="text-muted-foreground hover:text-foreground"
                                 title="Generate repository"
-                                [disabled]="settings.generatingRepoFor() === agent.id || agent.status !== 'active'"
+                                [disabled]="settings.generatingRepoFor().has(agent.id!) || agent.status !== 'active'"
                                 (click)="settings.openConfirmDialog(agent, 'repository')"
                               >
-                                @if (settings.generatingRepoFor() === agent.id) {
+                                @if (settings.generatingRepoFor().has(agent.id!)) {
                                   <ng-icon hlmIcon name="lucideLoader2" class="h-4 w-4 animate-spin" />
                                 } @else {
                                   <ng-icon hlmIcon name="lucideFolderCode" class="h-4 w-4" />

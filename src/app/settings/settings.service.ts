@@ -23,8 +23,8 @@ export class SettingsService {
   readonly showDeleteDialog = signal(false);
   readonly pendingAction = signal<'article' | 'repository' | null>(null);
   readonly selectedAgent = signal<DbUserAgent | null>(null);
-  readonly generatingArticleFor = signal<string | null>(null);
-  readonly generatingRepoFor = signal<string | null>(null);
+  readonly generatingArticleFor = signal<Set<string>>(new Set());
+  readonly generatingRepoFor = signal<Set<string>>(new Set());
 
   readonly newAgentName = signal('');
   readonly newAgentApiKey = signal('');
@@ -192,7 +192,12 @@ export class SettingsService {
   }
 
   private async generateArticleForAgent(agent: DbUserAgent): Promise<void> {
-    this.generatingArticleFor.set(agent.id ?? null);
+    const id = agent.id;
+    if (!id) return;
+
+    const current = this.generatingArticleFor();
+    current.add(id);
+    this.generatingArticleFor.set(new Set(current));
     toast.info(`Generating article with ${agent.agent_name}...`);
 
     try {
@@ -213,12 +218,19 @@ export class SettingsService {
       const message = error instanceof Error ? error.message : String(error);
       toast.error(`Generation failed: ${message}`);
     } finally {
-      this.generatingArticleFor.set(null);
+      const updated = this.generatingArticleFor();
+      updated.delete(id);
+      this.generatingArticleFor.set(new Set(updated));
     }
   }
 
   private async generateRepoForAgent(agent: DbUserAgent): Promise<void> {
-    this.generatingRepoFor.set(agent.id ?? null);
+    const id = agent.id;
+    if (!id) return;
+
+    const current = this.generatingRepoFor();
+    current.add(id);
+    this.generatingRepoFor.set(new Set(current));
     toast.info(`Generating repository with ${agent.agent_name}...`);
 
     try {
@@ -273,7 +285,9 @@ export class SettingsService {
       const message = error instanceof Error ? error.message : String(error);
       toast.error(`Generation failed: ${message}`);
     } finally {
-      this.generatingRepoFor.set(null);
+      const updated = this.generatingRepoFor();
+      updated.delete(id);
+      this.generatingRepoFor.set(new Set(updated));
     }
   }
 
