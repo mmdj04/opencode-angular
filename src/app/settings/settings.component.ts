@@ -444,8 +444,11 @@ export class SettingsComponent {
         });
 
         effect(() => {
-          if (this.auth.isLoggedIn()) {
+          const userId = this.auth.user()?.id;
+          if (userId) {
             this.settings.loadAgents();
+          } else {
+            this.settings.agents.set([]);
           }
         });
       }
