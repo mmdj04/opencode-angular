@@ -1,39 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideEye,
-  lucideEyeOff,
-  lucideGithub,
-  lucideLock,
-  lucideMail,
-  lucideShield,
-} from '@ng-icons/lucide';
+import { lucideGithub } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
-import { HlmInputImports } from '@spartan-ng/helm/input';
-import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
-import { HlmLabelImports } from '@spartan-ng/helm/label';
-import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-sign-in',
-  imports: [
-    FormsModule,
-    RouterLink,
-    NgIcon,
-    HlmButtonImports,
-    HlmCardImports,
-    HlmInputImports,
-    HlmInputGroupImports,
-    HlmLabelImports,
-    HlmSeparatorImports,
-  ],
-  providers: [
-    provideIcons({ lucideGithub, lucideMail, lucideLock, lucideShield, lucideEye, lucideEyeOff }),
-  ],
+  imports: [RouterLink, NgIcon, HlmButtonImports, HlmCardImports],
+  providers: [provideIcons({ lucideGithub })],
   template: `
     <div class="bg-background flex min-h-screen items-center justify-center p-4">
       <div class="w-full max-w-[400px]">
@@ -49,72 +25,16 @@ import { AuthService } from '../core/services/auth.service';
             <h1 class="text-foreground mb-1 text-2xl font-semibold">Welcome back</h1>
             <p class="text-muted-foreground mb-6 text-sm">Sign in to your account</p>
 
-            <!-- Social Buttons -->
-            <div class="mb-4 space-y-3">
-              <button hlmBtn variant="outline" class="w-full" (click)="onGithub()">
-                <ng-icon hlmIcon name="lucideGithub" class="mr-2" />
-                Continue with GitHub
-              </button>
-              <button hlmBtn variant="outline" class="w-full" (click)="onSSO()">
-                <ng-icon hlmIcon name="lucideShield" class="mr-2" />
-                Continue with SSO
-              </button>
-            </div>
+            <!-- GitHub Button -->
+            <button hlmBtn variant="outline" class="w-full" (click)="onGithub()">
+              <ng-icon hlmIcon name="lucideGithub" class="mr-2" />
+              Continue with GitHub
+            </button>
 
-            <!-- Divider -->
-            <div class="relative my-6">
-              <div hlmSeparator></div>
-              <span
-                class="bg-card text-muted-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-2 text-xs"
-              >
-                or
-              </span>
-            </div>
-
-            <!-- Form -->
-            <form (ngSubmit)="onSubmit()">
-              <div class="mb-4 space-y-2">
-                <label hlmLabel for="email">Email</label>
-                <input
-                  hlmInput
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  [(ngModel)]="email"
-                  name="email"
-                  class="w-full"
-                />
-              </div>
-
-              <div class="mb-4 space-y-2">
-                <div class="flex items-center justify-between">
-                  <label hlmLabel for="password">Password</label>
-                  <a routerLink="/forgot-password" class="text-primary text-xs hover:underline">
-                    Forgot password?
-                  </a>
-                </div>
-                <div hlmInputGroup>
-                  <input
-                    hlmInputGroupInput
-                    id="password"
-                    [type]="showPassword() ? 'text' : 'password'"
-                    placeholder="••••••••"
-                    [(ngModel)]="password"
-                    name="password"
-                  />
-                  <button
-                    hlmInputGroupButton
-                    size="icon-sm"
-                    type="button"
-                    (click)="showPassword.set(!showPassword())"
-                  >
-                    <ng-icon hlmIcon [name]="showPassword() ? 'lucideEyeOff' : 'lucideEye'" />
-                  </button>
-                </div>
-              </div>
-
-              <button hlmBtn type="submit" class="w-full">Sign in</button>
-            </form>
+            <!-- Notice -->
+            <p class="text-muted-foreground mt-4 text-center text-xs">
+              Currently, only GitHub users can create an account.
+            </p>
 
             <!-- Footer -->
             <p class="text-muted-foreground mt-6 text-center text-sm">
@@ -123,18 +43,6 @@ import { AuthService } from '../core/services/auth.service';
             </p>
           </div>
         </hlm-card>
-
-        <!-- Terms -->
-        <p class="text-muted-foreground mt-6 text-center text-xs leading-relaxed">
-          By continuing, you agree to Supabase's
-          <a href="https://supabase.com/terms" class="hover:underline" target="_blank"
-            >Terms of Service</a
-          >
-          and
-          <a href="https://supabase.com/privacy" class="hover:underline" target="_blank"
-            >Privacy Policy</a
-          >, and to receive periodic emails with updates.
-        </p>
       </div>
     </div>
   `,
@@ -142,23 +50,11 @@ import { AuthService } from '../core/services/auth.service';
 export class SignInComponent {
   private readonly auth = inject(AuthService);
 
-  email = '';
-  password = '';
-  showPassword = signal(false);
-
   async onGithub(): Promise<void> {
     try {
       await this.auth.signInWithGitHub();
     } catch {
       // Error handled by AuthService
     }
-  }
-
-  onSSO() {
-    console.warn('Sign in with SSO');
-  }
-
-  onSubmit() {
-    console.warn('Sign in:', { email: this.email, password: this.password });
   }
 }

@@ -10,6 +10,7 @@ export class AuthService {
 
   readonly user = signal<User | null>(null);
   readonly session = signal<Session | null>(null);
+  readonly authLoaded = signal(false);
   readonly isLoggedIn = computed(() => !!this.user());
   readonly userEmail = computed(() => this.user()?.email ?? '');
   readonly userAvatar = computed(() => this.user()?.user_metadata?.['avatar_url'] ?? '');
@@ -26,10 +27,12 @@ export class AuthService {
     const { data } = await this.supabase.supabase.auth.getSession();
     this.session.set(data.session);
     this.user.set(data.session?.user ?? null);
+    this.authLoaded.set(true);
 
     this.supabase.supabase.auth.onAuthStateChange((_event, session) => {
       this.session.set(session);
       this.user.set(session?.user ?? null);
+      this.authLoaded.set(true);
     });
   }
 

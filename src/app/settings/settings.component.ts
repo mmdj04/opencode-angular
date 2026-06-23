@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, afterNextRender, effect, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCode, lucideKey, lucideLoader2, lucideLogOut, lucideUser } from '@ng-icons/lucide';
+import { lucideCode, lucideKey, lucideLoader2, lucideLogOut, lucideUser, lucideGithub } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -23,7 +24,7 @@ import { AuthService } from '../core/services/auth.service';
     HlmInputGroupImports,
     HlmLabelImports,
   ],
-  providers: [provideIcons({ lucideKey, lucideLoader2, lucideCode, lucideLogOut, lucideUser })],
+  providers: [provideIcons({ lucideKey, lucideLoader2, lucideCode, lucideLogOut, lucideUser, lucideGithub })],
   template: `
     <div class="bg-background flex min-h-screen items-center justify-center p-4">
       <hlm-card class="w-full max-w-[420px]">
@@ -58,10 +59,10 @@ import { AuthService } from '../core/services/auth.service';
               </button>
             </div>
           } @else {
-            <div class="flex gap-3">
-              <a routerLink="/sign-in" hlmBtn variant="outline" class="w-full">Sign In</a>
-              <a routerLink="/sign-up" hlmBtn class="w-full">Sign Up</a>
-            </div>
+            <a routerLink="/sign-in" hlmBtn variant="outline" class="w-full">
+              <ng-icon hlmIcon name="lucideGithub" class="mr-2" />
+              Sign In with GitHub
+            </a>
           }
 
           <div class="flex flex-col gap-4">
@@ -144,6 +145,20 @@ import { AuthService } from '../core/services/auth.service';
 export class SettingsComponent {
   protected readonly settings = inject(SettingsService);
   protected readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+  constructor() {
+    afterNextRender(() => {
+      if (this.isBrowser) {
+        effect(() => {
+          if (this.auth.authLoaded() && !this.auth.isLoggedIn()) {
+            this.router.navigate(['/sign-in']);
+          }
+        });
+      }
+    });
+  }
 
   async onSignOut(): Promise<void> {
     try {
