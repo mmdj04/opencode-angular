@@ -14,7 +14,7 @@ import {
 } from '@ng-icons/octicons';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { SupabaseService, type DbDeveloperProfile } from '../core/services/supabase.service';
-import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
+import { type TrendingDeveloper } from './trending-data';
 
 @Component({
   selector: 'app-developer-detail',
@@ -260,7 +260,7 @@ export class DeveloperDetailComponent {
     if (fromSupabase && fromSupabase.username === username) {
       return fromSupabase;
     }
-    return TRENDING_DEVELOPERS.find((d) => d.username === username) ?? fromSupabase;
+    return fromSupabase;
   });
 
   constructor() {

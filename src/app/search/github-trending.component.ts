@@ -9,7 +9,7 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { SupabaseService, type DbGeneratedRepo } from '../core/services/supabase.service';
-import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
+import { type TrendingDeveloper } from './trending-data';
 
 @Component({
   selector: 'app-github-trending',
@@ -278,6 +278,18 @@ import { TRENDING_DEVELOPERS, type TrendingDeveloper } from './trending-data';
                 </div>
               }
             </div>
+
+            @if (filteredDevelopers().length === 0) {
+              <div class="px-6 py-12 text-center">
+                <ng-icon hlmIcon name="octRepo" class="text-muted-foreground mb-3 h-8 w-8" />
+                <p class="text-muted-foreground text-[14px]">
+                  Nenhum desenvolvedor ainda.
+                </p>
+                <p class="text-muted-foreground mt-1 text-[13px]">
+                  Gere um repositório em Settings para criar um perfil de desenvolvedor.
+                </p>
+              </div>
+            }
           }
         }
 
@@ -532,12 +544,7 @@ export class GitHubTrendingComponent {
       popularRepo: p.popular_repo,
     }));
 
-    const hardcodedWithOffset = TRENDING_DEVELOPERS.map((d) => ({
-      ...d,
-      rank: d.rank + supabaseDevs.length,
-    }));
-
-    this.allDevelopers.set([...supabaseDevs, ...hardcodedWithOffset]);
+    this.allDevelopers.set(supabaseDevs);
     this.isLoading.set(false);
   }
 

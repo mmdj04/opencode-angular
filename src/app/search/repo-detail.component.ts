@@ -21,7 +21,6 @@ import {
 } from '@ng-icons/octicons';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { SupabaseService, type DbGeneratedRepo } from '../core/services/supabase.service';
-import { TRENDING_REPOS } from './trending-data';
 
 const LINK_INTERCEPTOR = `
 <base target="_blank">
@@ -440,15 +439,13 @@ export class RepoDetailComponent {
         defaultBranch: generated.default_branch,
         fileTree: generated.files.map((f) => ({
           name: f.name,
-          type: 'file' as const,
+          type: 'file' as 'file' | 'folder',
           lastCommit: f.name === 'index.html' ? 'Create index.html' : `Add ${f.name}`,
           date: new Date().toLocaleDateString('pt-BR'),
         })),
       };
     }
-    return (
-      TRENDING_REPOS.find((r) => r.owner === owner && r.name === name) ?? null
-    );
+    return null;
   });
 
   protected readonly fileTree = computed(() => {
@@ -458,7 +455,7 @@ export class RepoDetailComponent {
     if (generated && generated.owner === owner && generated.name === name) {
       return generated.files.map((f) => ({
         name: f.name,
-        type: 'file' as const,
+        type: 'file' as 'file' | 'folder',
         lastCommit: f.name === 'index.html' ? 'Create index.html' : `Add ${f.name}`,
         date: new Date().toLocaleDateString('pt-BR'),
       }));
