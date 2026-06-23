@@ -1,6 +1,39 @@
 import { Injectable } from '@angular/core';
 import type { DbArticle } from './supabase.service';
 
+export interface AgentPlan {
+  action: 'create_project' | 'create_issue' | 'create_pr' | 'analyze_repo';
+  topic: string;
+  description: string;
+  targetRepo?: string;
+  reason: string;
+}
+
+export interface GeneratedProject {
+  name: string;
+  description: string;
+  language: string;
+  languageColor: string;
+  topics: string[];
+  files: { path: string; content: string }[];
+}
+
+export interface GeneratedIssue {
+  title: string;
+  body: string;
+  labels: string[];
+}
+
+export interface GeneratedPR {
+  title: string;
+  body: string;
+  changes: Record<string, string>;
+}
+
+export interface RepoAnalysis {
+  suggestions: { title: string; description: string; priority: 'high' | 'medium' | 'low' }[];
+}
+
 export interface GeneratedRepo {
   owner: string;
   name: string;
@@ -82,10 +115,13 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const CATEGORY_TOPICS: Record<string, string> = {
-  research: 'recent AI research papers, scientific breakthroughs, new academic discoveries in technology, novel methodologies, or experimental results',
+  research:
+    'recent AI research papers, scientific breakthroughs, new academic discoveries in technology, novel methodologies, or experimental results',
   docs: 'new framework releases, API documentation, developer tools, programming tutorials, or technical guides',
-  'deep-tech': 'quantum computing advances, biotech innovations, neuroscience discoveries, space technology, nanotechnology, or advanced materials',
-  'ai-labs': 'new LLM releases, AI agent frameworks, prompt engineering techniques, AI-powered tools, or AI industry applications',
+  'deep-tech':
+    'quantum computing advances, biotech innovations, neuroscience discoveries, space technology, nanotechnology, or advanced materials',
+  'ai-labs':
+    'new LLM releases, AI agent frameworks, prompt engineering techniques, AI-powered tools, or AI industry applications',
 };
 
 const CODE_REPOSITORY_SYSTEM_INSTRUCTION = `Você é {agentName}, um especialista em documentação técnica e desenvolvimento web.
@@ -106,9 +142,13 @@ export class GeminiService {
 
   async generateNewsArticles(agentName: string, apiKey: string): Promise<DbArticle[]> {
     const categories = Object.keys(CATEGORY_PROMPTS);
+
     const randomCategory = categories[Math.floor(Math.random() * categories.length)]!;
+
     const systemPrompt = CATEGORY_PROMPTS[randomCategory]!.replace('{agentName}', agentName);
+
     const categoryLabel = CATEGORY_LABELS[randomCategory]!;
+
     const topics = CATEGORY_TOPICS[randomCategory]!;
 
     const prompt = `${systemPrompt}
@@ -140,6 +180,7 @@ Date context: ${new Date().toLocaleDateString('pt-BR')}.
 Make the article realistic, detailed and current. Use the agent name "${agentName}" as a watermark.`;
 
     const controller = new AbortController();
+
     const timeoutId = setTimeout(() => controller.abort(), 150_000);
 
     try {
@@ -161,9 +202,12 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
 
       if (!response.ok) {
         const errorBody = await response.text();
+
         let errorMessage = `Gemini API error: ${response.status}`;
+
         try {
           const parsed = JSON.parse(errorBody);
+
           errorMessage += ` - ${parsed.error?.message ?? errorBody}`;
         } catch {
           errorMessage += ` - ${errorBody}`;
@@ -172,7 +216,9 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
       }
 
       const data = await response.json();
+
       const parts = data.candidates?.[0]?.content?.parts ?? [];
+
       const text = parts
         .filter((p: { thought?: boolean }) => !p.thought)
         .map((p: { text: string }) => p.text)
@@ -183,6 +229,7 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
       }
 
       const jsonMatch = text.match(/\{[\s\S]*\}/);
+
       if (!jsonMatch) {
         throw new Error(
           `Invalid response format from Gemma. Response starts with: ${text.slice(0, 200)}`,
@@ -190,6 +237,7 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
       }
 
       const raw: Record<string, unknown> = JSON.parse(jsonMatch[0]);
+
       const slug = this.toSlug(raw['title'] as string);
 
       return [
@@ -208,8 +256,7 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
           author_avatar: '',
           image_url: '',
           paragraphs: (raw['paragraphs'] as { text: string; isSubtitle?: boolean }[]) ?? [],
-          diagrams:
-            (raw['diagrams'] as { type: string; code: string; caption: string }[]) ?? [],
+          diagrams: (raw['diagrams'] as { type: string; code: string; caption: string }[]) ?? [],
           tags: (raw['tags'] as string[]) ?? [],
         },
       ];
@@ -220,6 +267,7 @@ Make the article realistic, detailed and current. Use the agent name "${agentNam
 
   async generateCodeRepository(agentName: string, apiKey: string): Promise<GeneratedRepo> {
     const systemInstruction = CODE_REPOSITORY_SYSTEM_INSTRUCTION.replace('{agentName}', agentName);
+
     const username = agentName
       .toLowerCase()
       .normalize('NFD')
@@ -271,6 +319,7 @@ Data: ${new Date().toLocaleDateString('pt-BR')}.
 Mantenha simples e curto.`;
 
     const controller = new AbortController();
+
     const timeoutId = setTimeout(() => controller.abort(), 150_000);
 
     try {
@@ -291,9 +340,12 @@ Mantenha simples e curto.`;
 
       if (!response.ok) {
         const errorBody = await response.text();
+
         let errorMessage = `Gemini API error: ${response.status}`;
+
         try {
           const parsed = JSON.parse(errorBody);
+
           errorMessage += ` - ${parsed.error?.message ?? errorBody}`;
         } catch {
           errorMessage += ` - ${errorBody}`;
@@ -302,7 +354,9 @@ Mantenha simples e curto.`;
       }
 
       const data = await response.json();
+
       const parts = data.candidates?.[0]?.content?.parts ?? [];
+
       const text = parts
         .filter((p: { thought?: boolean }) => !p.thought)
         .map((p: { text: string }) => p.text)
@@ -313,12 +367,14 @@ Mantenha simples e curto.`;
       }
 
       const jsonMatch = text.match(/\{[\s\S]*\}/);
+
       if (!jsonMatch) {
         throw new Error(`Invalid JSON response: ${text.slice(0, 200)}`);
       }
 
       const raw: Record<string, unknown> = JSON.parse(jsonMatch[0]);
-      const rawProfile = raw['developerProfile'] as Record<string, unknown> ?? {};
+
+      const rawProfile = (raw['developerProfile'] as Record<string, unknown>) ?? {};
 
       return {
         owner: agentName,
@@ -344,12 +400,306 @@ Mantenha simples e curto.`;
           avatarColor: (rawProfile['avatarColor'] as string) ?? '#6366f1',
           followers: (rawProfile['followers'] as number) ?? 0,
           following: (rawProfile['following'] as number) ?? 0,
-          topLanguages: (rawProfile['topLanguages'] as { name: string; color: string; percentage: number }[]) ?? [],
-          pinnedRepos: (rawProfile['pinnedRepos'] as { name: string; description: string; language: string; languageColor: string; stars: number; forks: number; updated: string }[]) ?? [],
-          repos: (rawProfile['repos'] as { name: string; description: string; language: string; languageColor: string; stars: number; forks: number; updated: string }[]) ?? [],
-          popularRepo: (rawProfile['popularRepo'] as { name: string; description: string }) ?? { name: '', description: '' },
+          topLanguages:
+            (rawProfile['topLanguages'] as { name: string; color: string; percentage: number }[]) ??
+            [],
+          pinnedRepos:
+            (rawProfile['pinnedRepos'] as {
+              name: string;
+              description: string;
+              language: string;
+              languageColor: string;
+              stars: number;
+              forks: number;
+              updated: string;
+            }[]) ?? [],
+          repos:
+            (rawProfile['repos'] as {
+              name: string;
+              description: string;
+              language: string;
+              languageColor: string;
+              stars: number;
+              forks: number;
+              updated: string;
+            }[]) ?? [],
+          popularRepo: (rawProfile['popularRepo'] as { name: string; description: string }) ?? {
+            name: '',
+            description: '',
+          },
         },
       };
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  async planAgentAction(
+    agentName: string,
+    apiKey: string,
+    context: {
+      projectCount: number;
+      maxProjects: number;
+      issueCount: number;
+      maxIssues: number;
+      prCount: number;
+      maxPRs: number;
+      existingRepos: string;
+      allowedActions: string[];
+    },
+  ): Promise<AgentPlan> {
+    const prompt = `Você é ${agentName}, um desenvolvedor de IA autônomo no Agentwork.
+
+CONTEXTO:
+- Projetos criados este mês: ${context.projectCount}/${context.maxProjects}
+- Issues abertas este mês: ${context.issueCount}/${context.maxIssues}
+- PRs criados este mês: ${context.prCount}/${context.maxPRs}
+- Data: ${new Date().toLocaleDateString('pt-BR')}
+
+PROJETOS EXISTENTES:
+${context.existingRepos || 'Nenhum projeto ainda.'}
+
+AÇÕES PERMITIDAS: ${context.allowedActions.join(', ')}
+
+DECIDA UMA ÚNICA AÇÃO para executar agora. Pense como um desenvolvedor real do GitHub:
+- Criar um projeto de documentação útil e relevante
+- Criar uma issue para melhorar um projeto existente
+- Criar um PR com melhorias reais
+- Analisar e melhorar um dos seus projetos
+
+Retorne APENAS um objeto JSON válido:
+{
+  "action": "create_project" | "create_issue" | "create_pr" | "analyze_repo",
+  "topic": "tópico do projeto ou nome do repo alvo",
+  "description": "descrição curta da ação",
+  "targetRepo": "owner/name" (apenas se action for issue/pr/analyze),
+  "reason": "por que esta ação é útil agora"
+}`;
+
+    const text = await this.callGemma(apiKey, prompt);
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) throw new Error('Invalid JSON from planAgentAction');
+
+    return JSON.parse(jsonMatch[0]);
+  }
+
+  async createFullProject(
+    agentName: string,
+    apiKey: string,
+    topic: string,
+  ): Promise<GeneratedProject> {
+    const systemInstruction = `Você é ${agentName}, um especialista em documentação técnica.
+Gere projetos de documentação completos e úteis.
+Todo conteúdo deve ser em português brasileiro (pt-BR).
+Seja prático: inclua código de exemplo, explicações claras e estrutura lógica.`;
+
+    const prompt = `Crie um projeto de documentação completo sobre: ${topic}
+
+Retorne APENAS um objeto JSON válido:
+{
+  "name": "nome-do-repo-em-kebab-case",
+  "description": "descrição curta do projeto",
+  "language": "JavaScript|TypeScript|HTML|Python",
+  "languageColor": "#cor_hex_da_linguagem",
+  "topics": ["tag1", "tag2", "tag3"],
+  "files": [
+    { "path": "README.md", "content": "markdown completo" },
+    { "path": "caminho/do/arquivo", "content": "conteúdo" }
+  ]
+}
+
+Gere entre 3 e 8 arquivos úteis. O README.md deve conter:
+- Título e descrição
+- Como instalar/usar
+- Exemplos de código
+- Licença
+
+Data: ${new Date().toLocaleDateString('pt-BR')}`;
+
+    const text = await this.callGemma(apiKey, prompt, systemInstruction);
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) throw new Error('Invalid JSON from createFullProject');
+
+    const raw = JSON.parse(jsonMatch[0]);
+
+    return {
+      name: raw.name || 'projeto-gerado',
+      description: raw.description || '',
+      language: raw.language || 'HTML',
+      languageColor: raw.languageColor || '#e34c26',
+      topics: raw.topics || [],
+      files: raw.files || [],
+    };
+  }
+
+  async createIssue(
+    _agentName: string,
+    apiKey: string,
+    repoName: string,
+    repoDescription: string,
+  ): Promise<GeneratedIssue> {
+    const prompt = `Crie uma issue técnica para o projeto "${repoName}" (${repoDescription}).
+
+Retorne APENAS um objeto JSON válido:
+{
+  "title": "título da issue",
+  "body": "descrição detalhada da issue em markdown",
+  "labels": ["bug"|"enhancement"|"documentation"|"feature"]
+}
+
+A issue deve ser útil e realista.`;
+
+    const text = await this.callGemma(apiKey, prompt);
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) throw new Error('Invalid JSON from createIssue');
+
+    return JSON.parse(jsonMatch[0]);
+  }
+
+  async createPullRequest(
+    _agentName: string,
+    apiKey: string,
+    repoName: string,
+    repoDescription: string,
+  ): Promise<GeneratedPR> {
+    const prompt = `Crie um Pull Request para melhorar o projeto "${repoName}" (${repoDescription}).
+
+Retorne APENAS um objeto JSON válido:
+{
+  "title": "título do PR",
+  "body": "descrição do PR em markdown com mudanças",
+  "changes": { "nome_do_arquivo": "novo_conteúdo_do_arquivo" }
+}
+
+O PR deve conter melhorias reais e úteis.`;
+
+    const text = await this.callGemma(apiKey, prompt);
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) throw new Error('Invalid JSON from createPullRequest');
+
+    return JSON.parse(jsonMatch[0]);
+  }
+
+  async analyzeAndImprove(
+    _agentName: string,
+    apiKey: string,
+    repoName: string,
+    repoDescription: string,
+  ): Promise<RepoAnalysis> {
+    const prompt = `Analise o projeto "${repoName}" (${repoDescription}) e sugira 3 melhorias concretas.
+
+Retorne APENAS um objeto JSON válido:
+{
+  "suggestions": [
+    { "title": "título", "description": "descrição", "priority": "high|medium|low" }
+  ]
+}`;
+
+    const text = await this.callGemma(apiKey, prompt);
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) throw new Error('Invalid JSON from analyzeAndImprove');
+
+    return JSON.parse(jsonMatch[0]);
+  }
+
+  async reviewPullRequest(
+    agentName: string,
+    apiKey: string,
+    prTitle: string,
+    prBody: string,
+    repoName: string,
+  ): Promise<{ approved: boolean; comment: string; suggestions: string[] }> {
+    const prompt = `Você é ${agentName}, um reviewer de código experiente.
+Revise o Pull Request "${prTitle}" para o projeto "${repoName}".
+
+Descrição do PR:
+${prBody}
+
+Retorne APENAS um objeto JSON válido:
+{
+  "approved": true|false,
+  "comment": "comentário geral do reviewer",
+  "suggestions": ["sugestão 1", "sugestão 2"]
+}`;
+
+    const text = await this.callGemma(apiKey, prompt);
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) throw new Error('Invalid JSON from reviewPullRequest');
+
+    return JSON.parse(jsonMatch[0]);
+  }
+
+  private async callGemma(
+    apiKey: string,
+    prompt: string,
+    systemInstruction?: string,
+  ): Promise<string> {
+    const controller = new AbortController();
+
+    const timeoutId = setTimeout(() => controller.abort(), 150_000);
+
+    try {
+      const body: Record<string, unknown> = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 32768,
+          thinkingConfig: { thinkingLevel: 'high' },
+        },
+      };
+
+      if (systemInstruction) {
+        body['systemInstruction'] = { parts: [{ text: systemInstruction }] };
+      }
+
+      const response = await fetch(`${this.API_URL}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text();
+
+        let errorMessage = `Gemini API error: ${response.status}`;
+
+        try {
+          const parsed = JSON.parse(errorBody);
+
+          errorMessage += ` - ${parsed.error?.message ?? errorBody}`;
+        } catch {
+          errorMessage += ` - ${errorBody}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+
+      const parts = data.candidates?.[0]?.content?.parts ?? [];
+
+      const text = parts
+        .filter((p: { thought?: boolean }) => !p.thought)
+        .map((p: { text: string }) => p.text)
+        .join('');
+
+      if (!text) {
+        throw new Error('Empty response from Gemma');
+      }
+
+      return text;
     } finally {
       clearTimeout(timeoutId);
     }

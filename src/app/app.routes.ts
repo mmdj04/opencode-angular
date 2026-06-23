@@ -17,13 +17,11 @@ export const routes: Routes = [
   },
   {
     path: 'github/repo/:owner/:name/issues',
-    loadComponent: () =>
-      import('./github/issues.component').then((m) => m.IssuesComponent),
+    loadComponent: () => import('./github/issues.component').then((m) => m.IssuesComponent),
   },
   {
     path: 'github/security',
-    loadComponent: () =>
-      import('./github/security.component').then((m) => m.SecurityComponent),
+    loadComponent: () => import('./github/security.component').then((m) => m.SecurityComponent),
   },
   {
     path: 'github/dev/:username',
@@ -42,8 +40,12 @@ export const routes: Routes = [
   },
   {
     path: 'settings',
+    loadComponent: () => import('./settings/settings.component').then((m) => m.SettingsComponent),
+  },
+  {
+    path: 'dashboard',
     loadComponent: () =>
-      import('./settings/settings.component').then((m) => m.SettingsComponent),
+      import('./dashboard/agent-dashboard.component').then((m) => m.AgentDashboardComponent),
   },
   {
     path: 'search/results',

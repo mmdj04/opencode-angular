@@ -1,9 +1,14 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { toast } from '@spartan-ng/brain/sonner';
-import { GeminiService } from '../core/services/gemini.service';
-import { SupabaseService, type DbUserAgent } from '../core/services/supabase.service';
+import { AgentService } from '../core/services/agent.service';
 import { AuthService } from '../core/services/auth.service';
+import { GeminiService } from '../core/services/gemini.service';
+import {
+  SupabaseService,
+  type DbAgentConfig,
+  type DbUserAgent,
+} from '../core/services/supabase.service';
 
 const MAX_AGENTS = 5;
 
@@ -13,6 +18,7 @@ export class SettingsService {
   private readonly supabase = inject(SupabaseService);
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
+  private readonly agentService = inject(AgentService);
 
   readonly agents = signal<DbUserAgent[]>([]);
   readonly isLoadingAgents = signal(false);
@@ -21,23 +27,40 @@ export class SettingsService {
   readonly showEditDialog = signal(false);
   readonly showConfirmDialog = signal(false);
   readonly showDeleteDialog = signal(false);
+  readonly showAutonomyDialog = signal(false);
   readonly pendingAction = signal<'article' | 'repository' | null>(null);
   readonly selectedAgent = signal<DbUserAgent | null>(null);
   readonly generatingArticleFor = signal<Set<string>>(new Set());
   readonly generatingRepoFor = signal<Set<string>>(new Set());
+  readonly runningAgent = signal<Set<string>>(new Set());
 
   readonly newAgentName = signal('');
   readonly newAgentApiKey = signal('');
   readonly editAgentName = signal('');
   readonly editAgentApiKey = signal('');
 
+  // Autonomy settings
+  readonly autonomyConfig = signal<DbAgentConfig | null>(null);
+  readonly editMaxProjects = signal(3);
+  readonly editMaxIssues = signal(10);
+  readonly editMaxPRs = signal(5);
+  readonly editAutoApprove = signal(false);
+  readonly editAllowedActions = signal<string[]>([
+    'create_project',
+    'create_issue',
+    'create_pr',
+    'analyze_repo',
+  ]);
+
   async loadAgents(): Promise<void> {
     const userId = this.auth.user()?.id;
+
     if (!userId) return;
 
     this.isLoadingAgents.set(true);
     try {
       const agents = await this.supabase.getUserAgents(userId);
+
       this.agents.set(agents);
     } finally {
       this.isLoadingAgents.set(false);
@@ -46,19 +69,24 @@ export class SettingsService {
 
   async createAgent(): Promise<void> {
     const userId = this.auth.user()?.id;
+
     if (!userId) return;
 
     const name = this.newAgentName().trim();
+
     const apiKey = this.newAgentApiKey().trim();
 
     if (!name || !apiKey) {
       toast.error('Please fill in both Agent Name and API Key');
+
       return;
     }
 
     const count = await this.supabase.countUserAgents(userId);
+
     if (count >= MAX_AGENTS) {
       toast.error(`Maximum of ${MAX_AGENTS} agents reached`);
+
       return;
     }
 
@@ -98,13 +126,16 @@ export class SettingsService {
 
   async saveEdit(): Promise<void> {
     const agent = this.editingAgent();
+
     if (!agent?.id) return;
 
     const name = this.editAgentName().trim();
+
     const apiKey = this.editAgentApiKey().trim();
 
     if (!name || !apiKey) {
       toast.error('Please fill in both Agent Name and API Key');
+
       return;
     }
 
@@ -126,10 +157,13 @@ export class SettingsService {
     if (!agent.id) return;
 
     const newStatus = agent.status === 'active' ? 'inactive' : 'active';
+
     const success = await this.supabase.updateUserAgent(agent.id, { status: newStatus });
 
     if (success) {
-      toast.success(`Agent "${agent.agent_name}" ${newStatus === 'active' ? 'activated' : 'deactivated'}`);
+      toast.success(
+        `Agent "${agent.agent_name}" ${newStatus === 'active' ? 'activated' : 'deactivated'}`,
+      );
       await this.loadAgents();
     } else {
       toast.error('Failed to update agent status');
@@ -148,6 +182,7 @@ export class SettingsService {
 
   async deleteAgent(): Promise<void> {
     const agent = this.selectedAgent();
+
     if (!agent?.id) return;
 
     const success = await this.supabase.deleteUserAgent(agent.id);
@@ -164,6 +199,7 @@ export class SettingsService {
   openConfirmDialog(agent: DbUserAgent, action: 'article' | 'repository'): void {
     if (agent.status !== 'active') {
       toast.error('Only active agents can generate content');
+
       return;
     }
     this.selectedAgent.set(agent);
@@ -179,7 +215,9 @@ export class SettingsService {
 
   async executeConfirmedAction(): Promise<void> {
     const agent = this.selectedAgent();
+
     const action = this.pendingAction();
+
     if (!agent || !action) return;
 
     this.closeConfirmDialog();
@@ -193,15 +231,18 @@ export class SettingsService {
 
   private async generateArticleForAgent(agent: DbUserAgent): Promise<void> {
     const id = agent.id;
+
     if (!id) return;
 
     const current = this.generatingArticleFor();
+
     current.add(id);
     this.generatingArticleFor.set(new Set(current));
     toast.info(`Generating article with ${agent.agent_name}...`);
 
     try {
       const articles = await this.gemini.generateNewsArticles(agent.agent_name, agent.api_key);
+
       const success = await this.supabase.insertArticles(articles);
 
       if (success) {
@@ -216,9 +257,11 @@ export class SettingsService {
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+
       toast.error(`Generation failed: ${message}`);
     } finally {
       const updated = this.generatingArticleFor();
+
       updated.delete(id);
       this.generatingArticleFor.set(new Set(updated));
     }
@@ -226,15 +269,18 @@ export class SettingsService {
 
   private async generateRepoForAgent(agent: DbUserAgent): Promise<void> {
     const id = agent.id;
+
     if (!id) return;
 
     const current = this.generatingRepoFor();
+
     current.add(id);
     this.generatingRepoFor.set(new Set(current));
     toast.info(`Generating repository with ${agent.agent_name}...`);
 
     try {
       const repo = await this.gemini.generateCodeRepository(agent.agent_name, agent.api_key);
+
       const uniqueUsername = await this.getUniqueUsername(repo.owner);
 
       const repoSuccess = await this.supabase.insertGeneratedRepo({
@@ -255,6 +301,7 @@ export class SettingsService {
       });
 
       const profile = repo.developerProfile;
+
       await this.supabase.insertDeveloperProfile({
         username: uniqueUsername,
         display_name: profile.displayName,
@@ -283,9 +330,11 @@ export class SettingsService {
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+
       toast.error(`Generation failed: ${message}`);
     } finally {
       const updated = this.generatingRepoFor();
+
       updated.delete(id);
       this.generatingRepoFor.set(new Set(updated));
     }
@@ -298,6 +347,7 @@ export class SettingsService {
       .replace(/^-|-$/g, '');
 
     let candidate = slug;
+
     let counter = 2;
 
     while (await this.supabase.checkUsernameExists(candidate)) {
@@ -306,5 +356,101 @@ export class SettingsService {
     }
 
     return candidate;
+  }
+
+  // ===========================================
+  // Autonomy Management
+  // ===========================================
+
+  openAutonomyDialog(agent: DbUserAgent): void {
+    this.selectedAgent.set(agent);
+    this.loadAutonomyConfig(agent.id!);
+    this.showAutonomyDialog.set(true);
+  }
+
+  closeAutonomyDialog(): void {
+    this.showAutonomyDialog.set(false);
+    this.selectedAgent.set(null);
+    this.autonomyConfig.set(null);
+  }
+
+  private async loadAutonomyConfig(agentId: string): Promise<void> {
+    let config = await this.agentService.getAgentConfig(agentId);
+
+    if (!config) {
+      await this.agentService.createDefaultConfig(agentId);
+      config = await this.agentService.getAgentConfig(agentId);
+    }
+
+    if (config) {
+      this.autonomyConfig.set(config);
+      this.editMaxProjects.set(config.max_projects_per_month);
+      this.editMaxIssues.set(config.max_issues_per_month);
+      this.editMaxPRs.set(config.max_prs_per_month);
+      this.editAutoApprove.set(config.auto_approve);
+      this.editAllowedActions.set([...config.allowed_actions]);
+    }
+  }
+
+  async saveAutonomyConfig(): Promise<void> {
+    const agent = this.selectedAgent();
+
+    if (!agent?.id) return;
+
+    const success = await this.agentService.updateConfig(agent.id, {
+      max_projects_per_month: this.editMaxProjects(),
+      max_issues_per_month: this.editMaxIssues(),
+      max_prs_per_month: this.editMaxPRs(),
+      auto_approve: this.editAutoApprove(),
+      allowed_actions: this.editAllowedActions(),
+    });
+
+    if (success) {
+      toast.success('Autonomy settings saved');
+      this.closeAutonomyDialog();
+    } else {
+      toast.error('Failed to save autonomy settings');
+    }
+  }
+
+  toggleAllowedAction(action: string): void {
+    const current = this.editAllowedActions();
+
+    if (current.includes(action)) {
+      this.editAllowedActions.set(current.filter((a) => a !== action));
+    } else {
+      this.editAllowedActions.set([...current, action]);
+    }
+  }
+
+  async runAgent(agent: DbUserAgent): Promise<void> {
+    if (!agent.id) return;
+
+    const current = this.runningAgent();
+
+    current.add(agent.id);
+    this.runningAgent.set(new Set(current));
+
+    toast.info(`Running ${agent.agent_name}...`);
+
+    try {
+      const result = await this.agentService.executeAgentAction(agent.id);
+
+      if (result.success) {
+        toast.success(`${agent.agent_name}: ${result.action} completed!`);
+      } else {
+        toast.error(`${agent.agent_name}: ${result.error || 'Action failed'}`);
+      }
+    } finally {
+      const updated = this.runningAgent();
+
+      updated.delete(agent.id);
+      this.runningAgent.set(new Set(updated));
+    }
+  }
+
+  async runAllAgents(): Promise<void> {
+    toast.info('Running all agents...');
+    await this.agentService.runAllAgents();
   }
 }
