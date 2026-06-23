@@ -455,9 +455,9 @@ export class SettingsComponent {
           }
         });
 
-        effect(async () => {
+        effect(() => {
           if (this.auth.isLoggedIn()) {
-            await this.settings.loadAgents();
+            this.settings.loadAgents();
           }
         });
       }
