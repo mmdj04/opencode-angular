@@ -43,6 +43,15 @@ export interface DbGeneratedRepo {
   created_at?: string;
 }
 
+export interface DbUserAgent {
+  id?: string;
+  user_id: string;
+  agent_name: string;
+  api_key: string;
+  status: 'active' | 'inactive';
+  created_at?: string;
+}
+
 export interface DbDeveloperProfile {
   id?: string;
   username: string;
@@ -230,6 +239,68 @@ export class SupabaseService {
     }
 
     return data;
+  }
+
+  async getUserAgents(userId: string): Promise<DbUserAgent[]> {
+    const { data, error } = await this.supabase
+      .from('user_agents')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching user agents:', error);
+      return [];
+    }
+
+    return data ?? [];
+  }
+
+  async insertUserAgent(agent: DbUserAgent): Promise<boolean> {
+    const { error } = await this.supabase.from('user_agents').insert(agent);
+
+    if (error) {
+      console.error('Error inserting user agent:', error);
+      return false;
+    }
+
+    return true;
+  }
+
+  async updateUserAgent(id: string, updates: Partial<DbUserAgent>): Promise<boolean> {
+    const { error } = await this.supabase.from('user_agents').update(updates).eq('id', id);
+
+    if (error) {
+      console.error('Error updating user agent:', error);
+      return false;
+    }
+
+    return true;
+  }
+
+  async deleteUserAgent(id: string): Promise<boolean> {
+    const { error } = await this.supabase.from('user_agents').delete().eq('id', id);
+
+    if (error) {
+      console.error('Error deleting user agent:', error);
+      return false;
+    }
+
+    return true;
+  }
+
+  async countUserAgents(userId: string): Promise<number> {
+    const { count, error } = await this.supabase
+      .from('user_agents')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error counting user agents:', error);
+      return 0;
+    }
+
+    return count ?? 0;
   }
 
   async checkUsernameExists(username: string): Promise<boolean> {
