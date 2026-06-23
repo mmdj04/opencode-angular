@@ -24,9 +24,6 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
-import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
-import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { SettingsService } from './settings.service';
 import { AuthService } from '../core/services/auth.service';
 
@@ -41,9 +38,6 @@ import { AuthService } from '../core/services/auth.service';
     HlmInputImports,
     HlmInputGroupImports,
     HlmLabelImports,
-    HlmDialogImports,
-    HlmAlertDialogImports,
-    HlmBadgeImports,
   ],
   providers: [
     provideIcons({
@@ -322,122 +316,116 @@ import { AuthService } from '../core/services/auth.service';
           </div>
         </div>
       </hlm-card>
-
-      <!-- Edit Agent Dialog -->
-      @if (settings.showEditDialog()) {
-        <div class="fixed inset-0 z-50 flex items-center justify-center">
-          <div class="bg-background/80 fixed inset-0 backdrop-blur-sm" (click)="settings.closeEditDialog()"></div>
-          <hlm-dialog class="relative z-50 w-full max-w-md">
-            <hlm-dialog-content>
-              <hlm-dialog-header>
-                <h2 hlmDialogTitle>Edit Agent</h2>
-                <p hlmDialogDescription>Update the agent name and API key.</p>
-              </hlm-dialog-header>
-
-              <div class="flex flex-col gap-4 py-4">
-                <div class="flex flex-col gap-2">
-                  <label hlmLabel for="editAgentName">Agent Name</label>
-                  <input
-                    hlmInput
-                    id="editAgentName"
-                    type="text"
-                    [ngModel]="settings.editAgentName()"
-                    (ngModelChange)="settings.editAgentName.set($event)"
-                  />
-                </div>
-
-                <div class="flex flex-col gap-2">
-                  <label hlmLabel for="editAgentApiKey">API Key</label>
-                  <div hlmInputGroup>
-                    <hlm-input-group-addon align="inline-start">
-                      <ng-icon hlmIcon name="lucideKey" class="text-muted-foreground" />
-                    </hlm-input-group-addon>
-                    <input
-                      hlmInputGroupInput
-                      id="editAgentApiKey"
-                      type="password"
-                      placeholder="AIza..."
-                      [ngModel]="settings.editAgentApiKey()"
-                      (ngModelChange)="settings.editAgentApiKey.set($event)"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <hlm-dialog-footer>
-                <button hlmBtn variant="outline" (click)="settings.closeEditDialog()">Cancel</button>
-                <button hlmBtn (click)="settings.saveEdit()">Save Changes</button>
-              </hlm-dialog-footer>
-            </hlm-dialog-content>
-          </hlm-dialog>
-        </div>
-      }
-
-      <!-- Confirm Generation Dialog -->
-      @if (settings.showConfirmDialog()) {
-        <div class="fixed inset-0 z-50 flex items-center justify-center">
-          <div class="bg-background/80 fixed inset-0 backdrop-blur-sm" (click)="settings.closeConfirmDialog()"></div>
-          <hlm-dialog class="relative z-50 w-full max-w-md">
-            <hlm-dialog-content>
-              <hlm-dialog-header>
-                <h2 hlmDialogTitle>
-                  @if (settings.pendingAction() === 'article') {
-                    Generate Article?
-                  } @else {
-                    Generate Repository?
-                  }
-                </h2>
-                <p hlmDialogDescription>
-                  @if (settings.pendingAction() === 'article') {
-                    Agent "{{ settings.selectedAgent()?.agent_name }}" will generate a news article using its API key. This may take up to 150 seconds.
-                  } @else {
-                    Agent "{{ settings.selectedAgent()?.agent_name }}" will generate a repository using its API key. This may take up to 150 seconds.
-                  }
-                </p>
-              </hlm-dialog-header>
-
-              <hlm-dialog-footer>
-                <button hlmBtn variant="outline" (click)="settings.closeConfirmDialog()">Cancel</button>
-                <button hlmBtn (click)="settings.executeConfirmedAction()">
-                  @if (settings.pendingAction() === 'article') {
-                    <ng-icon hlmIcon name="lucideNewspaper" class="mr-2" />
-                    Generate
-                  } @else {
-                    <ng-icon hlmIcon name="lucideFolderCode" class="mr-2" />
-                    Generate
-                  }
-                </button>
-              </hlm-dialog-footer>
-            </hlm-dialog-content>
-          </hlm-dialog>
-        </div>
-      }
-
-      <!-- Delete Agent Dialog -->
-      @if (settings.showDeleteDialog()) {
-        <div class="fixed inset-0 z-50 flex items-center justify-center">
-          <div class="bg-background/80 fixed inset-0 backdrop-blur-sm" (click)="settings.closeDeleteDialog()"></div>
-          <hlm-dialog class="relative z-50 w-full max-w-md">
-            <hlm-dialog-content>
-              <hlm-dialog-header>
-                <h2 hlmDialogTitle>Delete Agent?</h2>
-                <p hlmDialogDescription>
-                  Agent "{{ settings.selectedAgent()?.agent_name }}" will be permanently deleted. This action cannot be undone.
-                </p>
-              </hlm-dialog-header>
-
-              <hlm-dialog-footer>
-                <button hlmBtn variant="outline" (click)="settings.closeDeleteDialog()">Cancel</button>
-                <button hlmBtn variant="destructive" (click)="settings.deleteAgent()">
-                  <ng-icon hlmIcon name="lucideTrash2" class="mr-2" />
-                  Delete
-                </button>
-              </hlm-dialog-footer>
-            </hlm-dialog-content>
-          </hlm-dialog>
-        </div>
-      }
     </div>
+
+    <!-- Edit Agent Dialog (outside hlm-card) -->
+    @if (settings.showEditDialog()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="bg-black/60 fixed inset-0 backdrop-blur-sm" (click)="settings.closeEditDialog()"></div>
+        <div class="bg-popover text-popover-foreground relative z-50 w-full max-w-md rounded-xl p-6 shadow-xl ring-1 ring-white/10">
+          <div class="flex flex-col gap-2">
+            <h2 class="text-foreground text-lg font-semibold">Edit Agent</h2>
+            <p class="text-muted-foreground text-sm">Update the agent name and API key.</p>
+          </div>
+
+          <div class="mt-4 flex flex-col gap-4">
+            <div class="flex flex-col gap-2">
+              <label hlmLabel for="editAgentName">Agent Name</label>
+              <input
+                hlmInput
+                id="editAgentName"
+                type="text"
+                [ngModel]="settings.editAgentName()"
+                (ngModelChange)="settings.editAgentName.set($event)"
+              />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label hlmLabel for="editAgentApiKey">API Key</label>
+              <div hlmInputGroup>
+                <hlm-input-group-addon align="inline-start">
+                  <ng-icon hlmIcon name="lucideKey" class="text-muted-foreground" />
+                </hlm-input-group-addon>
+                <input
+                  hlmInputGroupInput
+                  id="editAgentApiKey"
+                  type="password"
+                  placeholder="AIza..."
+                  [ngModel]="settings.editAgentApiKey()"
+                  (ngModelChange)="settings.editAgentApiKey.set($event)"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex justify-end gap-2">
+            <button hlmBtn variant="outline" (click)="settings.closeEditDialog()">Cancel</button>
+            <button hlmBtn (click)="settings.saveEdit()">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Confirm Generation Dialog (outside hlm-card) -->
+    @if (settings.showConfirmDialog()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="bg-black/60 fixed inset-0 backdrop-blur-sm" (click)="settings.closeConfirmDialog()"></div>
+        <div class="bg-popover text-popover-foreground relative z-50 w-full max-w-md rounded-xl p-6 shadow-xl ring-1 ring-white/10">
+          <div class="flex flex-col gap-2">
+            <h2 class="text-foreground text-lg font-semibold">
+              @if (settings.pendingAction() === 'article') {
+                Generate Article?
+              } @else {
+                Generate Repository?
+              }
+            </h2>
+            <p class="text-muted-foreground text-sm">
+              @if (settings.pendingAction() === 'article') {
+                Agent "{{ settings.selectedAgent()?.agent_name }}" will generate a news article using its API key. This may take up to 150 seconds.
+              } @else {
+                Agent "{{ settings.selectedAgent()?.agent_name }}" will generate a repository using its API key. This may take up to 150 seconds.
+              }
+            </p>
+          </div>
+
+          <div class="mt-6 flex justify-end gap-2">
+            <button hlmBtn variant="outline" (click)="settings.closeConfirmDialog()">Cancel</button>
+            <button hlmBtn (click)="settings.executeConfirmedAction()">
+              @if (settings.pendingAction() === 'article') {
+                <ng-icon hlmIcon name="lucideNewspaper" class="mr-2" />
+                Generate
+              } @else {
+                <ng-icon hlmIcon name="lucideFolderCode" class="mr-2" />
+                Generate
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Delete Agent Dialog (outside hlm-card) -->
+    @if (settings.showDeleteDialog()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="bg-black/60 fixed inset-0 backdrop-blur-sm" (click)="settings.closeDeleteDialog()"></div>
+        <div class="bg-popover text-popover-foreground relative z-50 w-full max-w-md rounded-xl p-6 shadow-xl ring-1 ring-white/10">
+          <div class="flex flex-col gap-2">
+            <h2 class="text-foreground text-lg font-semibold">Delete Agent?</h2>
+            <p class="text-muted-foreground text-sm">
+              Agent "{{ settings.selectedAgent()?.agent_name }}" will be permanently deleted. This action cannot be undone.
+            </p>
+          </div>
+
+          <div class="mt-6 flex justify-end gap-2">
+            <button hlmBtn variant="outline" (click)="settings.closeDeleteDialog()">Cancel</button>
+            <button hlmBtn variant="destructive" (click)="settings.deleteAgent()">
+              <ng-icon hlmIcon name="lucideTrash2" class="mr-2" />
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    }
   `,
 })
 export class SettingsComponent {

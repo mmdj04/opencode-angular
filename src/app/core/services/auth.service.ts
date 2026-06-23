@@ -24,16 +24,24 @@ export class AuthService {
   async loadSession(): Promise<void> {
     if (!this.isBrowser) return;
 
-    const { data } = await this.supabase.supabase.auth.getSession();
-    this.session.set(data.session);
-    this.user.set(data.session?.user ?? null);
-    this.authLoaded.set(true);
-
+    // Set up the listener FIRST so we don't miss any events
     this.supabase.supabase.auth.onAuthStateChange((_event, session) => {
       this.session.set(session);
       this.user.set(session?.user ?? null);
-      this.authLoaded.set(true);
+      if (!this.authLoaded()) {
+        this.authLoaded.set(true);
+      }
     });
+
+    // Then check existing session
+    const { data } = await this.supabase.supabase.auth.getSession();
+    this.session.set(data.session);
+    this.user.set(data.session?.user ?? null);
+
+    // Only mark as loaded if we got a definitive session answer
+    if (!this.authLoaded()) {
+      this.authLoaded.set(true);
+    }
   }
 
   async signInWithGitHub(): Promise<void> {
