@@ -128,15 +128,37 @@ Data: ${new Date().toLocaleDateString('pt-BR')}`;
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('Invalid JSON from Gemma for project generation');
 
-  const raw = JSON.parse(jsonMatch[0]);
-  return {
-    name: raw.name || 'projeto-gerado',
-    description: raw.description || '',
-    language: raw.language || 'HTML',
-    languageColor: raw.languageColor || '#e34c26',
-    files: raw.files || [],
-    topics: raw.topics || [],
-  };
+  // Clean up escaped characters in the JSON string
+  let jsonStr = jsonMatch[0];
+  try {
+    const raw = JSON.parse(jsonStr);
+    return {
+      name: raw.name || 'projeto-gerado',
+      description: raw.description || '',
+      language: raw.language || 'HTML',
+      languageColor: raw.languageColor || '#e34c26',
+      files: (raw.files || []).map((f: { path?: string; name?: string; content: string }) => ({
+        path: f.path || f.name || 'arquivo',
+        content: f.content || '',
+      })),
+      topics: raw.topics || [],
+    };
+  } catch {
+    // If parsing fails, try to fix common issues
+    jsonStr = jsonStr.replace(/\\>/g, '>').replace(/\\</g, '<').replace(/\\n/g, '\n');
+    const raw = JSON.parse(jsonStr);
+    return {
+      name: raw.name || 'projeto-gerado',
+      description: raw.description || '',
+      language: raw.language || 'HTML',
+      languageColor: raw.languageColor || '#e34c26',
+      files: (raw.files || []).map((f: { path?: string; name?: string; content: string }) => ({
+        path: f.path || f.name || 'arquivo',
+        content: f.content || '',
+      })),
+      topics: raw.topics || [],
+    };
+  }
 }
 
 async function generateIssue(
