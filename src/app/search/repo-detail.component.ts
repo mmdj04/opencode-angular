@@ -384,8 +384,8 @@ export class RepoDetailComponent {
 
     const files = generated.files;
     const htmlFile =
-      files.find((f) => f.name === 'index.html') ??
-      files.find((f) => f.name.endsWith('.html'));
+      files.find((f) => (f.name || f.path) === 'index.html') ??
+      files.find((f) => (f.name || f.path || '').endsWith('.html'));
     if (!htmlFile) return '';
 
     let html = htmlFile.content;
@@ -396,7 +396,7 @@ export class RepoDetailComponent {
       (_, cssPath: string) => {
         const cssFileName = cssPath.split('/').pop() ?? cssPath;
         const cssFile = files.find(
-          (f) => f.name === cssPath || f.name === cssFileName || f.name.endsWith('/' + cssPath),
+          (f) => (f.name || f.path) === cssPath || (f.name || f.path) === cssFileName || (f.name || f.path || '').endsWith('/' + cssPath),
         );
         return cssFile ? `<style>${cssFile.content}</style>` : '';
       },
@@ -408,7 +408,7 @@ export class RepoDetailComponent {
       (_, jsPath: string) => {
         const jsFileName = jsPath.split('/').pop() ?? jsPath;
         const jsFile = files.find(
-          (f) => f.name === jsPath || f.name === jsFileName || f.name.endsWith('/' + jsPath),
+          (f) => (f.name || f.path) === jsPath || (f.name || f.path) === jsFileName || (f.name || f.path || '').endsWith('/' + jsPath),
         );
         return jsFile ? `<script>${jsFile.content}</script>` : '';
       },
@@ -438,9 +438,9 @@ export class RepoDetailComponent {
         license: generated.license,
         defaultBranch: generated.default_branch,
         fileTree: generated.files.map((f) => ({
-          name: f.name,
-          type: 'file' as 'file' | 'folder',
-          lastCommit: f.name === 'index.html' ? 'Create index.html' : `Add ${f.name}`,
+          name: f.name || f.path || 'arquivo',
+          type: (f.type || 'file') as 'file' | 'folder',
+          lastCommit: (f.name || f.path) === 'index.html' ? 'Create index.html' : `Add ${f.name || f.path}`,
           date: new Date().toLocaleDateString('pt-BR'),
         })),
       };
@@ -454,9 +454,9 @@ export class RepoDetailComponent {
     const generated = this.generatedRepo();
     if (generated && generated.owner === owner && generated.name === name) {
       return generated.files.map((f) => ({
-        name: f.name,
-        type: 'file' as 'file' | 'folder',
-        lastCommit: f.name === 'index.html' ? 'Create index.html' : `Add ${f.name}`,
+        name: f.name || f.path || 'arquivo',
+        type: (f.type || 'file') as 'file' | 'folder',
+        lastCommit: (f.name || f.path) === 'index.html' ? 'Create index.html' : `Add ${f.name || f.path}`,
         date: new Date().toLocaleDateString('pt-BR'),
       }));
     }
@@ -484,9 +484,9 @@ export class RepoDetailComponent {
     if (entry.type !== 'file') return;
     const generated = this.generatedRepo();
     if (!generated) return;
-    const file = generated.files.find((f) => f.name === entry.name);
+    const file = generated.files.find((f) => (f.name || f.path) === entry.name);
     if (file) {
-      this.selectedFile.set({ name: file.name, content: file.content });
+      this.selectedFile.set({ name: file.name || file.path || 'arquivo', content: file.content });
       this.previewMode.set('code');
       this.activeTab.set('code');
     }

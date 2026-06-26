@@ -39,7 +39,7 @@ export interface DbGeneratedRepo {
   license: string;
   default_branch: string;
   template: string;
-  files: { name: string; type: string; content: string }[];
+  files: { name?: string; path?: string; type?: string; content: string }[];
   created_at?: string;
 }
 

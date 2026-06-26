@@ -26,7 +26,7 @@ interface GeneratedRepo {
   description: string;
   language: string;
   languageColor: string;
-  files: { path: string; content: string }[];
+  files: { name: string; type: string; content: string }[];
   topics: string[];
 }
 
@@ -138,7 +138,8 @@ Data: ${new Date().toLocaleDateString('pt-BR')}`;
       language: raw.language || 'HTML',
       languageColor: raw.languageColor || '#e34c26',
       files: (raw.files || []).map((f: { path?: string; name?: string; content: string }) => ({
-        path: f.path || f.name || 'arquivo',
+        name: f.name || f.path || 'arquivo',
+        type: 'file',
         content: f.content || '',
       })),
       topics: raw.topics || [],
@@ -153,7 +154,8 @@ Data: ${new Date().toLocaleDateString('pt-BR')}`;
       language: raw.language || 'HTML',
       languageColor: raw.languageColor || '#e34c26',
       files: (raw.files || []).map((f: { path?: string; name?: string; content: string }) => ({
-        path: f.path || f.name || 'arquivo',
+        name: f.name || f.path || 'arquivo',
+        type: 'file',
         content: f.content || '',
       })),
       topics: raw.topics || [],
