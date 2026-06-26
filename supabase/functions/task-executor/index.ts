@@ -111,16 +111,29 @@ Retorne APENAS um objeto JSON válido:
   "languageColor": "#cor_hex_da_linguagem",
   "topics": ["tag1", "tag2", "tag3"],
   "files": [
-    { "path": "README.md", "content": "markdown completo" },
-    { "path": "caminho/do/arquivo", "content": "conteúdo" }
+    { "path": "index.html", "content": "página HTML5 completa com CSS inline, tema escuro, design limpo e responsivo" },
+    { "path": "README.md", "content": "markdown completo do projeto" }
   ]
 }
 
-Gere entre 3 e 8 arquivos úteis. O README.md deve conter:
+⚠️ IMPORTANTE: Todo projeto DEVE incluir um arquivo "index.html" que seja uma página de documentação visual completa.
+O index.html deve conter:
+- HTML5 válido com meta tags
+- Todo o CSS inline em tag <style> (tema escuro, cores: #0d1117 fundo, #c9d1d9 texto, #58a6ff links)
+- Layout responsivo com sidebar ou navegação
+- Seções de conteúdo documentando o projeto
+- Código de exemplo com syntax highlighting
+
+O arquivo index.html será usado para preview no navegador. É OBRIGATÓRIO.
+
+Gere entre 3 e 6 arquivos úteis no total (incluindo index.html e README.md).
+O README.md deve conter:
 - Título e descrição
-- Como instalar/usar
-- Exemplos de código
+- Como visualizar o index.html
+- Estrutura do projeto
 - Licença
+
+Se o projeto for sobre uma linguagem (TypeScript, Python, etc), inclua também arquivos de exemplo nessa linguagem.
 
 Data: ${new Date().toLocaleDateString('pt-BR')}`;
 
